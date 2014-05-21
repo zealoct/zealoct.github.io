@@ -1,0 +1,628 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Notes | Han]]></title>
+  <link href="http://hanjc.me/blog/categories/notes/atom.xml" rel="self"/>
+  <link href="http://hanjc.me/"/>
+  <updated>2014-05-20T21:42:39+08:00</updated>
+  <id>http://hanjc.me/</id>
+  <author>
+    <name><![CDATA[Zealoct]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Notes on iOS Security Whitepaper]]></title>
+    <link href="http://hanjc.me/blog/2014/03/03/ios-security/"/>
+    <updated>2014-03-03T19:56:09+08:00</updated>
+    <id>http://hanjc.me/blog/2014/03/03/ios-security</id>
+    <content type="html"><![CDATA[<p>This notes is based on <em>iOS Security &ndash; February 2014</em>, origin link can be found <a href="http://images.apple.com/iphone/business/docs/iOS_Security_Feb14.pdf">here</a>.</p>
+
+<p>This paper gives a brief description of iOS security, including hardware security features and how iOS leverages these features.</p>
+
+<h2>System Security</h2>
+
+<h3>Secure Boot Chain</h3>
+
+<p>ROM is sealed with public key of Apple Root CA, and will verify the Low-Level Bootloader (LLB) before load it.</p>
+
+<p>For devices with an A7 processor, the <em>Secure Enclave</em> coprocessor also utilizes a secure boot process that ensures its separate software is verified and signed by Apple.</p>
+
+<p>Verification failure will enter <strong>recovery mode</strong>, if Boot ROM is not even able to load or verify LLB, it enters <strong>DFU (Device Firmware Update) mode</strong>.</p>
+
+<h3>System Software Authorization</h3>
+
+<p>GOAL: prevent the devices from being downgraded.</p>
+
+<p>Need iTunes to upgrade, when upgrading, iTunes (or the device) would send</p>
+
+<ol>
+<li>a list cryptographic measurements of each installation bundle to be installed</li>
+<li>nonce</li>
+<li>device&rsquo;s unique ID (ECID)</li>
+</ol>
+
+
+<p>to Apple installation authorization server.</p>
+
+<p>If upgrade request is permitted, server would add ECID to the measurement and signs the result.</p>
+
+<p>Device would check each item loaded from disk at boot time.</p>
+
+<!-- more -->
+
+
+<h3>Secure Enclave</h3>
+
+<p>There are two kinds of processors, <em>application processor (A7)</em> and <em>Secure Enclave</em>.</p>
+
+<p><strong>What is Secure Enclave?</strong>
+A coprocessor fabricated in the Apple A7 chip, has its OWN <em>secure boot</em> and <em>personalized software update</em>, <em>encrypted memory</em> and <em>hardware random number generator</em>.</p>
+
+<p><strong>What does Secure Enclave do?</strong>
+It provides all cryptographic operations for Data Protection key management and maintains the integrity of Data Protection, it is also responsible for processing fingerprint data, determining if there is a match, and enabling access or purchase on behalf of the user.</p>
+
+<p><strong>How Secure Enclave communicate with app processor?</strong>
+Communication is isolated to an interrupt-driven mailbox and shared memory data buffers.</p>
+
+<p>Each Secure Enclave is provisioned during fabrication with its own <em>UID (Unique ID)</em>, not known to Apple, not accessible to other parts of the system. Note that this UID is NOT SAME with that fused into application processor.</p>
+
+<p>Create an ephemeral key tangled with UID to encrypt Secure Enclave&rsquo;s portion of the device&rsquo;s memory space.</p>
+
+<p>Data saved to file system by Secure Enclave is encrypted with a key tangled with UID and an anti-replay counter.</p>
+
+<p>Utilizes System Software Authorization to ensure the integrity of its software and prevent downgrade.</p>
+
+<h4>Some Questions</h4>
+
+<ol>
+<li><p>How secure boot of Secure Enclave is achieved?</p></li>
+<li><p>Where the ephemeral key is stored? How about the key and anti-replay counter used to encrypt data written to file system by Secure Enclave?</p></li>
+</ol>
+
+
+<h3>Touch ID</h3>
+
+<p>80*80 pixel, 500 ppi <a href="http://en.wikipedia.org/wiki/Raster_scan">raster scan</a>, temporarily stored in Secure Enclave, data out from Touch ID sensor is encrypted, A7 can only forward it to Secure Enclave but never read its content.</p>
+
+<p>User&rsquo;s fingerprint map never leaves ip5s.</p>
+
+<h4>Safe communicate with Secure Enclave</h4>
+
+<p>Touch ID can only talk to Secure Enclave through application processor.  Communication between the A7 and the
+Touch ID sensor takes place over a <a href="http://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus">serial peripheral interface bus</a>.</p>
+
+<p>There is a <em>device&rsquo;s key</em> that is build into the Touch ID sensor and Secure Enclave (should differ from Enclave&rsquo;s UID and device UID in application processor). To communicate with Enclave, Touch ID first negotiates with Enclave for a session key, which process should be protected by the device&rsquo;s key. Touch ID then sends the encrypted scan result to Enclave.</p>
+
+<blockquote><p>The session key exchange uses AES key wrapping with both sides providing a random key that establishes the session key and uses AES-CCM transport encryption</p></blockquote>
+
+<h4>Process of unlocking an iPhone</h4>
+
+<p>On regular A7 processor, Data Protection <em>class keys</em> are discarded, and regenerated when user unlock the device with passcode.</p>
+
+<p>With Touch ID, the keys are wrapped with a key given to Touch ID subsystem, Touch ID will provide the key for unwrapping if it recognizes the user&rsquo;s fingerprint (details refer to section <em>File Data Protection</em>)</p>
+
+<h3>Simple Conclusion</h3>
+
+<p>The following features are most critical for iOS system security</p>
+
+<ul>
+<li>UID in Secure Enclave</li>
+<li>dedicated secure CPU</li>
+<li>unbreakable ROM</li>
+</ul>
+
+
+<h2>Encryption and Data Protection</h2>
+
+<p>Focus on the protection of data stored on the device.</p>
+
+<h3>Hardware Security Features</h3>
+
+<p>Apple&rsquo;s devices involves some hardware support for security, these includes:</p>
+
+<ul>
+<li><p><em>Dedicated hardware AES 256 crypto engine</em> built into DMA path between Flash and Main Memory</p></li>
+<li><p><em>Hardware SHA-1</em></p></li>
+<li><p><em>Fused UID</em>, in application processor, unique to each device, software and firmware cannot read UID, can only get the results of encryption or decryption operations</p></li>
+<li><p><em>Fused GID</em>, common to a class of devices, used as an additional level of protection when delivering system software during installation and restore</p></li>
+</ul>
+
+
+<blockquote><p>Integrating these keys into the silicon helps prevent them from being tampered with or bypassed, or accessed outside the AES engine.</p></blockquote>
+
+<ul>
+<li><p>A hardware <em>random number generator (RNG)</em> to create all cryptographic keys (except those used in Secure Enclave)</p></li>
+<li><p><em>Effaceable Storage</em> for securely erasing saved keys</p></li>
+</ul>
+
+
+<h3>File Data Protection</h3>
+
+<p>GOAL: Protect data stored in flash memory.</p>
+
+<blockquote><p>Data Protection allows the device to respond to common events such as incoming phone calls, but also enables a high level of encryption for sensitive data</p></blockquote>
+
+<p>Managing a <strong>hierarchy of keys</strong>; built on hardware encryption; encrypted every file stored into the flash.</p>
+
+<blockquote><p>Data Protection is controlled on a per-file basis by assigning each file to a class; accessibility is determined by whether the class keys have been unlocked</p></blockquote>
+
+<p>Create a new 260-bit key (per-file key) for EACH file on the data partition, <em>hardware AES engine</em> uses these keys to encrypt files when written to flash memory using AES CBC mode.</p>
+
+<p>Per-file key is wrapped (by Enclave) with one class key (performed using NIST AES key wrapping, per RFC 3394). The wrapped per-file key is stored in the file’s <em>metadata</em>.</p>
+
+<p>To open a file: <strong>1.</strong> decrypt metadata with <em>File System Key</em> <strong>2.</strong> unwrapped with class key <strong>3.</strong> supply the per-file key to hardware AES engine.</p>
+
+<p>Use a random <em>File System Key</em> to encrypt the metadata of all files in the file system. This file system key is created when iOS first installed or when the device is wiped by a user. The key is stored in Effaceable Storage to be quickly erased.</p>
+
+<p>Once the File System Key is wiped, there should be no way to get the content of all the files.</p>
+
+<p>The work of key management is done by Secure Enclave, as mentioned in section Secure Enclave.</p>
+
+<h3>Passcodes</h3>
+
+<p>Supports <em>four-digit</em> and <em>arbitrary-length alphanumeric</em> passcodes.</p>
+
+<blockquote><p>In addition to unlocking the device, a passcode provides the entropy for encryption keys, which are not stored on the device. This means an attacker in possession of a device can’t get access to data in certain protection classes without the passcode.</p></blockquote>
+
+<p>Passcode is tangled with UID.</p>
+
+<p>Takes longer and longer for brute-force hack.</p>
+
+<p><strong>Where is this Passcodes stored?</strong>
+Passcodes should be managed by Secure Enclave, and stored in file system after being encrypted by Secure Enclave.</p>
+
+<h3>Data Protection Classes</h3>
+
+<p>Basic classes:</p>
+
+<ul>
+<li>Complete Protection</li>
+<li>Protected Unless Open</li>
+<li>Protected Until First User Authentication</li>
+<li>No Protection</li>
+</ul>
+
+
+<p><em>NSFileProtectionComplete</em> : class key protected with a key derived from Passcode and device UID, auto discard the decrypted class key after the screen is lock. File becomes inaccessible until unlock (either by Passcode or Touch ID).</p>
+
+<p><em>NSFileProtectionCompleteUnlessOpen</em> : for files need to be written while locking. Besides per-file key, Data Protection: <strong>1.</strong> creates another <em>public/private key pair</em> for the file <strong>2.</strong> a shared secret is computed using file&rsquo;s private key and this class&rsquo;s public key <strong>3.</strong> wrap the per-file key with the hash of shared secret <strong>4.</strong> wrapped per-file key and file&rsquo;s public key are stored in the file&rsquo;s metadata <strong>5.</strong> wipe the file&rsquo;s private key from memory <strong>6.</strong> to open the file, the shared secret is re-generated using file&rsquo;s public key and this class&rsquo;s private key, to unwrap per-file key.</p>
+
+<p><em>NSFileProtectionCompleteUntilFirstUserAuthentication</em> : behaves in the same way as Complete Protection, only that decrypted class key is not wiped after lock. This is DEFAULT CLASS for all third-party app data.</p>
+
+<p><em>NSFileProtectionNone</em> : class key protected only with UID (no Passcode), kept in Effaceable Storage. All the keys needed to decrypt files of this class are stored on the device.</p>
+
+<p>So in a short <strong>conslusion</strong>, all the files in iOS devices are encrypted, as there always be a hardware AES between memory and flash, only that stronger protection involves encrypting class key with Passcode, and auto wiping the decrypted key after the device is locked.</p>
+
+<h3>Keychain Data Protection</h3>
+
+<p>GOAL: protect short but sensitive bits of data in apps, such as keys and login tokens.</p>
+
+<p>Implemented as SQLite database, and there is only one database in the system. The <em>securityd</em> deamon determines which keychain items each process or app can access.</p>
+
+<p>The deamon would check app&rsquo;s &ldquo;keychain-access-groups&rdquo; and the &ldquo;application-identifier&rdquo; entitlement. Apps from the same author (have the same access groups prefix allocated to them through the iOS Developer Program) can share Keychain items.</p>
+
+<p>Similar protect class as file Data Protection.</p>
+
+<blockquote><p>Each keychain class has a “This device only” counterpart, which is always protected with the UID when being copied from the device during a backup, rendering it useless if restored to a different device</p></blockquote>
+
+<h3>Keybags</h3>
+
+<p>Manage keys for file and Keychain Data Protection classes, four keybags: <em>System</em>, <em>Backup</em>, <em>Escrow</em>, and <em>iCloud</em>.</p>
+
+<p><strong>System keybag</strong> where wrapped class keys are stored, is No Protection class itself. Contents of system keybag are encrypted with a key held in Effaceable Storage. This key is wiped and regenerated each time user change Passcode. System keybag is the ONLY keybag stored on the device.</p>
+
+<p><strong>Backup keybag</strong> created when an encrypted backup is made by iTunes and stored
+on the computer where the device is backed up. The backed-up data is <strong>re-encrypted</strong> to a new set of keys (a new keybag).</p>
+
+<p><strong>Escrow keybag</strong> is used for iTunes syncing and mobile device management (MDM). Allows iTunes to sync without requiring the user to enter a passcode and allows an MDM server to remotely clear a user&rsquo;s passcode. Stored on computer. Contains exactly the SAME class keys used on device, protected by a newly created key, which is stored on the device in Protected Until First User Authentication class.</p>
+
+<p><strong>iCloud Backup keybag</strong> similar to Backup keybag, all class keys in this keybag are asymmetric.</p>
+
+<blockquote><p>For all Data Protection classes except No Protection, the encrypted data is read from the device and sent to iCloud. The corresponding class keys are protected by iCloud keys. The keychain class keys are wrapped with a UID-derived key in the same way as an unencrypted iTunes backup.</p></blockquote>
+
+<h2>App Security</h2>
+
+<p>iOS provides protection to ensure that apps are signed and verified, cannot execute malicious code, and are sandboxed to protect user data at all times.</p>
+
+<h3>App Code Signing</h3>
+
+<p>Mandatory code signing esing Apple-issued certificate. Developers must join iOS Developer Program and provide their real-world indentity for verification.</p>
+
+<h3>Runtime Process Security</h3>
+
+<p>Sandbox. Randomly assigned home directory, can only communicate with APIs.</p>
+
+<p>Majority of iOS and all third-party apps run as the non-privileged user &ldquo;mobile&rdquo;.</p>
+
+<p>Address space layout randomization (ASLR)</p>
+
+<p>ARM&rsquo;s Execute Never (XN) feature, which marks memory pages as non-executable.</p>
+
+<blockquote><p>Memory pages marked as both writable and executable can be used only by apps under tightly controlled conditions: The kernel checks for the presence of the Apple-only dynamic code-signing entitlement.</p></blockquote>
+
+<h3>Data Protection in Apps</h3>
+
+<p>Data Protection is available for file and database APIs, Protected Until First User Authentication by default.</p>
+
+<h3>Accessories</h3>
+
+<p>The following process is entirely handled by a integrated circuit that Apple provides to approved accessory manufacturers and is transparent to the accessory.</p>
+
+<ul>
+<li>Check accessory&rsquo;s Apple-provided certificate.</li>
+<li>Send a challenge, which the accessory must answer with a signed response.</li>
+</ul>
+
+
+<h2>Network Security </h2>
+
+<p>Uses standard networking protocols for authenticated, authorized, and encrypted communications. Integrates proven technologies and the latest standards for both Wi-Fi and cellular data network connections.</p>
+
+<p>(Refer to the paper for details)</p>
+
+<ul>
+<li>SSL (v3), TLS (v1.0, v1.1, v1.2)</li>
+<li>VPN, supports multiple protocols and authentication methods</li>
+<li>Wi-Fi, industry-standard Wi-Fi protocols</li>
+<li>Bluetooth, Encryption Mode &frac34;, Service Level 1 connections, multiple Blutooth profiles</li>
+<li>Single Sign-on (I do not know what this SSO is&hellip;)</li>
+</ul>
+
+
+<h3>AirDrop Security</h3>
+
+<p>Use Bluetooth Low-Energy (BTLE) and Apple-created peer-to-peer Wi-Fi technology.</p>
+
+<p>If enabled, a 2048-bit RSA identity is stored on the device, and an AirDrop identity hash is created based on email address and phone number.</p>
+
+<p>Use TLS connection.</p>
+
+<h2>Internet Security</h2>
+
+<p>Explain the security control of iMessage, FaceTime, Siri, iCloud, iCloudKeychain in detail.</p>
+
+<h3>iMessage</h3>
+
+<p>The contents of messages of iMessage are protected by end-to-end encryption, so no one but the sender and receiver can access them, even Apple cannot.</p>
+
+<p>Device generates two pairs of keys for iMessage: an RSA 1280-bit key for encryption and an ECDSA 256-bit key for signing. The private keys are stored in device&rsquo;s keychain while the public keys are sent to Apple&rsquo;s directory service (IDS), where they are associated with user&rsquo;s phone number or email address and Apple Push Notification Service (APNs) address.</p>
+
+<p>To send a message, iMessage first fetches receiver&rsquo;s public keys and APNs addresses from the IDS, then encrypts the content using receiver&rsquo;s public keys, and signs the encrypted messages with the sender&rsquo;s private key, finally, iMessage dispatches each encrypted message to APNs for delivary. Metadata is not encrypted while communication with APNs is encrypted using TLS.</p>
+
+<p>If the message contains attachments, the attachments are uploaded to iCloud after encryption, the keys to decrypt attackments along with URI to the encrypted attachments are included in the encrypted message.</p>
+
+<p>For the receiver, each device receives its copy of the message from APNs, and decrypts the message with its own private key. The message can be verified using sender&rsquo;s public key.</p>
+
+<h2>Device Control</h2>
+
+<p>Policies for Passcode Protection, Configuration Enforcement, Mobile Device Management, Apple Configurator, Device Restrictions, Supervised Only Restrictions and Remote Wipe.</p>
+
+<h2>Conclusion</h2>
+
+<ul>
+<li>Hardware support: UID, Secure Enclave, ROM, Hardware AES, Random Number Generator</li>
+<li>Dedicated Secure Processor, with encrypted memory</li>
+<li>Full Storage Encryption</li>
+<li>Hierarchy of Key Management</li>
+</ul>
+
+
+<p>From the document we can see, Apple really takes great efforts in security, and as Apple&rsquo;s hardware and software are tightly combined, they possess the most enviable hardware security features. But to achieve security, Apple sacrifices the ability of third party apps by setting a lot of constrains and providing only a limited APIs.</p>
+
+<p>Oh! One more thing, all of these protections are useless if your device is rooted.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Vim Efficiency Notes]]></title>
+    <link href="http://hanjc.me/blog/2014/02/24/vim-notes/"/>
+    <updated>2014-02-24T15:00:00+08:00</updated>
+    <id>http://hanjc.me/blog/2014/02/24/vim-notes</id>
+    <content type="html"><![CDATA[<p>关于Vim的一些容易被忽视、却又能提升使用体验和操作效率的操作细节。同时记录Vim中一些（我见到过的）比较实用的配置，分享的同时也给自己留个备忘吧。
+一下子总结不完整，慢慢更新。</p>
+
+<!-- more -->
+
+
+<h2>基本操作</h2>
+
+<p>基本按照幸福感排序，排在前边的是我觉得用了之后一口气儿上五楼都不累的，稍微靠后一点排的就比较随意了。每一项第一行的<em>斜体字</em>是我认为该组合比较有用的场景。</p>
+
+<p><strong>使用Ctrl+[ 替代Esc</strong>，<em>任何时候</em></br>
+Ctrl+[ 功能与Esc键完全相同，用这一快捷键的好处就不用解释了，大家都知道按Esc是件多么令人伤神的事情</p>
+
+<p><strong>X和x</strong>，<em>任何时候</em></br>
+X 是退格（Backspace），x 是删除（Delete）</p>
+
+<p><strong>使用Ctrl+e 和 Ctrl+y逐行翻滚页面</strong>，<em>阅读（代码）</em></br>
+这两个组合非常有用，作用分别是维持当前坐标位置不变，页面上滚和下滚一行</p>
+
+<p><strong> #和* </strong>，<em>阅读代码</em></br>
+#（shift+3）用来向上搜索当前光标所在单词，*（shift+8）用来向下搜索</p>
+
+<p><strong>%</strong>，<em>阅读代码</em></br>
+在相对应的两个括号之间跳转，当一段函数体非常长的时候能方便的从反括号跳至函数/循环/if等结构的开始处</p>
+
+<p><strong>+ 和 &ndash;</strong></br>
++ 的功能是跳转到下一行行首，与之相对应，- 是跳转到上一行行首</p>
+
+<p><strong>J</strong></br>
+删除行末换行符，在把多行连接成一行时非常有用</p>
+
+<p><strong>zz和zt</strong>，<em>阅读</em></br>
+将光标所在行置于屏幕中间/顶部，阅读代码时比较有用</p>
+
+<p><strong>H，M 和 L</strong>, <em>代码、文章编辑</em></br>
+H，M和L（注意是大写）用来将光标快速移动到当前屏幕的最顶行/中间行/最底行</p>
+
+<p><strong>使用m 和` （Esc下边那个按键）进行标记和跳转</strong></br>
+先按m，然后随意输入一个字母，就能用该字母标记当前行，之后在当前文件任意位置可以按 ` + 之前标记的字母快速跳转到这一行。在被标记的行按m，加同样的字母可以取消标记，如果连续按两次`，则光标会在当前位置，和上一次的跳转位置之间来回切换</br>
+此外，这里还可以使用<em>单引号</em>代替反引号，他们俩的功能是一样一样的</p>
+
+<p><strong>A 和 I</strong></br>
+A 是在本行行尾插入，I 是在本行行首插入。</p>
+
+<p><strong>Ctrl+a和Ctrl+x</strong>
+将当前光标所在位置处的数字加1/减1，比较好玩儿的命令，一般用不到，不过用到的话确实很方便</p>
+
+<h2>配置</h2>
+
+<h4>wildmode, wildmenu</h4>
+
+<p>输入命令<code>:set wildmode=list:longest,full</code>和<code>:set wildmenu</code>，在vim窗口下方会出现一条menu，当需要补全的时候（例如<code>:e</code>命令打开新文件，或者输入<code>:s</code>后希望模糊搜索所有s开头的vim命令），按Tab键时自动补全时行为会变为：</p>
+
+<ol>
+<li>出现一个list，为当前目录下所有文件，此时可进行并再次按Tab补全</li>
+<li>跳至列表第一个选项，或者（如果第1步中输入了文件开头字母）自动补全当前输入</li>
+</ol>
+
+
+<p>默认行为没有步骤1，直接跳转第一个选项，而且不会显示整体列表，使用起来体验极差。</p>
+
+<!-- 字符串匹配、替换 -->
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Notes on Paxos Made Simple]]></title>
+    <link href="http://hanjc.me/blog/2014/02/12/paxos/"/>
+    <updated>2014-02-12T16:21:02+08:00</updated>
+    <id>http://hanjc.me/blog/2014/02/12/paxos</id>
+    <content type="html"><![CDATA[<p><a href="http://pdos.csail.mit.edu/6.824-2013/papers/paxos-simple.pdf">Origin paper link</a></p>
+
+<h3>Problem</h3>
+
+<p>safety requirements</p>
+
+<ul>
+<li>Only a value that has been proposed may be chosen</li>
+<li>Only a single value is chosen, and</li>
+<li>A process never learns that a value has been chosen unless it
+acutally has been</li>
+</ul>
+
+
+<p>three agents: <em>proposers</em>(P), <em>acceptors</em>(A), and <em>learners</em>(L).</p>
+
+<!-- more -->
+
+
+<p>use customary asynchronous, non-Byzantine model, in which:</p>
+
+<ul>
+<li>Agents operate at arbitrary speed, may fail by stopping, and may
+restart</li>
+<li>Messages can take arbitrarily long to be delivered, can be duplicated,
+and can be lost, but they are not corrupted.</li>
+</ul>
+
+
+<h3>Choosing a Value</h3>
+
+<p>Single acceptor, simple but unsatisfacroty, suffer from failure
+of this single acceptor.</p>
+
+<p><strong>Majority of the agents?</strong>
+Literally understand as more than half of acceptors.</p>
+
+<p>To ensure that only a single value is chosen, we can let a large
+enough set consist of <strong>any majority of the agents</strong>. Because any two
+majorities have at least one acceptor in common, this works if an
+acceptor can accept at most one value.</p>
+
+<blockquote><p>P1. An acceptor must accept the first proposal that it receives.</p></blockquote>
+
+<p>This ensure that the value got chosen if there is only one value
+proposed. But raises the problem when more than two values are
+proposed and each got same amount of acceptors(3 values, each 1/3 of
+all acceptors).</p>
+
+<p><strong>Acceptor must be allowed to accept more than one proposals</strong>
+Though there can be only one value that got chosen, but each acceptor indeed could accept more than one proposals.</p>
+
+<p><strong>Proposal number is global? or for each acceptor? How to achieve global?</strong>
+It should be global.</p>
+
+<blockquote><p>P2. If a proposal with value <em>v</em> is chosen, then every higher-numbered
+proposal that is chosen has value <em>v</em>.</p></blockquote>
+
+<p>P2 guarantees the crucial safety property that only a single value is chosen.</p>
+
+<blockquote><p>P2a. If a proposal with value <em>v</em> is chosen, then every higher-numbered
+proposal accepted by any acceptor has value <em>v</em>.</p></blockquote>
+
+<p>P1 may conficts P2a in some situations.
+Suppose a proposal was chosen with some particular acceptor <em>c</em> never
+having received any proposal. A new proposer &ldquo;wakes up&rdquo; then and
+issues a higher-numbered proposal with a different value. P1 requires
+<em>c</em> to accept this proposal, violating P2a.</p>
+
+<p>Maintaining both P1 and P2a requires strengthening P2a to:</p>
+
+<blockquote><p>P2b . If a proposal with value <em>v</em> is chosen, then every higher-numbered
+proposal issued by any proposer has value <em>v</em>.</p></blockquote>
+
+<p><strong>Difference between concepts <em>chosen</em>, <em>accept</em> and <em>issue</em>?</strong> <em>Chosen</em> is a global state that a value <em>v</em> has been accepted by majority of acceptors, the whole system can only choose one value. <em>Accept</em> is the behavior of a single acceptor, the acceptor can change its mind to accept another newer proposal at any time. <em>Issue</em> is the behavior of a single proposer, if a value <em>v</em> is <em>chosen</em> (globally accepted), then all proposers would make compromise to propose <em>v</em>.</p>
+
+<p>Given that <strong>any two sets of majaority acceptors must have at least one acceptor in common</strong>. We want the following invariance meet:</p>
+
+<blockquote><p>P2c. For any <em>v</em> and <em>n</em>, if a proposal with value <em>v</em> and number <em>n</em> is
+issued, then there is a set <em>S</em> consisting of a majority of
+acceptors such that
+either (a) no acceptor in <em>S</em> has accepted any proposal numbered less
+than <em>n</em>, or (b) <em>v</em> is the value of the highest-numbered proposal
+among all proposals numbered less than <em>n</em> accepted by the acceptors
+in <em>S</em>.</p></blockquote>
+
+<p>To maintain the invariance of P2c, a proposer that wants to issue a
+proposal numbered <em>n</em> must learn the highest-numbered proposal with
+number less than <em>n</em> that has been or will be accepted by each
+acceptor in some majority of acceptors.</p>
+
+<p>It is hard to predict future acceptances, instead, the proposer controls
+it by extracting a <strong>promise</strong> that the acceptors won&rsquo;t accept any more
+proposals numbered less than <em>n</em>.</p>
+
+<p>Note that P2c guaranteed that <strong>if a value <em>v</em> is chosen, then the highest-numbered proposal must have value <em>v</em></strong>.</p>
+
+<p><strong>Algorithm for a proposer to issue proposals</strong>:</p>
+
+<ol>
+<li>A proposer choses <em>n</em>, sends a request to each acceptors in some
+set, asking:
+
+<ol>
+<li>Promise it won&rsquo;t accept a proposal numbered less than <em>n</em></li>
+<li>The proposal with highest number less than <em>n</em> that it has accepted.</li>
+</ol>
+</li>
+<li>The proposer can issue a proposal with number <em>n</em> and <em>v</em> if it
+receives responses from a majority of the acceptors, where <em>v</em> is the
+value of the highest-numbered proposal among the responses, or is any
+value if responders reported no proposals.</li>
+</ol>
+
+
+<p>The request in step 1 is a <em>prepare</em> request, and that in step 2 is
+an <em>accept</em> request.</p>
+
+<p><strong>How an acceptor responds to requests?</strong>
+It can always respond to a <em>prepare</em> request, and it can respond to an
+<em>accept</em> request iff it has not promised not to.</p>
+
+<blockquote><p>P1a. An acceptor can accept a proposal numbered <em>n</em> iff it has not
+responded to a prepare request having a number greater than <em>n</em>.</p></blockquote>
+
+<p>An acceptor needs to remember only the highest-numbered proposal that
+it has ever accepted and the number of the highest-numbered prepare
+request to which it has responded.</p>
+
+<p><strong>Note that the proposer can always abandon a proposal and forget all about it—as long as it never tries to issue another proposal with the same number. What if a proposer got a promise but never issued?</strong>
+Just like a network package lose. Will be eventually replaced by
+other proposals.</p>
+
+<p><strong>Phase 1.</strong>
+<strong>(a)</strong> A proposer selects a proposal number <em>n</em> and sends a <em>prepare</em>
+request with number <em>n</em> to a majority of acceptors.
+<strong>(b)</strong> If an acceptor receives a <em>prepare</em> request with number <em>n</em> greater
+than that of any <em>prepare</em> request to which it has already responded,
+then it responds to the request with a promise not to accept any more
+proposals numbered less than <em>n</em> and with the highest-numbered proposal
+(if any) that it has accepted.</p>
+
+<p><strong>Phase 2.</strong>
+<strong>(a)</strong> If the proposer receives a response to its <em>prepare</em> requests
+(numbered <em>n</em>) from a majority of acceptors, then it sends an <em>accept</em>
+request to each of those acceptors for a proposal numbered <em>n</em> with a
+value <em>v</em> , where <em>v</em> is the value of the highest-numbered proposal
+among the responses, or is any value if the responses reported no
+proposals.
+<strong>(b)</strong> If an acceptor receives an <em>accept</em> request for a proposal numbered
+<em>n</em>, it accepts the proposal unless it has already responded to a
+<em>prepare</em> request having a number greater than <em>n</em>.</p>
+
+<p><strong>Optimization</strong>: abandon a proposal if some proposers has begun trying to
+issue a higher-numbered one.</p>
+
+<h3>Learning a Chosen Value</h3>
+
+<p>Acceptors return responds to <em>accept</em> requests to all the learners,
+the number of responds that required equals to the product of the number
+of acceptors and the number of learners.</p>
+
+<p>Acceptors could return only to a set of distinguished learners, these
+learners will inform other learners.</p>
+
+<h3>Progress</h3>
+
+<p>It’s easy to construct a scenario in which two proposers each keep
+issuing a sequence of proposals with increasing numbers, none of which
+are ever chosen.</p>
+
+<p>To guarantee progress, a distinguished proposer must be selected as the
+only one to try issuing proposals.</p>
+
+<p>Result of <a href="http://dl.acm.org/citation.cfm?id=214121">Fischer, Lynch, and Patterson</a> shows a reliable algorithm
+to electing a proposer must use either randomness or real time.</p>
+
+<h3>Implementation</h3>
+
+<p><a href="http://dl.acm.org/citation.cfm?id=279229">The part-time parliament</a></p>
+
+<p><strong>No two proposals are ever issued with the same number?</strong>
+Different proposers choose their numbers from disjoint sets of numbers,
+each proposer remembers (in stable storage) the highest-numbered
+proposal it has tried to issue.</p>
+
+<h2>My Summary</h2>
+
+<p>Behavior of <em>Proposer</em>, <em>Acceptor</em> and <em>Learner</em></p>
+
+<h3>Proposer</h3>
+
+<ol>
+<li>sends prepare request <em>n</em> to all acceptors</li>
+<li>after receives responds from majority of acceptors, choose a value <em>v</em> according to responds
+
+<ol>
+<li><em>v</em> should be the value of the highest-numberd proposal in those responds</li>
+<li>if none of responds returns any proposal, use arbitrary value</li>
+<li>if any responds contains an error or a proposal whose number is bigger than <em>n</em>, go to next step</li>
+</ol>
+</li>
+<li>repick a bigger <em>n</em> and repeat step 1 &amp; 2 until a value is chosen</li>
+</ol>
+
+
+<h3>Acceptor</h3>
+
+<ol>
+<li>Acceptor should know the highest-numbered proposal it accepted <em>APa</em> and the highest-numbered proposal it responsed <em>APr</em></li>
+<li>Upon receiving a prepare request <em>P</em>, compare <em>P.n</em> with <em>APr.n</em>
+
+<ol>
+<li>if <em>P.n</em> > <em>APr.n</em>, respond a promise and <em>APa</em>, then change <em>APr</em> to <em>P</em></li>
+<li>if <em>P.n</em> &lt;= <em>APr.n</em>, respond with some error or <em>APr</em>?</li>
+</ol>
+</li>
+<li>Upon receiving a accept request <em>P</em>
+
+<ol>
+<li>if <em>P.n</em> >= <em>APr.n</em>, accept it by making <em>APa</em> equals to <em>P</em></li>
+<li>if <em>P.n</em> &lt; <em>APr.n</em>, abondon it</li>
+</ol>
+</li>
+</ol>
+
+
+<h3>Learner</h3>
+
+<p>TODO</p>
+]]></content>
+  </entry>
+  
+</feed>

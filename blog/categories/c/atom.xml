@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: C | Han]]></title>
+  <link href="http://hanjc.me/blog/categories/c/atom.xml" rel="self"/>
+  <link href="http://hanjc.me/"/>
+  <updated>2014-05-20T21:42:39+08:00</updated>
+  <id>http://hanjc.me/</id>
+  <author>
+    <name><![CDATA[Zealoct]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Linux 下 c 的扩展内联汇编]]></title>
+    <link href="http://hanjc.me/blog/2014/03/05/c-asm/"/>
+    <updated>2014-03-05T19:54:09+08:00</updated>
+    <id>http://hanjc.me/blog/2014/03/05/c-asm</id>
+    <content type="html"><![CDATA[<p>简单总结了一下自己看到用到的一些内联汇编的知识点，并不是一个完整的总结，以后对内联汇编有了新的了解会慢慢扩充。</p>
+
+<p>详细细节可以参考 gcc 关与扩展内联汇编的 <a href="http://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Extended-Asm">文档</a></p>
+
+<h2>格式说明</h2>
+
+<pre><code>__asm__　__volatile__("Instruction List" : Output : Input : Clobber/Modify)
+</code></pre>
+
+<p>冒号的使用原则（<em>O, I, C 分别指代 Output, Input, Clobber/Modify</em>）：</p>
+
+<ol>
+<li>C 为空，第三个冒号必须省略</li>
+<li>O、I 为空时，前边的冒号（第一、二个）可选择性省略</li>
+<li>O，I，C 中任何一个不为空，则之前的冒号均必须保留，如只有 I 不为空时，O 和 I 之前的冒号必须保留，只有 C 不为空时三个冒号都必须保留</li>
+</ol>
+
+
+<p>合法的调用包括</p>
+
+<p><code>c
+__asm__(" " : : : "memory");
+__asm__(" " : :);
+__asm__("mov %1, %%eax" : "=a"(var_a));
+__asm__("mov %1, %%eax" : "=a"(var_a) :);
+__asm__("mov %%edx, %%eax" : "=a"(var_a) : "d"(var_d));
+__asm__("mov %%edx, %%eax" : "=a"(var_a) : : "ebx");
+</code></p>
+
+<p>下面分别介绍指令列表、输出、输入和修改声明这四个部分。</p>
+
+<!-- more -->
+
+
+<h2>指令列表</h2>
+
+<p>基本上和 .S 文件的格式是一样的，不同的是要加个引号。需要注意的是每一行中只能有一个指令，如果一行中包含多条指令，则必须用 <code>;</code> 或换行符隔开。注意字符串中的换行符会被asm识别，但字符串以外、代码中的不会，参见一下示例</p>
+
+<p>``` c
+// 换行符在字符串内，不需显示添加换行符
+<strong>asm</strong>(&ldquo;mov %edx, %eax</p>
+
+<pre><code>     mov %ebx, %edx")
+</code></pre>
+
+<p>// 换行符在字符串外，需显示添加换行符
+<strong>asm</strong>(&ldquo;mov %edx, %eax\n&rdquo;</p>
+
+<pre><code>    "mov %ebx, %edx")
+</code></pre>
+
+<p>// 没有换行符，使用 ; 分隔
+<strong>asm</strong>(&ldquo;mov %edx, %eax; mov %ebx, %edx&rdquo;)
+```</p>
+
+<p>关于指令中百分号的使用，当使用了冒号时，指令中<strong>必须</strong>使用 <code>%%</code> 来作为寄存器前缀；当没有使用冒号时，<strong>必须</strong>使用 <code>%</code> 作为寄存器前缀。</p>
+
+<h2>输出</h2>
+
+<p><code>c
+__asm__("mov %%edx, %%eax" : "=a"(var_a) : "d"(var_d));
+</code></p>
+
+<p>输出部分 <code>"=a"(var_a)</code> 的意思是把寄存器 <em>%eax</em> 中的值放入变量 <em>var_a</em> 中，由输出操作数（Operand） <code>var_a</code> 和 操作数约束（Constraint） <code>"=a"</code> 两部分组成。</p>
+
+<p>其中，操作数制定了输出向哪个 c 变量，该例中即 <em>var_a</em>；操作约束中的修饰符（Modifier） “=” 表明输出操作数在指令中是只写的，并且只作为输出。常用的修饰符还有“+”，表明操作数可读可写，既作输入又作输出，而约束中的“a”表征寄存器 <em>%eax</em>。</p>
+
+<p>详细的输出约束参见 GCC 文档 <a href="http://gcc.gnu.org/onlinedocs/gcc/Constraints.html#Constraints">6.42 Constraints for asm Operands</a></p>
+
+<p>如果有多个输出，需要用 “,” 将这些输出分隔开，如</p>
+
+<p>``` c
+asm (&ldquo;cpuid&rdquo;</p>
+
+<pre><code>:"=a" (_eax),
+ "=b" (_ebx),
+ "=c" (_ecx),
+ "=d" (_edx)
+:"a" (op));
+</code></pre>
+
+<p>```</p>
+
+<h2>输入</h2>
+
+<p>输入约束的基本意义与输出相同，不过不包含修饰符。</p>
+
+<p>输入的操作数部分可以是表达式。</p>
+
+<h2>修改声明</h2>
+
+<p>声明在这段汇编中哪些寄存器的值会改变，以及是否会修改内存。在一些情况下，这对与 gcc 编译、优化程序而言非常重要，比如我们在汇编中修改了一个既不是输入也不是输出的寄存器，如果不显示声明的话 gcc 会认为这段汇编之后该寄存器的值不变，导致程序出错。</p>
+
+<h2>参考</h2>
+
+<ul>
+<li><p><a href="http://www.ibm.com/developerworks/cn/linux/sdk/assemble/inline/index.html">Linux 中 x86 的内联汇编 &ndash; IBM</a></p></li>
+<li><p><a href="http://www.cnblogs.com/latifrons/archive/2009/09/17/1568198.html">C语言ASM汇编内嵌语法</a></p></li>
+<li><p><a href="http://andyhuzhill.github.io/ARM/GCC/ASM/2012/09/25/gcc-inline-assemly/">ARM体系下的GCC内联汇编</a></p></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,361 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Linux 下 c 的扩展内联汇编 - Han</title>
+	<meta name="author" content="Zealoct">
+
+	
+	<meta name="description" content="Linux 下 C 的扩展内联汇编 2014年03月05日 Assemble, C, Linux 简单总结了一下自己看到用到的一些内联汇编的知识点，并不是一个完整的总结，以后对内联汇编有了新的了解会慢慢扩充。 详细细节可以参考 gcc 关与扩展内联汇编的 文档 格式说明 __asm__　 &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Han" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://hanjc.me/blog/2014/03/05/c-asm/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-48829613-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="/images/profile.jpg" alt="Profile Picture" style="width: 160px;" />
+	<!--<img src="http://www.gravatar.com/avatar/?s=160" alt="Profile Picture" style="width: 160px;" />-->
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">博客</a></li>
+	<li><a href="/blog/archives">列表视图</a></li>
+	<li><a href="/notes">笔记</a></li>
+    <li><a href="http://about.me/hanjc" target="_blank">关于我</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/zealoct" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/zealoct" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+<div id="banner" class="inner">
+	<div class="container">
+		<ul class="feed"></ul>
+	</div>
+	<small><a href="http://twitter.com/zealoct">zealoct</a> @ <a href="http://twitter.com">Twitter</a></small>
+	<div class="loading">Loading...</div>
+</div>
+<script src="/javascripts/twitter.js"></script>
+<script type="text/javascript">
+	(function($){
+		$('#banner').getTwitterFeed('zealoct', 5, );
+	})(jQuery);
+</script>
+
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Linux 下 C 的扩展内联汇编</h1>
+	<div class="meta">
+		<span class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-05T19:54:09+08:00" data-updated="true" itemprop="datePublished">2014年03月05日</time></span>
+		<span class="tags">
+
+
+	<a class='category' href='/blog/categories/assemble/'>Assemble</a>, <a class='category' href='/blog/categories/c/'>C</a>, <a class='category' href='/blog/categories/linux/'>Linux</a>
+
+
+</span>
+	</div>
+	<div class="entry-content" itemprop="articleBody"><p>简单总结了一下自己看到用到的一些内联汇编的知识点，并不是一个完整的总结，以后对内联汇编有了新的了解会慢慢扩充。</p>
+
+<p>详细细节可以参考 gcc 关与扩展内联汇编的 <a href="http://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Extended-Asm">文档</a></p>
+
+<h2>格式说明</h2>
+
+<pre><code>__asm__　__volatile__("Instruction List" : Output : Input : Clobber/Modify)
+</code></pre>
+
+<p>冒号的使用原则（<em>O, I, C 分别指代 Output, Input, Clobber/Modify</em>）：</p>
+
+<ol>
+<li>C 为空，第三个冒号必须省略</li>
+<li>O、I 为空时，前边的冒号（第一、二个）可选择性省略</li>
+<li>O，I，C 中任何一个不为空，则之前的冒号均必须保留，如只有 I 不为空时，O 和 I 之前的冒号必须保留，只有 C 不为空时三个冒号都必须保留</li>
+</ol>
+
+
+<p>合法的调用包括</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot; &quot;</span> <span class="o">:</span> <span class="o">:</span> <span class="o">:</span> <span class="s">&quot;memory&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot; &quot;</span> <span class="o">:</span> <span class="o">:</span><span class="p">);</span>
+</span><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot;mov %1, %%eax&quot;</span> <span class="o">:</span> <span class="s">&quot;=a&quot;</span><span class="p">(</span><span class="n">var_a</span><span class="p">));</span>
+</span><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot;mov %1, %%eax&quot;</span> <span class="o">:</span> <span class="s">&quot;=a&quot;</span><span class="p">(</span><span class="n">var_a</span><span class="p">)</span> <span class="o">:</span><span class="p">);</span>
+</span><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot;mov %%edx, %%eax&quot;</span> <span class="o">:</span> <span class="s">&quot;=a&quot;</span><span class="p">(</span><span class="n">var_a</span><span class="p">)</span> <span class="o">:</span> <span class="s">&quot;d&quot;</span><span class="p">(</span><span class="n">var_d</span><span class="p">));</span>
+</span><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot;mov %%edx, %%eax&quot;</span> <span class="o">:</span> <span class="s">&quot;=a&quot;</span><span class="p">(</span><span class="n">var_a</span><span class="p">)</span> <span class="o">:</span> <span class="o">:</span> <span class="s">&quot;ebx&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面分别介绍指令列表、输出、输入和修改声明这四个部分。</p>
+
+<!-- more -->
+
+
+<h2>指令列表</h2>
+
+<p>基本上和 .S 文件的格式是一样的，不同的是要加个引号。需要注意的是每一行中只能有一个指令，如果一行中包含多条指令，则必须用 <code>;</code> 或换行符隔开。注意字符串中的换行符会被asm识别，但字符串以外、代码中的不会，参见一下示例</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="c1">// 换行符在字符串内，不需显示添加换行符</span>
+</span><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot;mov %edx, %eax</span>
+</span><span class='line'>         <span class="n">mov</span> <span class="o">%</span><span class="n">ebx</span><span class="p">,</span> <span class="o">%</span><span class="n">edx</span><span class="s">&quot;)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 换行符在字符串外，需显示添加换行符</span>
+</span><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot;mov %edx, %eax</span><span class="se">\n</span><span class="s">&quot;</span>
+</span><span class='line'>        <span class="s">&quot;mov %ebx, %edx&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 没有换行符，使用 ; 分隔</span>
+</span><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot;mov %edx, %eax; mov %ebx, %edx&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>关于指令中百分号的使用，当使用了冒号时，指令中<strong>必须</strong>使用 <code>%%</code> 来作为寄存器前缀；当没有使用冒号时，<strong>必须</strong>使用 <code>%</code> 作为寄存器前缀。</p>
+
+<h2>输出</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot;mov %%edx, %%eax&quot;</span> <span class="o">:</span> <span class="s">&quot;=a&quot;</span><span class="p">(</span><span class="n">var_a</span><span class="p">)</span> <span class="o">:</span> <span class="s">&quot;d&quot;</span><span class="p">(</span><span class="n">var_d</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>输出部分 <code>"=a"(var_a)</code> 的意思是把寄存器 <em>%eax</em> 中的值放入变量 <em>var_a</em> 中，由输出操作数（Operand） <code>var_a</code> 和 操作数约束（Constraint） <code>"=a"</code> 两部分组成。</p>
+
+<p>其中，操作数制定了输出向哪个 c 变量，该例中即 <em>var_a</em>；操作约束中的修饰符（Modifier） “=” 表明输出操作数在指令中是只写的，并且只作为输出。常用的修饰符还有“+”，表明操作数可读可写，既作输入又作输出，而约束中的“a”表征寄存器 <em>%eax</em>。</p>
+
+<p>详细的输出约束参见 GCC 文档 <a href="http://gcc.gnu.org/onlinedocs/gcc/Constraints.html#Constraints">6.42 Constraints for asm Operands</a></p>
+
+<p>如果有多个输出，需要用 “,” 将这些输出分隔开，如</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">asm</span> <span class="p">(</span><span class="s">&quot;cpuid&quot;</span>
+</span><span class='line'>  <span class="o">:</span><span class="s">&quot;=a&quot;</span> <span class="p">(</span><span class="n">_eax</span><span class="p">),</span>
+</span><span class='line'>   <span class="s">&quot;=b&quot;</span> <span class="p">(</span><span class="n">_ebx</span><span class="p">),</span>
+</span><span class='line'>   <span class="s">&quot;=c&quot;</span> <span class="p">(</span><span class="n">_ecx</span><span class="p">),</span>
+</span><span class='line'>   <span class="s">&quot;=d&quot;</span> <span class="p">(</span><span class="n">_edx</span><span class="p">)</span>
+</span><span class='line'>  <span class="o">:</span><span class="s">&quot;a&quot;</span> <span class="p">(</span><span class="n">op</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>输入</h2>
+
+<p>输入约束的基本意义与输出相同，不过不包含修饰符。</p>
+
+<p>输入的操作数部分可以是表达式。</p>
+
+<h2>修改声明</h2>
+
+<p>声明在这段汇编中哪些寄存器的值会改变，以及是否会修改内存。在一些情况下，这对与 gcc 编译、优化程序而言非常重要，比如我们在汇编中修改了一个既不是输入也不是输出的寄存器，如果不显示声明的话 gcc 会认为这段汇编之后该寄存器的值不变，导致程序出错。</p>
+
+<h2>参考</h2>
+
+<ul>
+<li><p><a href="http://www.ibm.com/developerworks/cn/linux/sdk/assemble/inline/index.html">Linux 中 x86 的内联汇编 &ndash; IBM</a></p></li>
+<li><p><a href="http://www.cnblogs.com/latifrons/archive/2009/09/17/1568198.html">C语言ASM汇编内嵌语法</a></p></li>
+<li><p><a href="http://andyhuzhill.github.io/ARM/GCC/ASM/2012/09/25/gcc-inline-assemly/">ARM体系下的GCC内联汇编</a></p></li>
+</ul>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+</div>
+
+
+
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style"><span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_reddit"></a>
+	<a class="jiathis_button_twitter"></a>
+	<a class="jiathis_button_fb"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_gmail"></a>
+	<a class="jiathis_button_douban"></a>
+	<a class="jiathis_button_tumblr"></a>
+	<a class="jiathis_button_yixin"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+	var jiathis_config={
+summary:"",
+		shortUrl:false,
+		hideMore:false
+	}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!--  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script> -->
+</div>
+
+	
+	</br>
+    <p class="meta">
+      
+        <a class="basic-alignment left nextprev" href="/blog/2014/03/03/ios-security/" title="Previous Post: Notes on iOS Security Whitepaper">&laquo; Notes on iOS Security Whitepaper</a>
+      
+      
+        <a class="basic-alignment right nextprev" href="/blog/2014/04/05/recursion-and-dp/" title="Next Post: 简单的递归和动态规划">简单的递归和动态规划 &raquo;</a>
+      
+    </p>
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Zealoct
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			
+
+<script type="text/javascript">
+      var disqus_shortname = 'hanjc';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://hanjc.me/blog/2014/03/05/c-asm/';
+        var disqus_url = 'http://hanjc.me/blog/2014/03/05/c-asm/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+
+
+
+		</div>
+	</div>
+</body>
+</html>

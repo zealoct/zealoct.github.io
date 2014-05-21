@@ -1,0 +1,433 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Install SimpleScalar on Ubuntu 10.10 with Gcc-4.4 - Han</title>
+	<meta name="author" content="Zealoct">
+
+	
+	<meta name="description" content="Install SimpleScalar on Ubuntu 10.10 With Gcc-4.4 2011年04月19日 The project 1 of computer architecture is based on SimplesSalar3.0, and it is &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Han" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://hanjc.me/blog/2011/04/19/install-simplescalar/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-48829613-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="/images/profile.jpg" alt="Profile Picture" style="width: 160px;" />
+	<!--<img src="http://www.gravatar.com/avatar/?s=160" alt="Profile Picture" style="width: 160px;" />-->
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">博客</a></li>
+	<li><a href="/blog/archives">列表视图</a></li>
+	<li><a href="/notes">笔记</a></li>
+    <li><a href="http://about.me/hanjc" target="_blank">关于我</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/zealoct" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/zealoct" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+<div id="banner" class="inner">
+	<div class="container">
+		<ul class="feed"></ul>
+	</div>
+	<small><a href="http://twitter.com/zealoct">zealoct</a> @ <a href="http://twitter.com">Twitter</a></small>
+	<div class="loading">Loading...</div>
+</div>
+<script src="/javascripts/twitter.js"></script>
+<script type="text/javascript">
+	(function($){
+		$('#banner').getTwitterFeed('zealoct', 5, );
+	})(jQuery);
+</script>
+
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Install SimpleScalar on Ubuntu 10.10 With Gcc-4.4</h1>
+	<div class="meta">
+		<span class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-19T18:36:02+08:00" data-updated="true" itemprop="datePublished">2011年04月19日</time></span>
+		<span class="tags">
+
+</span>
+	</div>
+	<div class="entry-content" itemprop="articleBody"><p>The project 1 of computer architecture is based on <em>SimplesSalar3.0</em>, and it is recommended to finished this project on <em>Redhat 9</em>, otherwise there would be some version problems. But I am used to writing code in my ubuntu and do not wanna reset up my whole development environment on <em>Redhat</em>. BTW, installing a new system is rather troublesome even on vm, I decided to install <em>SimplesSalar</em> on my ubuntu(it turns out to be much more troublesome than installing a new one…)</p>
+
+<h3>1</h3>
+
+<p>You need flex and bison to install these things</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo apt-get install bison flex
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2</h3>
+
+<p>I was given the following packages:</p>
+
+<pre><code>simplesim-3v0d.gz
+simpletools-2v0.gz
+simpleutils-2v0.gz
+</code></pre>
+
+<p>also you could these packages from <a href="http://www.simplescalar.com/tools.html">here</a></p>
+
+<h3>3</h3>
+
+<p>Set up some installation variables</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">export </span><span class="nv">HOST</span><span class="o">=</span>i386-unknown-linux
+</span><span class='line'><span class="nv">$ </span><span class="nb">export </span><span class="nv">TARGET</span><span class="o">=</span>sslittle-na-sstrix
+</span><span class='line'><span class="nv">$ </span><span class="nb">export </span><span class="nv">IDIR</span><span class="o">=</span>/home/yourname/simplescalar <span class="c"># path u wanna install simplescalar in</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I also place the source packages in <em>$IDIR</em></p>
+
+<h3>4</h3>
+
+<p>Extract source files</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>tar xvzf simplesim-3v0d.gz
+</span><span class='line'><span class="nv">$ </span>tar xvzf simpletools-2v0.gz
+</span><span class='line'><span class="nv">$ </span>tar xvzf simpleutils-2v0.gz
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and u will get the following folders:
+<em>binutils-2.5.2</em>, <em>f2c-1994.09.27</em>, <em>gcc-2.6.3</em>, <em>glibc-1.09</em>, <em>simplesim-3.0</em>, <em>ssbig-na-sstrix</em>, <em>sslittle-na-sstrix</em></p>
+
+<h3>5</h3>
+
+<p>Because the source code of simple code is out of date, we need to do some modifications on it</p>
+
+<ul>
+<li><p><strong>binutils-2.5.2/libiberty/functions.def</strong></br>
+Line: 36 </br>
+Action: comment out</br></br>
+Line: 56</br>
+Action: comment out</p></li>
+<li><p><strong>binutils-2.5.2/ld/ldlex.l</strong></br>
+Line: 476</br>
+Action: change <em>yy_current_buffer</em> to <em>YY_CURRENT_BUFFER</em></br></p></li>
+<li><p><strong>binutils-2.5.2/ld/ldmisc.c</strong></br>
+Line: 24</br>
+Action: change <em>varargs.h</em> to <em>stdarg.h</em></br></br>
+Line: 343 356 388 400</br>
+Action: change all four functions <em>info_msg()</em>, <em>einfo()</em>, <em>minfo()</em>, <em>finfo()</em> like this:</br></p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="mi">343</span> <span class="kt">void</span> <span class="n">info_msg</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">fmt</span><span class="p">,</span> <span class="kt">va_list</span> <span class="n">ap</span><span class="p">)</span>
+</span><span class='line'><span class="mi">344</span> <span class="c1">//va_dcl</span>
+</span><span class='line'><span class="mi">345</span> <span class="p">{</span>
+</span><span class='line'><span class="mi">346</span>     <span class="kt">char</span> <span class="o">*</span><span class="n">fmt</span><span class="p">;</span>
+</span><span class='line'><span class="mi">347</span>     <span class="kt">va_list</span> <span class="n">arg</span><span class="p">;</span>
+</span><span class='line'><span class="mi">348</span>     <span class="cm">/* va_start(arg);</span>
+</span><span class='line'><span class="cm">349     fmt = va_arg(arg, char *);</span>
+</span><span class='line'><span class="cm">350     vfinfo(stdout, fmt, arg);</span>
+</span><span class='line'><span class="cm">351     va_end(arg); */</span>
+</span><span class='line'><span class="mi">352</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>gcc-2.6.3/cccp.c</strong></br>
+Line: 194</br>
+Action: comment out</br></li>
+<li><strong>gcc-2.6.3/cp/g++.c</strong></br>
+Line: 90</br>
+Action: comment out</br></li>
+<li><strong>gcc-2.6.3/sdbout.c</strong></br>
+Line: 56</br>
+Action: replace the whole line with ”#if 0”</br></li>
+<li><strong>gcc-2.6.3/gcc.c</strong></br>
+Line: 172</br>
+Action: comment out</br></li>
+</ul>
+
+
+<h3>6</h3>
+
+<p>Install <em>binutil</em> and <em>simplesim</em>, and there should be no error anymore…</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$IDIR</span>/binutil-2.5.2
+</span><span class='line'><span class="nv">$ </span>./configure --host<span class="o">=</span><span class="nv">$HOST</span> --target<span class="o">=</span><span class="nv">$TARGET</span> --with-gnu-as --with-gnu-ld --prefix<span class="o">=</span><span class="nv">$IDIR</span>
+</span><span class='line'><span class="nv">$ </span>make
+</span><span class='line'><span class="nv">$ </span>make install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>after which there should be a folder named <em>bin</em> in your <em>$IDIR</em> directory</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$IDIR</span>/simplesim-3.0
+</span><span class='line'><span class="nv">$ </span>make config-pisa
+</span><span class='line'><span class="nv">$ </span>make
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>7</h3>
+
+<p>Build <em>gcc-2.6.3</em>, the most error-prone potion of all the work</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$IDIR</span>/gcc-2.6.3
+</span><span class='line'><span class="nv">$ </span>./configure --host<span class="o">=</span><span class="nv">$HOST</span> --target<span class="o">=</span><span class="nv">$TARGET</span> --with-gnu-as --with-gnu-ld --prefix<span class="o">=</span><span class="nv">$IDIR</span>
+</span><span class='line'><span class="nv">$ </span>make <span class="nv">LANGUAGES</span><span class="o">=</span>c
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After this, you would receive an error that lies in <em>insn-output.c</em>, here, once again you need to modify the source file of <em>gcc-2.6.3</em></p>
+
+<ul>
+<li><strong>gcc-2.6.3/insn-output.c</strong></br>
+Line: 675 750 823</br>
+Action: and a ‘\’ to the end of the line, and it will be</br></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="mi">675</span> <span class="k">return</span> <span class="s">&quot;FIXME</span><span class="se">\n</span><span class="s">\</span>
+</span><span class='line'><span class="s">750 return &quot;</span><span class="n">FIXME</span><span class="err">\</span><span class="n">n</span>\
+</span><span class='line'><span class="mi">823</span> <span class="k">return</span> <span class="s">&quot;FIXME</span><span class="se">\n</span><span class="s">\</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>note that <em>insn-output.c</em> is generated by <em>flex</em> automatically, and your modification would be lost every time you make clean.</p>
+
+<p>Now, finally the gcc was able to compiled with no errors, and there are two steps left:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>../simplesim-3.0/sim-safe ./enquire -f &gt;! float.h-cross
+</span><span class='line'><span class="nv">$ </span>make install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>8</h3>
+
+<p>Well, lets have a test on our <em>SimpleScalar</em></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$IDIR</span>/bin/sslittle-na-sstrix-gcc helloworld.c
+</span><span class='line'><span class="nv">$IDIR</span>/simplesim-3.0/sim-safe a.out
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and it would print out “Hello World!”</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+</div>
+
+
+
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style"><span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_reddit"></a>
+	<a class="jiathis_button_twitter"></a>
+	<a class="jiathis_button_fb"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_gmail"></a>
+	<a class="jiathis_button_douban"></a>
+	<a class="jiathis_button_tumblr"></a>
+	<a class="jiathis_button_yixin"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+	var jiathis_config={
+summary:"",
+		shortUrl:false,
+		hideMore:false
+	}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!--  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script> -->
+</div>
+
+	
+	</br>
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right nextprev" href="/blog/2013/08/19/two-sum-variant/" title="Next Post: 变种2-SUM问题——优化O(n)算法中的常数 ">变种2-SUM问题——优化O(n)算法中的常数  &raquo;</a>
+      
+    </p>
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Zealoct
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			
+
+<script type="text/javascript">
+      var disqus_shortname = 'hanjc';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://hanjc.me/blog/2011/04/19/install-simplescalar/';
+        var disqus_url = 'http://hanjc.me/blog/2011/04/19/install-simplescalar/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+
+
+
+		</div>
+	</div>
+</body>
+</html>

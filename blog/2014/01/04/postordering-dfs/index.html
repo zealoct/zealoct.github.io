@@ -1,0 +1,295 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Kosaraju算法——关于图的后序遍历的特征 - Han</title>
+	<meta name="author" content="Zealoct">
+
+	
+	<meta name="description" content="Kosaraju算法——关于图的后序遍历的特征 2014年01月04日 Algorithm Kosaraju算法是一种常见的求图的强联通分量的算法，该算法先从任意结点开始对原图G进行一次DFS后序遍历，之后依据第一次DFS的结果的反向序列（即根据reverse postordering）， &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Han" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://hanjc.me/blog/2014/01/04/postordering-dfs/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-48829613-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="/images/profile.jpg" alt="Profile Picture" style="width: 160px;" />
+	<!--<img src="http://www.gravatar.com/avatar/?s=160" alt="Profile Picture" style="width: 160px;" />-->
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">博客</a></li>
+	<li><a href="/blog/archives">列表视图</a></li>
+	<li><a href="/notes">笔记</a></li>
+    <li><a href="http://about.me/hanjc" target="_blank">关于我</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/zealoct" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/zealoct" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+<div id="banner" class="inner">
+	<div class="container">
+		<ul class="feed"></ul>
+	</div>
+	<small><a href="http://twitter.com/zealoct">zealoct</a> @ <a href="http://twitter.com">Twitter</a></small>
+	<div class="loading">Loading...</div>
+</div>
+<script src="/javascripts/twitter.js"></script>
+<script type="text/javascript">
+	(function($){
+		$('#banner').getTwitterFeed('zealoct', 5, );
+	})(jQuery);
+</script>
+
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Kosaraju算法——关于图的后序遍历的特征</h1>
+	<div class="meta">
+		<span class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-04T19:27:50+08:00" data-updated="true" itemprop="datePublished">2014年01月04日</time></span>
+		<span class="tags">
+
+
+	<a class='category' href='/blog/categories/algorithm/'>Algorithm</a>
+
+
+</span>
+	</div>
+	<div class="entry-content" itemprop="articleBody"><p><a href="http://en.wikipedia.org/wiki/Kosaraju%27s_algorithm">Kosaraju算法</a>是一种常见的求图的强联通分量的算法，该算法先从任意结点开始对原图G进行一次DFS后序遍历，之后依据第一次DFS的结果的反向序列（即根据reverse postordering），对原图的反向图G&#8217;进行前序的DFS。在第二次DFS中，每个联通分量即为一个强联通分量。</p>
+
+<p>算法是很简单，不过之前并没有完全搞明白，昨天晚上仔细想了下，总算弄明白了。事实上后序遍历一个图得到的序列包含了原图重要的结构信息，正是这些结构信息保证了第二次DFS能得到正确的结果。</p>
+
+<!-- more -->
+
+
+
+
+<!--  这是错的
+后续遍历图所得到的后序序列满足如下特性：
+
+对于后序序列`a1, a2, ..., am`，
+的任意连续子序列`ai, ai+1, ..., aj`（其中1<=i<=j<=m），可知
+
+1. 结点集合`{a1, a2, ..., ai-1}`不指向`{ai, ai+1, ..., aj}`
+（即不存在一条边从`{a1, a2, ..., ai-1}`中任意一个结点指向
+`{ai, ai+1, ..., aj}`中的某个结点）
+2. 结点集合`{ai, ai+1, ..., aj}`不指向`{aj+1, aj+2, ..., am}`
+ -->
+
+
+<p>先简单阐述结论，<strong>第一次后序遍历是为了保证，在第二次对反向图的前序遍历中，先访问到的强联通分量不指向任何未被访问到的强联通分量</strong>。</p>
+
+<p>下面将简单证明一下。</p>
+
+<p>假设一个图<strong>G</strong>，共有m个结点<code>V1, V2, ..., Vm</code>，<strong>G</strong>的一个强联通分量为<em>S</em>，包含n个结点。从任意结点开始对<strong>G</strong>进行一次后序遍历，得到后序序列<code>A1, A2, ..., Am</code>。在这个序列中，我们可以找到这样一个最短的连续子序列<code>Ai, Ai+1, ..., Aj</code>，使得<em>S</em>中所有的结点都包含在该子序列中，那么该子序列将满足如下两点：</p>
+
+<ol>
+<li>结点集合<code>{A1, A2, ..., Ai-1}</code>不指向<em>S</em>（即不存在一条边从<code>{A1, A2, ..., Ai-1}</code>中任意一个结点指向<em>S</em>中的某个结点）</li>
+<li><em>S</em>不指向结点集合<code>{Aj+1, Aj+2, ..., Am}</code></li>
+</ol>
+
+
+<p>这两点非常容易证明，我们知道<em>S</em>是一个强联通分量，<em>S</em>作为一个整体与其他任意的结点都只有单向的边，即对于任意不属于<em>S</em>的结点<em>v</em>，不可能同时存在<em>v</em>指向<em>S</em>的边和<em>S</em>指向<em>v</em>的边（否则强联通分量就是{<em>S</em>+<em>v</em>}了）。集合<code>{A1, A2, ..., Ai-1}</code>和集合<code>{Aj+1, Aj+2, ..., Am}</code>中的所有结点都满足这一条件。</p>
+
+<p>我们先证明第一点，对于集合<code>{A1, A2, ..., Ai-1}</code>中任意结点<em>Vk</em>（1&lt;=k&lt;=i-1），如果<em>Vk</em>指向<em>S</em>，那么当访问到<em>Vk</em>的时候必然会遍历<em>Vk</em>指向<em>S</em>的那条边（注意如果<em>Vk</em>指向<em>S</em>，那么就不可能有<em>S</em>指向<em>Vk</em>的边了），而<em>S</em>是一个强联通分量，访问其中任一结点最终都会访问到整个<em>S</em>，那么在后序序列中，<em>Vk</em>必然出现在包含<em>S</em>的子序列的后边，这与<em>Vk</em>属于<code>{A1, A2, ..., Ai-1}</code>这一条件相左，因此这种情况是不可能出现的。</p>
+
+<p>利用相似的思想我们可以证明第二点。</p>
+
+<p>那么这两条性质对于Kosaraju算法中的第二次DFS有什么作用的？不要忘记在Kosaraju算法中还有重要的一步，那就是第二次DFS是在原始图的逆向图（结点与原图相同，边与原图的边方向相反）上进行的！所以我们第一次DFS得到的后序序列，在反向图上就会呈现出相反的特性：</p>
+
+<ol>
+<li>S不指向结点集合<code>{A1, A2, ..., Ai-1}</code></li>
+<li>结点集合<code>{Aj+1, Aj+2, ..., Am}</code>不指向<em>S</em></li>
+</ol>
+
+
+<p>考虑结点<em>Am</em>所在的强联通分量，假设包含该强联通分量的最短子序列为<code>Ak, Ak+1, ..., Am</code>，那么套用刚刚提到的特性1，我们有如下结论：在反向图中，<strong><em>Am</em>所在的强联通分量不指向任何其他的强联通分量</strong>。所以从<em>Am</em>开始对反向图进行一次前序遍历，所有能访问到的结点均属于同一个强联通分量。接下来就是一个递归的过程了，标记了<em>Am</em>所在的强联通分量中所有的结点之后，剩下的序列满足与原始序列同样的性质，因此只需要逆着后序序列依次对反向图进行前序遍历，就能求得所有的强联通分量。因此，<strong>在第二次DFS的过程中，每访问到一个新的强联通分量，总能保证这个强联通分量没有指向未访问的强联通分量的边</strong>。</p>
+
+<p>突然有个想法，可惜时间不够了，先留着吧：这个算法是不是可以用来做拓扑排序？</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+</div>
+
+
+
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style"><span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_reddit"></a>
+	<a class="jiathis_button_twitter"></a>
+	<a class="jiathis_button_fb"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_gmail"></a>
+	<a class="jiathis_button_douban"></a>
+	<a class="jiathis_button_tumblr"></a>
+	<a class="jiathis_button_yixin"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+	var jiathis_config={
+summary:"",
+		shortUrl:false,
+		hideMore:false
+	}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!--  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script> -->
+</div>
+
+	
+	</br>
+    <p class="meta">
+      
+        <a class="basic-alignment left nextprev" href="/blog/2014/01/03/markdown-notes/" title="Previous Post: Markdown Notes">&laquo; Markdown Notes</a>
+      
+      
+        <a class="basic-alignment right nextprev" href="/blog/2014/01/08/nebula-level00/" title="Next Post: Exploit Exercises - Nebula Level00">Exploit Exercises - Nebula Level00 &raquo;</a>
+      
+    </p>
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Zealoct
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			
+
+<script type="text/javascript">
+      var disqus_shortname = 'hanjc';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://hanjc.me/blog/2014/01/04/postordering-dfs/';
+        var disqus_url = 'http://hanjc.me/blog/2014/01/04/postordering-dfs/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+
+
+
+		</div>
+	</div>
+</body>
+</html>

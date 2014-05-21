@@ -1,0 +1,394 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>简单的递归和动态规划 - Han</title>
+	<meta name="author" content="Zealoct">
+
+	
+	<meta name="description" content="简单的递归和动态规划 2014年04月05日 Algorithm 题目：WordBreak 首先定义如下表示 str[n:m] 为字符串 str 从下标 n 开始到下标 m-1 的字串 例如 str = &ldquo;abcdef&rdquo; str[4:6] = &ldquo;ef&# &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Han" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://hanjc.me/blog/2014/04/05/recursion-and-dp/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-48829613-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="/images/profile.jpg" alt="Profile Picture" style="width: 160px;" />
+	<!--<img src="http://www.gravatar.com/avatar/?s=160" alt="Profile Picture" style="width: 160px;" />-->
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">博客</a></li>
+	<li><a href="/blog/archives">列表视图</a></li>
+	<li><a href="/notes">笔记</a></li>
+    <li><a href="http://about.me/hanjc" target="_blank">关于我</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/zealoct" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/zealoct" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+<div id="banner" class="inner">
+	<div class="container">
+		<ul class="feed"></ul>
+	</div>
+	<small><a href="http://twitter.com/zealoct">zealoct</a> @ <a href="http://twitter.com">Twitter</a></small>
+	<div class="loading">Loading...</div>
+</div>
+<script src="/javascripts/twitter.js"></script>
+<script type="text/javascript">
+	(function($){
+		$('#banner').getTwitterFeed('zealoct', 5, );
+	})(jQuery);
+</script>
+
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">简单的递归和动态规划</h1>
+	<div class="meta">
+		<span class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-05T13:31:50+08:00" data-updated="true" itemprop="datePublished">2014年04月05日</time></span>
+		<span class="tags">
+
+
+	<a class='category' href='/blog/categories/algorithm/'>Algorithm</a>
+
+
+</span>
+	</div>
+	<div class="entry-content" itemprop="articleBody"><h3>题目：WordBreak</h3>
+
+<p>首先定义如下表示</p>
+
+<p><strong>str[n:m] </strong>为字符串 str 从下标 n 开始到下标 m-1 的字串</p>
+
+<p>例如 str = &ldquo;abcdef&rdquo; str[4:6] = &ldquo;ef&#8221;，str[1:3] = &#8220;bc&#8221;，str[3:4] = &#8220;d&rdquo;</p>
+
+<p><strong>str[n:] </strong>为字符串从下标 n 开始直到字符串结束的子串</p>
+
+<p>例如 str = &ldquo;abcdef&rdquo; str[2:] = ”cdef“</p>
+
+<p><strong>str[:m] </strong>为字符串从头开始直到下标 m-1 的子串</p>
+
+<p>例如 str = &ldquo;abcdef&rdquo; str[:3] = ”abc“</p>
+
+<p><strong>stat[n] </strong>表示子串 str[n:] 能不能用字典中的单词表示</p>
+
+<!-- more -->
+
+
+<p>假设字符串长度是 L，那么字符下标从 0 到 L-1，定义 stat[L] = True （因为 str[L:] 是空字符串）</p>
+
+<p>这道题的目标是计算 stat[0]，为了计算 stat[n]，我们有如下<strong>递归方程</strong></p>
+
+<pre><code>stat[n] = 
+{ dict.contains( str[n:n+1] ) &amp;&amp; stat[n+1] } ||
+{ dict.contains( str[n:n+2] ) &amp;&amp; stat[n+2] } ||
+...
+{ dict.contains( str[n:L] ) &amp;&amp; stat[L] }
+</code></pre>
+
+<p>其中花括号括起来的部分 <code>dict.contains( str[n:n+m] ) &amp;&amp; stat[n+m]</code> 表示：子串 str[n:] 的前 m 个字符组成的子字符串是字典中的单词，并且，子串 str[n+m:] 可以被字典中的单词组成</p>
+
+<p>只要有任意一个 m 满足上述语句，就可以说 stat[n] 为 True！</p>
+
+<p>对于<strong>递归思想</strong>来说，我们<strong>从等式左边到右边</strong>，不去管函数具体怎么解决子问题的，只是<strong>给出如何把问题分解为更小的子问题的方法</strong>。</p>
+
+<p>所以一个递归方法去解这道题就是：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">bool</span> <span class="n">stat</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">n</span> <span class="o">=</span> <span class="n">L</span> <span class="p">{</span> <span class="k">return</span> <span class="bp">True</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="o">+</span><span class="mf">1.</span><span class="o">.</span><span class="n">L</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c">#依次计算每一个花括号，任何一个为 True 就返回 True</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nb">dict</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="nb">str</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">i</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="n">stat</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">return</span> <span class="bp">True</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">#所有花括号都是 False，返回 False</span>
+</span><span class='line'>    <span class="k">return</span> <span class="bp">False</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这跟你写的那个递归方法是一样的，只不过我参数里用的并不是一个真正的字符串，而是用一个数字表示当前子字符串是从那个下标开始的。</p>
+
+<p>递归方法的一个问题就是<strong>重复计算</strong>，比如 str=&ldquo;aaaaab&rdquo;, dict = [&ldquo;a&rdquo;, &ldquo;aa&rdquo;, &ldquo;aaa&rdquo;, &ldquo;aaaa&rdquo;, &ldquo;aaaaa&rdquo;] 这个问题，当你计算 stat(&ldquo;aaaaab&rdquo;) 和 stat(&ldquo;aaaab&rdquo;) 的时候都要去计算 stat(&ldquo;aaab&rdquo;)，字符串越长，递归调用层数越深，这个问题越明显。</p>
+
+<p>如何解决重复计算的问题，一个直观的方法就是，每当我计算完一个 stat(n) 的值的时候，我把 stat(n) 缓存下来，下次再需要计算 stat(n) 的时候我直接返回，而不去计算。这种思想用递归写是这样的：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">boole</span> <span class="n">stat_cache</span><span class="p">[</span><span class="n">L</span><span class="p">];</span> <span class="c">#缓存 stat[n] 的结果</span>
+</span><span class='line'><span class="n">boole</span> <span class="n">stat_calced</span><span class="p">[</span><span class="n">L</span><span class="p">];</span> <span class="c">#标识 stat[n] 是否已计算</span>
+</span><span class='line'><span class="nb">bool</span> <span class="n">stat</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">n</span> <span class="o">=</span> <span class="n">L</span> <span class="p">{</span> <span class="k">return</span> <span class="bp">True</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="n">stat_calced</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="p">{</span> <span class="k">return</span> <span class="n">stat_cache</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">stat_calced</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="o">+</span><span class="mf">1.</span><span class="o">.</span><span class="n">L</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c">#依次计算每一个花括号，任何一个为 True 就返回 True</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nb">dict</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="nb">str</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">i</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="n">stat</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">stat_cache</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>            <span class="k">return</span> <span class="bp">True</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">#所有花括号都是 False，返回 False</span>
+</span><span class='line'>    <span class="n">stat_cache</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'>    <span class="k">return</span> <span class="bp">False</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我没有试过，这种方法应该已经可以解决超时的问题了，但是这种方法还是会出现多层函数调用栈，而且需要一个额外的 stat_calced 数组，怎么办嘞？</p>
+
+<p>我们再去看看那个递归方程，发现要计算 stat[n] 的值，我们需要知道 stat[n+1]&hellip;stat[L] 的值，这次我们换个方向思考，从<strong>等式右边到左边</strong>，先把右边需要用到的都计算好，然后再计算 stat[n]，先尝试解决子问题，进而解决更大的问题，这就是<strong>动态规划的方法</strong>，在这里，递归方程被称为<strong>状态转移方程</strong>。</p>
+
+<p>已知计算 stat[n] 需要 stat[n+1]..stat[L]，而计算 stat[n+1] 需要 stat[n+2]..stat[L]，一步步退下来，我们从 stat[L] 开始，一步步往前算。当然，递归也好，动态规划也好，都需要一个<strong>根</strong>，就像数学归纳法中的 base 一样，这一题中我们的根就是 stat[L] = True</p>
+
+<p>所以我们的代码应该是这个样子的：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">for</span> <span class="n">n</span> <span class="o">=</span> <span class="n">L</span><span class="o">-</span><span class="mi">1</span> <span class="o">..</span> <span class="mi">0</span> <span class="p">{</span> <span class="c">#loop1</span>
+</span><span class='line'>    <span class="c">#假设所有花括号都是 False</span>
+</span><span class='line'>    <span class="n">stat</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="o">+</span><span class="mf">1.</span><span class="o">.</span><span class="n">L</span> <span class="p">{</span> <span class="c">#loop2</span>
+</span><span class='line'>        <span class="c">#依次计算每一个花括号，任何一个为 True 就返回 True</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nb">dict</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="nb">str</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">i</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="n">stat</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">stat</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>            <span class="k">break</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意在上述代码中，loop1 相当于递归方法中的函数调用，都是对 n 做轮询，不同的是递归是从 0 到 L-1 轮询，而这里是从 L-1 到 0 来轮询。而 loop2 和递归函数中的循环是一模一样的。</p>
+
+<p>总结一下，递归的思想是这样的，我要算 stat[n]，那我就直接开始算 stat[n]（递归调用从stat(0)开始，直接尝试计算 stat[0] ），算到算不下去了（发现计算 stat[0] 需要 stat[1] ），那就把当前的执行压栈，然后去算 stat[1]。而动态规划的思想是这样的，我先观察，发现 stat[0] 需要 stat[1]，而 stat[1] 又需要 stat[2]，最终发现 stat[L] 不依赖任何人，直接是 True，那么这时候知道了 stat[L] 我就可以算 stat[L-1]，进而可以算 stat[L-2]，然后一步步算出 stat[0]。</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+</div>
+
+
+
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style"><span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_reddit"></a>
+	<a class="jiathis_button_twitter"></a>
+	<a class="jiathis_button_fb"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_gmail"></a>
+	<a class="jiathis_button_douban"></a>
+	<a class="jiathis_button_tumblr"></a>
+	<a class="jiathis_button_yixin"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+	var jiathis_config={
+summary:"",
+		shortUrl:false,
+		hideMore:false
+	}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!--  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script> -->
+</div>
+
+	
+	</br>
+    <p class="meta">
+      
+        <a class="basic-alignment left nextprev" href="/blog/2014/03/05/c-asm/" title="Previous Post: Linux 下 c 的扩展内联汇编">&laquo; Linux 下 c 的扩展内联汇编</a>
+      
+      
+        <a class="basic-alignment right nextprev" href="/blog/2014/05/20/ubuntu-fbvnc/" title="Next Post: 如何写 Ubuntu 的 Framebuffer">如何写 Ubuntu 的 Framebuffer &raquo;</a>
+      
+    </p>
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Zealoct
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			
+
+<script type="text/javascript">
+      var disqus_shortname = 'hanjc';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://hanjc.me/blog/2014/04/05/recursion-and-dp/';
+        var disqus_url = 'http://hanjc.me/blog/2014/04/05/recursion-and-dp/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+
+
+
+		</div>
+	</div>
+</body>
+</html>

