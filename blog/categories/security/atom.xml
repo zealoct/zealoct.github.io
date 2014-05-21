@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Security | Han]]></title>
-  <link href="http://hanjc.me/blog/categories/security/atom.xml" rel="self"/>
-  <link href="http://hanjc.me/"/>
-  <updated>2014-05-20T21:42:39+08:00</updated>
-  <id>http://hanjc.me/</id>
+  <link href="http://zealoct.github.io/blog/categories/security/atom.xml" rel="self"/>
+  <link href="http://zealoct.github.io/"/>
+  <updated>2014-05-21T10:45:22+08:00</updated>
+  <id>http://zealoct.github.io/</id>
   <author>
     <name><![CDATA[Zealoct]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Notes on iOS Security Whitepaper]]></title>
-    <link href="http://hanjc.me/blog/2014/03/03/ios-security/"/>
+    <link href="http://zealoct.github.io/blog/2014/03/03/ios-security/"/>
     <updated>2014-03-03T19:56:09+08:00</updated>
-    <id>http://hanjc.me/blog/2014/03/03/ios-security</id>
+    <id>http://zealoct.github.io/blog/2014/03/03/ios-security</id>
     <content type="html"><![CDATA[<p>This notes is based on <em>iOS Security &ndash; February 2014</em>, origin link can be found <a href="http://images.apple.com/iphone/business/docs/iOS_Security_Feb14.pdf">here</a>.</p>
 
 <p>This paper gives a brief description of iOS security, including hardware security features and how iOS leverages these features.</p>
@@ -318,9 +318,9 @@ on the computer where the device is backed up. The backed-up data is <strong>re-
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 13]]></title>
-    <link href="http://hanjc.me/blog/2014/01/26/nebula-level13/"/>
+    <link href="http://zealoct.github.io/blog/2014/01/26/nebula-level13/"/>
     <updated>2014-01-26T21:54:12+08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/26/nebula-level13</id>
+    <id>http://zealoct.github.io/blog/2014/01/26/nebula-level13</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>There is a security check that prevents the program from continuing execution if the user invoking it does not match a specific user id.</p>
@@ -471,9 +471,9 @@ Now <em>su</em> to <em>flag13</em> with the token.</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 12]]></title>
-    <link href="http://hanjc.me/blog/2014/01/26/nebula-level12/"/>
+    <link href="http://zealoct.github.io/blog/2014/01/26/nebula-level12/"/>
     <updated>2014-01-26T20:12:53+08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/26/nebula-level12</id>
+    <id>http://zealoct.github.io/blog/2014/01/26/nebula-level12</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>There is a backdoor process listening on port 50001.</p>
@@ -591,9 +591,9 @@ drwxr-xr-x 1 root   root     280 2012-08-27 07:18 ../
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 11]]></title>
-    <link href="http://hanjc.me/blog/2014/01/26/nebula-level11/"/>
+    <link href="http://zealoct.github.io/blog/2014/01/26/nebula-level11/"/>
     <updated>2014-01-26T16:44:20+08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/26/nebula-level11</id>
+    <id>http://zealoct.github.io/blog/2014/01/26/nebula-level11</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>The <em>/home/flag11/flag11</em> binary processes standard input and executes a shell command.</p>
@@ -859,9 +859,9 @@ uid=1012(level11) gid=1012(level11) groups=1012(level11)
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 10]]></title>
-    <link href="http://hanjc.me/blog/2014/01/25/nebula-level10/"/>
+    <link href="http://zealoct.github.io/blog/2014/01/25/nebula-level10/"/>
     <updated>2014-01-25T12:40:53+08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/25/nebula-level10</id>
+    <id>http://zealoct.github.io/blog/2014/01/25/nebula-level10</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>The setuid binary at <em>/home/flag10/flag10</em> binary will upload any file given, as long as it meets the requirements of the <em>access()</em> system call.</p>

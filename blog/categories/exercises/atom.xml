@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Exercises | Han]]></title>
-  <link href="http://hanjc.me/blog/categories/exercises/atom.xml" rel="self"/>
-  <link href="http://hanjc.me/"/>
-  <updated>2014-05-20T21:42:39+08:00</updated>
-  <id>http://hanjc.me/</id>
+  <link href="http://zealoct.github.io/blog/categories/exercises/atom.xml" rel="self"/>
+  <link href="http://zealoct.github.io/"/>
+  <updated>2014-05-21T10:45:22+08:00</updated>
+  <id>http://zealoct.github.io/</id>
   <author>
     <name><![CDATA[Zealoct]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 13]]></title>
-    <link href="http://hanjc.me/blog/2014/01/26/nebula-level13/"/>
+    <link href="http://zealoct.github.io/blog/2014/01/26/nebula-level13/"/>
     <updated>2014-01-26T21:54:12+08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/26/nebula-level13</id>
+    <id>http://zealoct.github.io/blog/2014/01/26/nebula-level13</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>There is a security check that prevents the program from continuing execution if the user invoking it does not match a specific user id.</p>
@@ -168,9 +168,9 @@ Now <em>su</em> to <em>flag13</em> with the token.</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 12]]></title>
-    <link href="http://hanjc.me/blog/2014/01/26/nebula-level12/"/>
+    <link href="http://zealoct.github.io/blog/2014/01/26/nebula-level12/"/>
     <updated>2014-01-26T20:12:53+08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/26/nebula-level12</id>
+    <id>http://zealoct.github.io/blog/2014/01/26/nebula-level12</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>There is a backdoor process listening on port 50001.</p>
@@ -288,9 +288,9 @@ drwxr-xr-x 1 root   root     280 2012-08-27 07:18 ../
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 11]]></title>
-    <link href="http://hanjc.me/blog/2014/01/26/nebula-level11/"/>
+    <link href="http://zealoct.github.io/blog/2014/01/26/nebula-level11/"/>
     <updated>2014-01-26T16:44:20+08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/26/nebula-level11</id>
+    <id>http://zealoct.github.io/blog/2014/01/26/nebula-level11</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>The <em>/home/flag11/flag11</em> binary processes standard input and executes a shell command.</p>
@@ -556,9 +556,9 @@ uid=1012(level11) gid=1012(level11) groups=1012(level11)
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 10]]></title>
-    <link href="http://hanjc.me/blog/2014/01/25/nebula-level10/"/>
+    <link href="http://zealoct.github.io/blog/2014/01/25/nebula-level10/"/>
     <updated>2014-01-25T12:40:53+08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/25/nebula-level10</id>
+    <id>http://zealoct.github.io/blog/2014/01/25/nebula-level10</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>The setuid binary at <em>/home/flag10/flag10</em> binary will upload any file given, as long as it meets the requirements of the <em>access()</em> system call.</p>
@@ -722,9 +722,9 @@ RECV: 615a2ce1-b2b5-4c76-8eed-8aa5c4015c27
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 09]]></title>
-    <link href="http://hanjc.me/blog/2014/01/24/nebula-level09/"/>
+    <link href="http://zealoct.github.io/blog/2014/01/24/nebula-level09/"/>
     <updated>2014-01-24T11:43:40+08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/24/nebula-level09</id>
+    <id>http://zealoct.github.io/blog/2014/01/24/nebula-level09</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>There&rsquo;s a C setuid wrapper for some vulnerable PHP code&hellip;</p>
@@ -771,7 +771,7 @@ RECV: 615a2ce1-b2b5-4c76-8eed-8aa5c4015c27
 
 <ul>
 <li>read the content of file $argv[1]</li>
-<li>replace all the text paterns liket &ldquo;[email <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#58;&#104;&#x6a;&#x63;&#64;&#x68;&#x61;&#x6e;&#x6a;&#x63;&#x2e;&#109;&#101;">&#x68;&#x6a;&#99;&#64;&#104;&#x61;&#x6e;&#106;&#x63;&#x2e;&#x6d;&#101;</a>]&rdquo; with &ldquo;hjc AT hanjc dot me&rdquo;</li>
+<li>replace all the text paterns liket &ldquo;[email <a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#111;&#58;&#x68;&#x6a;&#x63;&#x40;&#104;&#x61;&#x6e;&#x6a;&#99;&#46;&#x6d;&#101;">&#x68;&#106;&#99;&#64;&#104;&#x61;&#110;&#106;&#99;&#x2e;&#109;&#101;</a>]&rdquo; with &ldquo;hjc AT hanjc dot me&rdquo;</li>
 <li>replace all the &ldquo;[&rdquo; with &ldquo;&lt;&rdquo;, replace &ldquo;]&rdquo; with &ldquo;>&rdquo;</li>
 </ul>
 

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Algorithm | Han]]></title>
-  <link href="http://hanjc.me/blog/categories/algorithm/atom.xml" rel="self"/>
-  <link href="http://hanjc.me/"/>
-  <updated>2014-05-20T21:42:39+08:00</updated>
-  <id>http://hanjc.me/</id>
+  <link href="http://zealoct.github.io/blog/categories/algorithm/atom.xml" rel="self"/>
+  <link href="http://zealoct.github.io/"/>
+  <updated>2014-05-21T10:45:22+08:00</updated>
+  <id>http://zealoct.github.io/</id>
   <author>
     <name><![CDATA[Zealoct]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[简单的递归和动态规划]]></title>
-    <link href="http://hanjc.me/blog/2014/04/05/recursion-and-dp/"/>
+    <link href="http://zealoct.github.io/blog/2014/04/05/recursion-and-dp/"/>
     <updated>2014-04-05T13:31:50+08:00</updated>
-    <id>http://hanjc.me/blog/2014/04/05/recursion-and-dp</id>
+    <id>http://zealoct.github.io/blog/2014/04/05/recursion-and-dp</id>
     <content type="html"><![CDATA[<h3>题目：WordBreak</h3>
 
 <p>首先定义如下表示</p>
@@ -139,9 +139,9 @@ for i = n+1..L { #loop2
   
   <entry>
     <title type="html"><![CDATA[Kosaraju算法——关于图的后序遍历的特征]]></title>
-    <link href="http://hanjc.me/blog/2014/01/04/postordering-dfs/"/>
+    <link href="http://zealoct.github.io/blog/2014/01/04/postordering-dfs/"/>
     <updated>2014-01-04T19:27:50+08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/04/postordering-dfs</id>
+    <id>http://zealoct.github.io/blog/2014/01/04/postordering-dfs</id>
     <content type="html"><![CDATA[<p><a href="http://en.wikipedia.org/wiki/Kosaraju%27s_algorithm">Kosaraju算法</a>是一种常见的求图的强联通分量的算法，该算法先从任意结点开始对原图G进行一次DFS后序遍历，之后依据第一次DFS的结果的反向序列（即根据reverse postordering），对原图的反向图G'进行前序的DFS。在第二次DFS中，每个联通分量即为一个强联通分量。</p>
 
 <p>算法是很简单，不过之前并没有完全搞明白，昨天晚上仔细想了下，总算弄明白了。事实上后序遍历一个图得到的序列包含了原图重要的结构信息，正是这些结构信息保证了第二次DFS能得到正确的结果。</p>
@@ -198,9 +198,9 @@ for i = n+1..L { #loop2
   
   <entry>
     <title type="html"><![CDATA[变种2-SUM问题——优化O(n)算法中的常数 ]]></title>
-    <link href="http://hanjc.me/blog/2013/08/19/two-sum-variant/"/>
+    <link href="http://zealoct.github.io/blog/2013/08/19/two-sum-variant/"/>
     <updated>2013-08-19T16:46:00+08:00</updated>
-    <id>http://hanjc.me/blog/2013/08/19/two-sum-variant</id>
+    <id>http://zealoct.github.io/blog/2013/08/19/two-sum-variant</id>
     <content type="html"><![CDATA[<p>Algorithms: Design and Analysis, Part 1 这门课的第六个编程作业的第一道题，之前的编程作业题都比较直观，而这一题需要用到一点简单的优化，相比其他的题目有意思多了。</p>
 
 <h3>题目描述：</h3>
