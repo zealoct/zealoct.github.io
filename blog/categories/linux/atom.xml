@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Linux | Han]]></title>
-  <link href="http://zealoct.github.io/blog/categories/linux/atom.xml" rel="self"/>
-  <link href="http://zealoct.github.io/"/>
-  <updated>2014-05-21T13:35:26+08:00</updated>
-  <id>http://zealoct.github.io/</id>
+  <link href="http://hanjc.me/blog/categories/linux/atom.xml" rel="self"/>
+  <link href="http://hanjc.me/"/>
+  <updated>2014-07-11T23:54:57-07:00</updated>
+  <id>http://hanjc.me/</id>
   <author>
     <name><![CDATA[Zealoct]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[如何写 Ubuntu 的 Framebuffer]]></title>
-    <link href="http://zealoct.github.io/blog/2014/05/20/ubuntu-fbvnc/"/>
-    <updated>2014-05-20T20:26:25+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/05/20/ubuntu-fbvnc</id>
+    <link href="http://hanjc.me/blog/2014/05/20/ubuntu-fbvnc/"/>
+    <updated>2014-05-20T05:26:25-07:00</updated>
+    <id>http://hanjc.me/blog/2014/05/20/ubuntu-fbvnc</id>
     <content type="html"><![CDATA[<p>最近有个小项目，想在 Android 上跑一个通过直接读写 framebuffer 实现的 vnc 客户端，
 所以发现了这个 <a href="https://github.com/zohead/fbvnc">fbvnc</a>， 是 github 上一个小哥儿捣鼓的，基于现有的一个同名项目开发，专为嵌入式设备使用。这个小的 vnc 客户端的不足当然有很多，比如连基本的窗口都木有，直接占用了你整个 framebuffer，不能调整分辨率，巨慢无比，卡的紧了就直接挂，但是它有一个最大的优点，就是真的非常简单，除了一些基本的 Linux 库之外没有任何第三方的依赖。</p>
 
@@ -156,9 +156,9 @@ LOCAL_SHARED_LIBRARIES := \</p>
   
   <entry>
     <title type="html"><![CDATA[Linux 下 c 的扩展内联汇编]]></title>
-    <link href="http://zealoct.github.io/blog/2014/03/05/c-asm/"/>
-    <updated>2014-03-05T19:54:09+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/03/05/c-asm</id>
+    <link href="http://hanjc.me/blog/2014/03/05/c-asm/"/>
+    <updated>2014-03-05T03:54:09-08:00</updated>
+    <id>http://hanjc.me/blog/2014/03/05/c-asm</id>
     <content type="html"><![CDATA[<p>简单总结了一下自己看到用到的一些内联汇编的知识点，并不是一个完整的总结，以后对内联汇编有了新的了解会慢慢扩充。</p>
 
 <p>详细细节可以参考 gcc 关与扩展内联汇编的 <a href="http://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Extended-Asm">文档</a></p>

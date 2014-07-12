@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: iOS | Han]]></title>
-  <link href="http://zealoct.github.io/blog/categories/ios/atom.xml" rel="self"/>
-  <link href="http://zealoct.github.io/"/>
-  <updated>2014-05-21T13:35:26+08:00</updated>
-  <id>http://zealoct.github.io/</id>
+  <link href="http://hanjc.me/blog/categories/ios/atom.xml" rel="self"/>
+  <link href="http://hanjc.me/"/>
+  <updated>2014-07-11T23:54:57-07:00</updated>
+  <id>http://hanjc.me/</id>
   <author>
     <name><![CDATA[Zealoct]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Notes on iOS Security Whitepaper]]></title>
-    <link href="http://zealoct.github.io/blog/2014/03/03/ios-security/"/>
-    <updated>2014-03-03T19:56:09+08:00</updated>
-    <id>http://zealoct.github.io/blog/2014/03/03/ios-security</id>
+    <link href="http://hanjc.me/blog/2014/03/03/ios-security/"/>
+    <updated>2014-03-03T03:56:09-08:00</updated>
+    <id>http://hanjc.me/blog/2014/03/03/ios-security</id>
     <content type="html"><![CDATA[<p>This notes is based on <em>iOS Security &ndash; February 2014</em>, origin link can be found <a href="http://images.apple.com/iphone/business/docs/iOS_Security_Feb14.pdf">here</a>.</p>
 
 <p>This paper gives a brief description of iOS security, including hardware security features and how iOS leverages these features.</p>
