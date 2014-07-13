@@ -9,7 +9,16 @@
 	<meta name="author" content="Zealoct">
 
 	
-	<meta name="description" content="2014年01月08日 Exercises, Nebula, Security Comments Exploit Exercises - Nebula Level01 有了level00的铺垫，level01就非常简单直接了。感觉上Nebula系列的基本要求是用levelXX用户登录，通过放在/ &hellip;">
+	<meta name="description" content="2014年01月08日 Exercises, Nebula, Security Comments Exploit Exercises - Nebula Level02 基本过程与level01一样，先看/home/flag02/flag02的源代码： 1
+2
+3
+4
+5
+6
+7
+8
+9
+10 &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -111,6 +120,101 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-08T23:13:38-08:00" data-updated="true" itemprop="datePublished">2014年01月08日</time></span>
+		<span class="tags">
+
+
+	<a class='category' href='/blog/categories/exercises/'>Exercises</a>, <a class='category' href='/blog/categories/nebula/'>Nebula</a>, <a class='category' href='/blog/categories/security/'>Security</a>
+
+
+</span>
+		
+			<span class="comments"><a href="/blog/2014/01/08/nebula-level02/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/01/08/nebula-level02/" itemprop="url">Exploit Exercises - Nebula Level02</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>基本过程与level01一样，先看/home/flag02/flag02的源代码：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">envp</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="kt">char</span> <span class="o">*</span><span class="n">buffer</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">gid_t</span> <span class="n">gid</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">uid_t</span> <span class="n">uid</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">gid</span> <span class="o">=</span> <span class="n">getegid</span><span class="p">();</span>
+</span><span class='line'>  <span class="n">uid</span> <span class="o">=</span> <span class="n">geteuid</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">setresgid</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">gid</span><span class="p">,</span> <span class="n">gid</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">setresuid</span><span class="p">(</span><span class="n">uid</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="n">uid</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">buffer</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">asprintf</span><span class="p">(</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">,</span> <span class="s">&quot;/bin/echo %s is cool&quot;</span><span class="p">,</span> <span class="n">getenv</span><span class="p">(</span><span class="s">&quot;USER&quot;</span><span class="p">));</span>
+</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;about to call system(</span><span class="se">\&quot;</span><span class="s">%s</span><span class="se">\&quot;</span><span class="s">)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">system</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+
+		
+		<a href="/blog/2014/01/08/nebula-level02/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
