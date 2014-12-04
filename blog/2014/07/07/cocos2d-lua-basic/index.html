@@ -1,0 +1,315 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Windows 下使用 Cocos2d-x 3.x + Lua 开发基础 - Han</title>
+	<meta name="author" content="Zealoct">
+
+	
+	<meta name="description" content="Windows 下使用 Cocos2d-x 3.x + Lua 开发基础 2014年07月07日 Cocos2d-x, Lua Cocos2d-x 是国内非常成熟的 2d 游戏开发引擎了，拥有非常广大的开发者群体和活跃的社区，支持 Windows、Linux、Mac OS、iOS、Android &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Han" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://zealoct.github.io/blog/2014/07/07/cocos2d-lua-basic/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-48829613-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="/images/profile.jpg" alt="Profile Picture" style="width: 160px;" />
+	<!--<img src="http://www.gravatar.com/avatar/?s=160" alt="Profile Picture" style="width: 160px;" />-->
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="http://about.me/hanjc">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/zealoct" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/zealoct" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+<div id="banner" class="inner">
+	<div class="container">
+		<ul class="feed"></ul>
+	</div>
+	<small><a href="http://twitter.com/zealoct">zealoct</a> @ <a href="http://twitter.com">Twitter</a></small>
+	<div class="loading">Loading...</div>
+</div>
+<script src="/javascripts/twitter.js"></script>
+<script type="text/javascript">
+	(function($){
+		$('#banner').getTwitterFeed('zealoct', 5, );
+	})(jQuery);
+</script>
+
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Windows 下使用 Cocos2d-x 3.x + Lua 开发基础</h1>
+	<div class="meta">
+		<span class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-07T01:59:17+08:00" data-updated="true" itemprop="datePublished">2014年07月07日</time></span>
+		<span class="tags">
+
+
+	<a class='category' href='/blog/categories/cocos2d-x/'>Cocos2d-x</a>, <a class='category' href='/blog/categories/lua/'>Lua</a>
+
+
+</span>
+	</div>
+	<div class="entry-content" itemprop="articleBody"><p><a href="http://cocos2d-x.org/">Cocos2d-x</a> 是国内非常成熟的 2d 游戏开发引擎了，拥有非常广大的开发者群体和活跃的社区，支持 Windows、Linux、Mac OS、iOS、Android 和 Window Phone 等各个平台，其本身是用 C++ 语言实现的，主要提供了面向 C++ 的接口，也提供了对 Lua、object-c 和 JavaScript 的支持。我们的 minigame 要基于 Cocos（为简单起见，我就把 Cocos2d-x 称为 Cocos 了） 和 Lua 实现，这有好处也有弊端，Lua 作为一门脚本语言，开发起来确实非常快捷，不过 Cocos 社区 Lua 相关的文档和资料并不如 C++ 那么完备，使得上手的难度增加，而且 Lua 本质并不是面向对象的编程语言，我们编码时的一些 OO 的思想也要需要转变。</p>
+
+<p>出于对自己记忆力的极端不信任，决定把实习期遇到的关于 Cocos + Lua 的种种问题都记录下来，希望也能成为实习的成果之一吧！</p>
+
+<!-- more -->
+
+
+<h2>开发系统和工具</h2>
+
+<p>首先是环境的搭建，Cocos 的使用方法挺多的，取决于你的开发系统和开发工具，刚开始看的时候我自己也有些被搞乱了，说来搞笑，我基本上按照 Cocos 的安装说明文档去配置的，到最后用的最多的却是 Cocos-console。官方网站上各种开发工具环境搭建相关的文档还是很详细的，我在这里就不再重复了，主要是简单介绍一下用到的各种工具是干嘛的，还有就是不同的 Cocos 开发环境如何抉择的问题。</p>
+
+<p>我自己的系统是 Windows 7，目标平台是 Android，因此本文主要讨论的问题是 <strong>Windows 平台下开发 Android 游戏的环境选择</strong>。官方网站上有比较详细的搭建 Cocos + Android 开发环境的文档，可以参考 <a href="http://cocos2d-x.org/wiki/How_to_run_cpp-tests_on_Android">How to run cpp-tests on Android (Terminal)</a> 和 <a href="http://cocos2d-x.org/wiki/How_to_Build_an_Android_Project_with_Eclipse">How to run cpp-tests on Android (Eclipse)</a> 这两份文档，分别是在命令行下和 Eclipse 下开发 Android 游戏的环境配置步骤。总的来说，要在 Windows 上开发 Cocos + Lua 的 Android 游戏，我们需要准备如下东西，有点多，附上对每个工具的简单解释：</p>
+
+<ul>
+<li><p><strong>Cocos2d-x</strong> 也就是 Cocos 的源代码，包含 Cocos 用到的各种脚本文件、 C++ 类、各平台工程文件等，可从 <a href="http://cocos2d-x.org/download">此处</a> 下载，我选择的是 3.1.1 的版本，需要说明的一点是 Cocos 的 API 接口在一个大版本中是不会变的，也就是 3.x 的版本共享一套 API，但和 2.x 的 API 差别较大，目前我在网上找到资料 2.x 的比较多</p></li>
+<li><p><strong>Visual Studio</strong> 如果是 Windows 开发环境的话 VS 是一定少不了的，编译 Cocos 的源代码就全依赖它了，这个木有源码链接，请大家自行搜索吧……</p></li>
+<li><p><strong>JDK 1.6+</strong> Java 虚拟机，可以从 <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Oracle 官网</a> 上下载</p></li>
+<li><p><strong>ADT Bundle</strong> 是一个集成了 Android SDK + Eclipse + ADT（Eclipse 开发 Android 使用到的插件）的压缩包，使得配置 Android 开发环境变得非常方便，可从 <a href="http://developer.android.com/sdk/index.html">Android Developer</a> 下载</p></li>
+<li><p><strong>Android NDK</strong>，提供使用 Native Code 开发 Android 应用程序的支持，可从 <a href="http://developer.android.com/tools/sdk/ndk/index.html">Android Developer</a> 下载</p></li>
+<li><p><strong>Ant 1.9.4</strong> 根据 build.xml 编译 Android 项目的命令行工具，可从 <a href="http://ant.apache.org/bindownload.cgi">apache.org</a> 下载</p></li>
+<li><p><strong>Python 2.7</strong> 脚本语言，Cocos 的安装、运行脚本是用 Python 写的，地址 <a href="https://www.python.org/download/">python.org</a></p></li>
+<li><p><strong>Lua 5.2</strong> Lua 脚本虚拟机，可执行程序下载地址 <a href="http://joedf.users.sourceforge.net/luabuilds/">Lua 5.2.3</a></p></li>
+</ul>
+
+
+<h2>Cocos 项目结构</h2>
+
+<p>分两个部分说下，一个是 Cocos C++，一个是 Cocos Lua。</p>
+
+<p>Cocos C++ 项目根目录如下：</p>
+
+<p><img src="/images/blog/cocos-basic-cpp.png" alt="" /></p>
+
+<p>其中 <code>/Classes</code> 文件夹是主要的代码文件夹，开发者所需要写的全部代码文件都包含在这个文件夹中，<code>/Resources</code> 则是资源文件夹，开发者的资源都存储在这个文件夹中，<code>/cocos2d</code> 文件夹则包扩了 Cocos 完整的源代码。除此之外我们看到还有大量的 <code>/proj.xxxx</code> 文件夹，这是 Cocos 为不同平台、不同编辑器生成的项目文件夹，所有这些项目均使用 <code>/Classes</code> 中的源代码和 <code>/Resources</code> 中的资源文件。</p>
+
+<p>而 Cocos Lua 项目目录如下：</p>
+
+<p><img src="/images/blog/cocos-basic-lua.png" alt="" /></p>
+
+<p>与 C++ 项目结构类似，Lua 项目所有的程序文件都在 <code>/src</code> 文件夹下，资源文件都在 <code>/res</code> 文件夹下，<code>/frameworks</code> 包含了 Cocos 的完整源代码以及各个项目文件夹， 如下图所示为 <code>/frameworks/runtime-src</code> 文件夹的结构：</p>
+
+<p><img src="/images/blog/cocos-basic-lua-runtime-src.png" alt="" /></p>
+
+<p>而 <code>/runtime</code> 文件夹内则包含了生成的个平台的可执行代码。</p>
+
+<h2>Console vs. Eclipse vs. Visual Studio</h2>
+
+<p>这是个让人比较纠结的话题，我们到底应该配置哪种环境，使用哪种工具进行 Cocos 开发呢？其实根据上一节的介绍，大家应该已经明白了，Cocos 项目可以<strong>方便的在各个工具之间切换</strong>，你可以使用 Visual Studio 写 C++ 代码，生成 Windows 程序进行调试，然后跑到 Eclipse 里去生成一个 APK 部署到自己的手机上。所以大家对工具其实不用太在意，用自己喜欢的就行。</p>
+
+<p>目前我知道的可选方案有四种，简单介绍一下他们用法上的区别，以及我对这些方法的感受。</p>
+
+<h3>Cocos Console</h3>
+
+<p>纯粹使用命令行来进行 Cocos 项目的新建、编译、运行等操作，代码使用纯文本编辑器比如 Sublime Text 编写。这种方法比较轻量级，不需要运行 VS 或 Eclipse 等消耗系统资源的编辑器，可以更方便的认识整个项目的架构，了解每个文件夹是干嘛的，不论是 C++ 项目还是 Lua 项目，这种模式都可以胜任，Linux 程序员的首选；缺点就是没有代码提示，也不是很方便调试，上手写代码比较困难，编码效率不够高。</p>
+
+<h3>Cocos + Eclipse</h3>
+
+<p>使用 ADT 可方便的对 Android 游戏进行开发、部署与调试，熟悉 ADT 的 Android 开发人员的首选，开发 Cocos + C++ 会比较方便，相应的写 Lua 脚本就不很方便，需要另装插件。</p>
+
+<h3>Cocos + Visual Studio</h3>
+
+<p>Visual Studio 真是 Windows 程序员的专有福利，其功能简直不能更强大，使用 Visual Studio 开发 C++ 简直是件幸福的事，如果要用 Cocos + C++ 开发 Win32 游戏，那 Visual Studio 绝对算是首选了。要说美中不足，就是写 Lua 需要另装插件，而且如果要生成 Android 游戏需要使用 Eclipse 或 Console 去编译部署。</p>
+
+<h3>Cocos Code IDE</h3>
+
+<p><a href="http://www.cocos2d-x.org/wiki/Code_Editor">Cocos Code Ide</a> 这个工具刚才我没有列在必备工具里，因为其本身只提供了 Cocos + Lua/JS 的开发环境，也是基于 Eclipse 包装的，针对 Lua 语言提供了 Cocos API 的<strong>代码提示</strong>功能，这一点上来看非常方便，而且开发环境搭建起来也非常方便，不过我试用的时候 debug 信息老是打不出来……另外需要注意的是，用 Cocos Code IDE 生成的项目文件夹跟 Console 生成的 Cocos Lua 项目文件夹稍有不同，并没有包含完成的 Cocos 源文件，因此大小要小很多（大概60+MB），而且在 <code>runtime-src</code> 中只包含了 Eclipse 项目。</p>
+
+<p>总结一下，我觉得如果使用 C++，目标平台 Windows，那么 Visual Studio 无疑；如果目标平台是 Android，也可以使用 Visual Studio 进行编码和调试（生成 exe 进行调试），最后使用 Eclipse 部署；对于 Lua 开发者，Code IDE 是个不错的选择，支持断点、单步、watch 等调试手段，而且自动生成各平台的二进制文件，的缺点就是目前还有 bug，如果打印语句没有问题的话就好了，另外一点就是 Code IDE 完全不能写任何 C++ 代码，对于项目中既需要写 C++ 也需要写 Lua 的高级开发者而言就显得不够灵活了；最后如果你之前是 Linux 开发者或是希望对项目有更直接更灵活的控制，请选择命令行。</p>
+
+<h2>命令行 + 文本编辑器开发</h2>
+
+<p>前边多次提到我自己使用的是 Cocos Console + Sublime Text 来编写 Cocos 项目的，这里就谈一些使用上的经验技巧吧！一开始之所以选择 Console 是因为安装部署起来稍微方便一点点，后来我发现还有另一个好处（以至于现在连 Console 都不用了）。</p>
+
+<h3>创建项目</h3>
+
+<p>使用如下命令：</p>
+
+<pre><code>cocos new MyCCLua -p com.test.hjc -l lua -d ./
+</code></pre>
+
+<p>其中 <code>MyCCLua</code> 是项目名，<code>-p com.test.hjc</code> 指定生成的 Android 项目的包名，<code>-l lua</code> 指定生成项目的语言种类，合法项包括 <code>cpp</code>，<code>lua</code> 和 <code>js</code>，<code>-d ./</code> 是新建项目所在文件夹，默认是当前文件夹。</p>
+
+<h3>编译/运行项目</h3>
+
+<p>使用如下命令：</p>
+
+<pre><code>cocos compile/run -p platform
+</code></pre>
+
+<p>其中 <code>compile</code> 是单纯编译，<code>run</code> 是编译且运行，<code>-p win32</code> 是编译生成的目标平台可选项为 ios、mac、android、web 以及 win32，<code>-s source</code> 项目文件夹路径，如不指定则为当前目录，<code>-q</code> 安静模式，不输出日志系信息，<code>-m mode</code> 控制编译生成模式，可以是 <code>debug</code> 或 <code>release</code>，默认是 <code>debug</code> 模式。</p>
+
+<p>如果要编译运行 Cocos 自带的 lua-tests，可以直接去 <code>cocos2d-x-3.1.1/tests/lua-tests</code> 下执行：</p>
+
+<pre><code>cocos run -p win32
+</code></pre>
+
+<h3>编写与调试</h3>
+
+<p>我的目标平台是 Android，不过平时都是在 Windows 上进行调试，部署、调试起来会方便很多，对于 Lua 开发者而言，还有一个好处就是 Lua 作为一门脚本语言，代码修改之后实际上是<strong>不需要重新编译</strong>的，<strong>重启 exe 就可以看到最新的代码效果</strong>了！</p>
+
+<p>我平时编写、调试的步骤为：</p>
+
+<ol>
+<li>新建一个名为 <code>MyCCLua</code> Cocos Lua 项目之后，使用 <code>cocos compile -p win32</code> 编译此新建项目，完成后可以在 <code>MyCCLua/runtime</code> 下找到一个名为 <code>win32</code> 的文件夹，此文件夹包含了编译生成的 Windows 可执行程序、所有的资源文件和所有用到的 Lua 脚本；</li>
+<li>把 <code>MyCCLua/runtime/win32</code> 文件夹单独拷贝出来，命名为 <code>MyCCLua-win32</code>；</li>
+<li>使用 Sublime Text 修改 <code>MyCCLua-win32/src</code> 下的 Lua 脚本，执行 <code>MyCCLua-win32/MyCCLua.exe</code> 查看最新效果，由于免去了事实上无用的编译环节，所以可以加快调试的速度；</li>
+<li>如果脚本产生错误闪退，则使用 <a href="http://unknownworlds.com/decoda/">Decoda</a> 工具加载 <code>MyCCLua.exe</code>，该工具可以捕获 Lua 异常，设置断点和 watch，是我调试过程中不可或缺的利器；</li>
+<li>如果需要生成 APK，则把 <code>MyCCLua-win32</code> 下的 <code>res</code> 和 <code>src</code> （取决于你做了哪些修改）两个文件夹拷回到 <code>MyCCLua</code> 内，执行 <code>cocos compile -p android</code></li>
+</ol>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+</div>
+
+
+
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style"><span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_reddit"></a>
+	<a class="jiathis_button_twitter"></a>
+	<a class="jiathis_button_fb"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_gmail"></a>
+	<a class="jiathis_button_douban"></a>
+	<a class="jiathis_button_tumblr"></a>
+	<a class="jiathis_button_yixin"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+	var jiathis_config={
+summary:"",
+		shortUrl:false,
+		hideMore:false
+	}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!--  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script> -->
+</div>
+
+	
+	</br>
+    <p class="meta">
+      
+        <a class="basic-alignment left nextprev" href="/blog/2014/07/06/summer-intern/" title="Previous Post: 暑期实习开始">&laquo; 暑期实习开始</a>
+      
+      
+    </p>
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Zealoct
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+</body>
+</html>

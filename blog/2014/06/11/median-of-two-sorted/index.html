@@ -1,0 +1,237 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Median of Two Sorted Arrays - Han</title>
+	<meta name="author" content="Zealoct">
+
+	
+	<meta name="description" content="Median of Two Sorted Arrays 2014年06月11日 Algorithm 题目：给定两个有序数组，求这两个数组合并之后的中位数，要求时间复杂度是 O(log (m+n))。 使用归并排序的思想，很容易在 O(m+n) 的复杂度内解决该问题，但题目要求是是 O(log ( &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Han" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://zealoct.github.io/blog/2014/06/11/median-of-two-sorted/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-48829613-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="/images/profile.jpg" alt="Profile Picture" style="width: 160px;" />
+	<!--<img src="http://www.gravatar.com/avatar/?s=160" alt="Profile Picture" style="width: 160px;" />-->
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="http://about.me/hanjc">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/zealoct" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/zealoct" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+<div id="banner" class="inner">
+	<div class="container">
+		<ul class="feed"></ul>
+	</div>
+	<small><a href="http://twitter.com/zealoct">zealoct</a> @ <a href="http://twitter.com">Twitter</a></small>
+	<div class="loading">Loading...</div>
+</div>
+<script src="/javascripts/twitter.js"></script>
+<script type="text/javascript">
+	(function($){
+		$('#banner').getTwitterFeed('zealoct', 5, );
+	})(jQuery);
+</script>
+
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Median of Two Sorted Arrays</h1>
+	<div class="meta">
+		<span class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-11T14:44:23+08:00" data-updated="true" itemprop="datePublished">2014年06月11日</time></span>
+		<span class="tags">
+
+
+	<a class='category' href='/blog/categories/algorithm/'>Algorithm</a>
+
+
+</span>
+	</div>
+	<div class="entry-content" itemprop="articleBody"><p><strong>题目</strong>：给定两个有序数组，求这两个数组合并之后的中位数，要求时间复杂度是 <strong>O(log (m+n))</strong>。</p>
+
+<p>使用归并排序的思想，很容易在 O(m+n) 的复杂度内解决该问题，但题目要求是是 O(log (m+n))，所以并不能采用简单粗暴的方法去解。观察这个复杂度公式，很容易让人联想到是否可以利用二分去解，大致思考下仿佛也是可以的：第一步先取两个数组 A 和 B 的中位数，根据他们的大小关系在两个数组中分别舍掉一半；但是顺着这个思路进行到第二步的时候就出现问题了，因为舍掉了一些数，这一步中我们<strong>需要寻找的目标不再新数组的中位数了</strong>，问题归结为<strong>给定两个有序数组，如何寻找两个数组合并之后第 k 大的数</strong>。</p>
+
+<!-- more -->
+
+
+<p>先定义一下需要用到的字母，A 和 B 是两个输入数组，均为增序，C 是把 A，B 合并之后形成的数组，依然是增序，k 是目标数字在数组 C 中的序号，需要特别声明的是，在整个算法的解释中，我均采用了从 1 开始编号的方法，因此编号为 k 的数字实际上可以认为是第 k 大的数字，也就是说数组中有 k &ndash; 1 个数字小于此数。</p>
+
+<p>算法的总体思想是这样的：在每一轮迭代中，选取数组 A 中的一部分和数组 B 中的一部分，根据一些简单的运算，分别舍掉 A 和 B 中的一些数，组成两个新的数组 A&#8217; 和 B&#8217;，计算新的 k&#8217;（因为舍掉一些数字可能导致上一轮的 k 变得更小），并进入下一轮迭代。注意到数组 A 和 B 在计算过程中会不断变得更小，出现多个版本，我用 A0 和 B0 代表最初输入的数组，用 Ai，Bi 表示经过第 i 次迭代之后 A，B 的版本，同理 k0 是最初的输入，ki 表示经过第 i 次迭代之后的 k。</p>
+
+<p>分析我们求中位数第一步的思路：假设 C 的中位数的下标是 k，也就是说<strong> A 和 B 中总计应该恰好有 k &ndash; 1 个数小于此数</strong>，取数组 A 的中位数（编号 kA）和数组 B 的中位数（编号 kB），比较 A[kA] 和 B[kB] 的大小关系，如果 A[kA] > B[kB]，我们令 A&#8217; = A[:kA + 1]，B&#8217; = B[kB + 1:]，同时 k&#8217; = k &ndash; kB，进入下一轮迭代，其关键思想是，如果 A[kA] > B[kB]，那么数组 B 中 B[kB] 以及 B[kB] 之前的所有数字都不可能会是 C 的中位数，同样 A 中 A[kA] 之后的所有数字也都不可能，保证这一结论成立<strong>最关键</strong>的条件是，kA + kB = k，也就是说，如果 B[kB] 是 C 的中位数，那么一定有 A[kA] &lt; B[kB] 且 A[kA + 1] > B[kB]，否则 A，B 中比 B[kB] 小的数的个数加起来就不是 k &ndash; 1。此外，因为 B 中舍去了 kB 个肯定在小于中位数的数字，所以最初所求第 k 大的数字在新数组 C&#8217; 中变成第 k &ndash; kB 大的数字。</p>
+
+<p>借鉴这个方法，我们可以使用如下算法：对于每一次迭代，选取 kA 和 kB，使得 kA + kB = k，然后比较 A[kA] 和 B[kB] 的大小，如果</p>
+
+<ol>
+<li>A[kA] > B[kB], 令 A&#8217; = A[:kA + 1]，B&#8217; = [kB + 1:]，k&#8217; = k &ndash; kB</li>
+<li>A[kA] &lt; B[kB]，令 A&#8217; = A[kA + 1:]，B&#8217; = [:kB + 1]，k&#8217; = k &ndash; kA</li>
+</ol>
+
+
+<p>终止条件可以有很多种，比如 k == 1 或者 A，B 任意一个长度变成 0。</p>
+
+<p>在这个算法中 kA 和 kB 的选取直接影响到执行的效率，我的思路是在理想情况下，选取的 kA 和 kB 应当满足如下条件：k / len&copy; == kA / len(A) == kB / len(B), 也就是按照 k 在 C 中所处的位置比例来选取相应的 kA 和 kB。这种取法效率还是非常高的，考虑当 A 和 B 的长度相近的时候，按照该算法每次迭代可以舍去接近一半的数字；如果两个数组长短相差悬殊，则该算法能在一次迭代中舍去某一个数组中的大多数数字。结合一些优化，可以使得此算法非常高效：</p>
+
+<ol>
+<li>在每次迭代开始之前，检查 k 和数组长度的大小关系，如果某个数组长度大于 k，则只保留概数组前 k 个数字，该优化可保证每个数组的长度都不比 k 大；</li>
+<li></li>
+</ol>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+</div>
+
+
+
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style"><span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_reddit"></a>
+	<a class="jiathis_button_twitter"></a>
+	<a class="jiathis_button_fb"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_gmail"></a>
+	<a class="jiathis_button_douban"></a>
+	<a class="jiathis_button_tumblr"></a>
+	<a class="jiathis_button_yixin"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+	var jiathis_config={
+summary:"",
+		shortUrl:false,
+		hideMore:false
+	}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!--  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script> -->
+</div>
+
+	
+	</br>
+    <p class="meta">
+      
+        <a class="basic-alignment left nextprev" href="/blog/2014/05/20/ubuntu-fbvnc/" title="Previous Post: 如何写 Ubuntu 的 Framebuffer">&laquo; 如何写 Ubuntu 的 Framebuffer</a>
+      
+      
+        <a class="basic-alignment right nextprev" href="/blog/2014/07/06/summer-intern/" title="Next Post: 暑期实习开始">暑期实习开始 &raquo;</a>
+      
+    </p>
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Zealoct
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+</body>
+</html>

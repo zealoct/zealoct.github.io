@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Vim | Han]]></title>
-  <link href="http://hanjc.me/blog/categories/vim/atom.xml" rel="self"/>
-  <link href="http://hanjc.me/"/>
-  <updated>2014-07-13T01:25:56-07:00</updated>
-  <id>http://hanjc.me/</id>
+  <link href="http://zealoct.github.io/blog/categories/vim/atom.xml" rel="self"/>
+  <link href="http://zealoct.github.io/"/>
+  <updated>2014-12-03T15:06:43+08:00</updated>
+  <id>http://zealoct.github.io/</id>
   <author>
     <name><![CDATA[Zealoct]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Vim Efficiency Notes]]></title>
-    <link href="http://hanjc.me/blog/2014/02/24/vim-notes/"/>
-    <updated>2014-02-24T15:00:00-08:00</updated>
-    <id>http://hanjc.me/blog/2014/02/24/vim-notes</id>
+    <link href="http://zealoct.github.io/blog/2014/02/24/vim-notes/"/>
+    <updated>2014-02-24T15:00:00+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/02/24/vim-notes</id>
     <content type="html"><![CDATA[<p>关于Vim的一些容易被忽视、却又能提升使用体验和操作效率的操作细节。同时记录Vim中一些（我见到过的）比较实用的配置，分享的同时也给自己留个备忘吧。
 一下子总结不完整，慢慢更新。</p>
 

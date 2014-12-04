@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Algorithm | Han]]></title>
-  <link href="http://hanjc.me/blog/categories/algorithm/atom.xml" rel="self"/>
-  <link href="http://hanjc.me/"/>
-  <updated>2014-07-13T01:25:56-07:00</updated>
-  <id>http://hanjc.me/</id>
+  <link href="http://zealoct.github.io/blog/categories/algorithm/atom.xml" rel="self"/>
+  <link href="http://zealoct.github.io/"/>
+  <updated>2014-12-03T15:06:43+08:00</updated>
+  <id>http://zealoct.github.io/</id>
   <author>
     <name><![CDATA[Zealoct]]></name>
     
@@ -14,10 +14,48 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Median of Two Sorted Arrays]]></title>
+    <link href="http://zealoct.github.io/blog/2014/06/11/median-of-two-sorted/"/>
+    <updated>2014-06-11T14:44:23+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/06/11/median-of-two-sorted</id>
+    <content type="html"><![CDATA[<p><strong>题目</strong>：给定两个有序数组，求这两个数组合并之后的中位数，要求时间复杂度是 <strong>O(log (m+n))</strong>。</p>
+
+<p>使用归并排序的思想，很容易在 O(m+n) 的复杂度内解决该问题，但题目要求是是 O(log (m+n))，所以并不能采用简单粗暴的方法去解。观察这个复杂度公式，很容易让人联想到是否可以利用二分去解，大致思考下仿佛也是可以的：第一步先取两个数组 A 和 B 的中位数，根据他们的大小关系在两个数组中分别舍掉一半；但是顺着这个思路进行到第二步的时候就出现问题了，因为舍掉了一些数，这一步中我们<strong>需要寻找的目标不再新数组的中位数了</strong>，问题归结为<strong>给定两个有序数组，如何寻找两个数组合并之后第 k 大的数</strong>。</p>
+
+<!-- more -->
+
+
+<p>先定义一下需要用到的字母，A 和 B 是两个输入数组，均为增序，C 是把 A，B 合并之后形成的数组，依然是增序，k 是目标数字在数组 C 中的序号，需要特别声明的是，在整个算法的解释中，我均采用了从 1 开始编号的方法，因此编号为 k 的数字实际上可以认为是第 k 大的数字，也就是说数组中有 k &ndash; 1 个数字小于此数。</p>
+
+<p>算法的总体思想是这样的：在每一轮迭代中，选取数组 A 中的一部分和数组 B 中的一部分，根据一些简单的运算，分别舍掉 A 和 B 中的一些数，组成两个新的数组 A' 和 B'，计算新的 k'（因为舍掉一些数字可能导致上一轮的 k 变得更小），并进入下一轮迭代。注意到数组 A 和 B 在计算过程中会不断变得更小，出现多个版本，我用 A0 和 B0 代表最初输入的数组，用 Ai，Bi 表示经过第 i 次迭代之后 A，B 的版本，同理 k0 是最初的输入，ki 表示经过第 i 次迭代之后的 k。</p>
+
+<p>分析我们求中位数第一步的思路：假设 C 的中位数的下标是 k，也就是说<strong> A 和 B 中总计应该恰好有 k &ndash; 1 个数小于此数</strong>，取数组 A 的中位数（编号 kA）和数组 B 的中位数（编号 kB），比较 A[kA] 和 B[kB] 的大小关系，如果 A[kA] > B[kB]，我们令 A' = A[:kA + 1]，B' = B[kB + 1:]，同时 k' = k &ndash; kB，进入下一轮迭代，其关键思想是，如果 A[kA] > B[kB]，那么数组 B 中 B[kB] 以及 B[kB] 之前的所有数字都不可能会是 C 的中位数，同样 A 中 A[kA] 之后的所有数字也都不可能，保证这一结论成立<strong>最关键</strong>的条件是，kA + kB = k，也就是说，如果 B[kB] 是 C 的中位数，那么一定有 A[kA] &lt; B[kB] 且 A[kA + 1] > B[kB]，否则 A，B 中比 B[kB] 小的数的个数加起来就不是 k &ndash; 1。此外，因为 B 中舍去了 kB 个肯定在小于中位数的数字，所以最初所求第 k 大的数字在新数组 C' 中变成第 k &ndash; kB 大的数字。</p>
+
+<p>借鉴这个方法，我们可以使用如下算法：对于每一次迭代，选取 kA 和 kB，使得 kA + kB = k，然后比较 A[kA] 和 B[kB] 的大小，如果</p>
+
+<ol>
+<li>A[kA] > B[kB], 令 A' = A[:kA + 1]，B' = [kB + 1:]，k' = k &ndash; kB</li>
+<li>A[kA] &lt; B[kB]，令 A' = A[kA + 1:]，B' = [:kB + 1]，k' = k &ndash; kA</li>
+</ol>
+
+
+<p>终止条件可以有很多种，比如 k == 1 或者 A，B 任意一个长度变成 0。</p>
+
+<p>在这个算法中 kA 和 kB 的选取直接影响到执行的效率，我的思路是在理想情况下，选取的 kA 和 kB 应当满足如下条件：k / len&copy; == kA / len(A) == kB / len(B), 也就是按照 k 在 C 中所处的位置比例来选取相应的 kA 和 kB。这种取法效率还是非常高的，考虑当 A 和 B 的长度相近的时候，按照该算法每次迭代可以舍去接近一半的数字；如果两个数组长短相差悬殊，则该算法能在一次迭代中舍去某一个数组中的大多数数字。结合一些优化，可以使得此算法非常高效：</p>
+
+<ol>
+<li>在每次迭代开始之前，检查 k 和数组长度的大小关系，如果某个数组长度大于 k，则只保留概数组前 k 个数字，该优化可保证每个数组的长度都不比 k 大；</li>
+<li></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[简单的递归和动态规划]]></title>
-    <link href="http://hanjc.me/blog/2014/04/04/recursion-and-dp/"/>
-    <updated>2014-04-04T22:31:50-07:00</updated>
-    <id>http://hanjc.me/blog/2014/04/04/recursion-and-dp</id>
+    <link href="http://zealoct.github.io/blog/2014/04/05/recursion-and-dp/"/>
+    <updated>2014-04-05T13:31:50+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/04/05/recursion-and-dp</id>
     <content type="html"><![CDATA[<h3>题目：WordBreak</h3>
 
 <p>首先定义如下表示</p>
@@ -139,9 +177,9 @@ for i = n+1..L { #loop2
   
   <entry>
     <title type="html"><![CDATA[Kosaraju算法——关于图的后序遍历的特征]]></title>
-    <link href="http://hanjc.me/blog/2014/01/04/postordering-dfs/"/>
-    <updated>2014-01-04T03:27:50-08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/04/postordering-dfs</id>
+    <link href="http://zealoct.github.io/blog/2014/01/04/postordering-dfs/"/>
+    <updated>2014-01-04T19:27:50+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/01/04/postordering-dfs</id>
     <content type="html"><![CDATA[<p><a href="http://en.wikipedia.org/wiki/Kosaraju%27s_algorithm">Kosaraju算法</a>是一种常见的求图的强联通分量的算法，该算法先从任意结点开始对原图G进行一次DFS后序遍历，之后依据第一次DFS的结果的反向序列（即根据reverse postordering），对原图的反向图G'进行前序的DFS。在第二次DFS中，每个联通分量即为一个强联通分量。</p>
 
 <p>算法是很简单，不过之前并没有完全搞明白，昨天晚上仔细想了下，总算弄明白了。事实上后序遍历一个图得到的序列包含了原图重要的结构信息，正是这些结构信息保证了第二次DFS能得到正确的结果。</p>
@@ -198,9 +236,9 @@ for i = n+1..L { #loop2
   
   <entry>
     <title type="html"><![CDATA[变种2-SUM问题——优化O(n)算法中的常数 ]]></title>
-    <link href="http://hanjc.me/blog/2013/08/19/two-sum-variant/"/>
-    <updated>2013-08-19T01:46:00-07:00</updated>
-    <id>http://hanjc.me/blog/2013/08/19/two-sum-variant</id>
+    <link href="http://zealoct.github.io/blog/2013/08/19/two-sum-variant/"/>
+    <updated>2013-08-19T16:46:00+08:00</updated>
+    <id>http://zealoct.github.io/blog/2013/08/19/two-sum-variant</id>
     <content type="html"><![CDATA[<p>Algorithms: Design and Analysis, Part 1 这门课的第六个编程作业的第一道题，之前的编程作业题都比较直观，而这一题需要用到一点简单的优化，相比其他的题目有意思多了。</p>
 
 <h3>题目描述：</h3>

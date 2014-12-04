@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Distributed Systems | Han]]></title>
-  <link href="http://hanjc.me/blog/categories/distributed-systems/atom.xml" rel="self"/>
-  <link href="http://hanjc.me/"/>
-  <updated>2014-07-13T01:25:56-07:00</updated>
-  <id>http://hanjc.me/</id>
+  <link href="http://zealoct.github.io/blog/categories/distributed-systems/atom.xml" rel="self"/>
+  <link href="http://zealoct.github.io/"/>
+  <updated>2014-12-03T15:06:43+08:00</updated>
+  <id>http://zealoct.github.io/</id>
   <author>
     <name><![CDATA[Zealoct]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Notes on Paxos Made Simple]]></title>
-    <link href="http://hanjc.me/blog/2014/02/12/paxos/"/>
-    <updated>2014-02-12T00:21:02-08:00</updated>
-    <id>http://hanjc.me/blog/2014/02/12/paxos</id>
+    <link href="http://zealoct.github.io/blog/2014/02/12/paxos/"/>
+    <updated>2014-02-12T16:21:02+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/02/12/paxos</id>
     <content type="html"><![CDATA[<p><a href="http://pdos.csail.mit.edu/6.824-2013/papers/paxos-simple.pdf">Origin paper link</a></p>
 
 <h3>Problem</h3>

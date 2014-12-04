@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Notes | Han]]></title>
-  <link href="http://hanjc.me/blog/categories/notes/atom.xml" rel="self"/>
-  <link href="http://hanjc.me/"/>
-  <updated>2014-07-13T01:25:56-07:00</updated>
-  <id>http://hanjc.me/</id>
+  <link href="http://zealoct.github.io/blog/categories/notes/atom.xml" rel="self"/>
+  <link href="http://zealoct.github.io/"/>
+  <updated>2014-12-03T15:06:43+08:00</updated>
+  <id>http://zealoct.github.io/</id>
   <author>
     <name><![CDATA[Zealoct]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Notes on iOS Security Whitepaper]]></title>
-    <link href="http://hanjc.me/blog/2014/03/03/ios-security/"/>
-    <updated>2014-03-03T03:56:09-08:00</updated>
-    <id>http://hanjc.me/blog/2014/03/03/ios-security</id>
+    <link href="http://zealoct.github.io/blog/2014/03/03/ios-security/"/>
+    <updated>2014-03-03T19:56:09+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/03/03/ios-security</id>
     <content type="html"><![CDATA[<p>This notes is based on <em>iOS Security &ndash; February 2014</em>, origin link can be found <a href="http://images.apple.com/iphone/business/docs/iOS_Security_Feb14.pdf">here</a>.</p>
 
 <p>This paper gives a brief description of iOS security, including hardware security features and how iOS leverages these features.</p>
@@ -318,9 +318,9 @@ on the computer where the device is backed up. The backed-up data is <strong>re-
   
   <entry>
     <title type="html"><![CDATA[Vim Efficiency Notes]]></title>
-    <link href="http://hanjc.me/blog/2014/02/24/vim-notes/"/>
-    <updated>2014-02-24T15:00:00-08:00</updated>
-    <id>http://hanjc.me/blog/2014/02/24/vim-notes</id>
+    <link href="http://zealoct.github.io/blog/2014/02/24/vim-notes/"/>
+    <updated>2014-02-24T15:00:00+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/02/24/vim-notes</id>
     <content type="html"><![CDATA[<p>关于Vim的一些容易被忽视、却又能提升使用体验和操作效率的操作细节。同时记录Vim中一些（我见到过的）比较实用的配置，分享的同时也给自己留个备忘吧。
 一下子总结不完整，慢慢更新。</p>
 
@@ -389,9 +389,9 @@ A 是在本行行尾插入，I 是在本行行首插入。</p>
   
   <entry>
     <title type="html"><![CDATA[Notes on Paxos Made Simple]]></title>
-    <link href="http://hanjc.me/blog/2014/02/12/paxos/"/>
-    <updated>2014-02-12T00:21:02-08:00</updated>
-    <id>http://hanjc.me/blog/2014/02/12/paxos</id>
+    <link href="http://zealoct.github.io/blog/2014/02/12/paxos/"/>
+    <updated>2014-02-12T16:21:02+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/02/12/paxos</id>
     <content type="html"><![CDATA[<p><a href="http://pdos.csail.mit.edu/6.824-2013/papers/paxos-simple.pdf">Origin paper link</a></p>
 
 <h3>Problem</h3>

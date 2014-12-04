@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Framebuffer | Han]]></title>
-  <link href="http://hanjc.me/blog/categories/framebuffer/atom.xml" rel="self"/>
-  <link href="http://hanjc.me/"/>
-  <updated>2014-07-13T01:25:56-07:00</updated>
-  <id>http://hanjc.me/</id>
+  <link href="http://zealoct.github.io/blog/categories/framebuffer/atom.xml" rel="self"/>
+  <link href="http://zealoct.github.io/"/>
+  <updated>2014-12-03T15:06:43+08:00</updated>
+  <id>http://zealoct.github.io/</id>
   <author>
     <name><![CDATA[Zealoct]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[如何写 Ubuntu 的 Framebuffer]]></title>
-    <link href="http://hanjc.me/blog/2014/05/20/ubuntu-fbvnc/"/>
-    <updated>2014-05-20T05:26:25-07:00</updated>
-    <id>http://hanjc.me/blog/2014/05/20/ubuntu-fbvnc</id>
+    <link href="http://zealoct.github.io/blog/2014/05/20/ubuntu-fbvnc/"/>
+    <updated>2014-05-20T20:26:25+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/05/20/ubuntu-fbvnc</id>
     <content type="html"><![CDATA[<p>最近有个小项目，想在 Android 上跑一个通过直接读写 framebuffer 实现的 vnc 客户端，
 所以发现了这个 <a href="https://github.com/zohead/fbvnc">fbvnc</a>， 是 github 上一个小哥儿捣鼓的，基于现有的一个同名项目开发，专为嵌入式设备使用。这个小的 vnc 客户端的不足当然有很多，比如连基本的窗口都木有，直接占用了你整个 framebuffer，不能调整分辨率，巨慢无比，卡的紧了就直接挂，但是它有一个最大的优点，就是真的非常简单，除了一些基本的 Linux 库之外没有任何第三方的依赖。</p>
 

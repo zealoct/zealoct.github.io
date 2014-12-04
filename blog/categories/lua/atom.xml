@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Lua | Han]]></title>
-  <link href="http://hanjc.me/blog/categories/lua/atom.xml" rel="self"/>
-  <link href="http://hanjc.me/"/>
-  <updated>2014-07-13T01:25:56-07:00</updated>
-  <id>http://hanjc.me/</id>
+  <link href="http://zealoct.github.io/blog/categories/lua/atom.xml" rel="self"/>
+  <link href="http://zealoct.github.io/"/>
+  <updated>2014-12-03T15:06:43+08:00</updated>
+  <id>http://zealoct.github.io/</id>
   <author>
     <name><![CDATA[Zealoct]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Windows 下使用 Cocos2d-x 3.x + Lua 开发基础]]></title>
-    <link href="http://hanjc.me/blog/2014/07/06/cocos2d-lua-basic/"/>
-    <updated>2014-07-06T10:59:17-07:00</updated>
-    <id>http://hanjc.me/blog/2014/07/06/cocos2d-lua-basic</id>
+    <link href="http://zealoct.github.io/blog/2014/07/07/cocos2d-lua-basic/"/>
+    <updated>2014-07-07T01:59:17+08:00</updated>
+    <id>http://zealoct.github.io/blog/2014/07/07/cocos2d-lua-basic</id>
     <content type="html"><![CDATA[<p><a href="http://cocos2d-x.org/">Cocos2d-x</a> 是国内非常成熟的 2d 游戏开发引擎了，拥有非常广大的开发者群体和活跃的社区，支持 Windows、Linux、Mac OS、iOS、Android 和 Window Phone 等各个平台，其本身是用 C++ 语言实现的，主要提供了面向 C++ 的接口，也提供了对 Lua、object-c 和 JavaScript 的支持。我们的 minigame 要基于 Cocos（为简单起见，我就把 Cocos2d-x 称为 Cocos 了） 和 Lua 实现，这有好处也有弊端，Lua 作为一门脚本语言，开发起来确实非常快捷，不过 Cocos 社区 Lua 相关的文档和资料并不如 C++ 那么完备，使得上手的难度增加，而且 Lua 本质并不是面向对象的编程语言，我们编码时的一些 OO 的思想也要需要转变。</p>
 
 <p>出于对自己记忆力的极端不信任，决定把实习期遇到的关于 Cocos + Lua 的种种问题都记录下来，希望也能成为实习的成果之一吧！</p>
