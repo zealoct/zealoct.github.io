@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Algorithm on Zea&#39;s</title>
-    <link>http://hanjc.me/categories/algorithm/</link>
+    <link>/categories/algorithm/</link>
     <description>Recent content in Algorithm on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sat, 05 Apr 2014 13:31:50 +0800</lastBuildDate>
-    <atom:link href="http://hanjc.me/categories/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/categories/algorithm/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>简单的递归和动态规划</title>
-      <link>http://hanjc.me/post/2014-04-05-recursion-and-dp/</link>
+      <link>/post/2014-04-05-recursion-and-dp/</link>
       <pubDate>Sat, 05 Apr 2014 13:31:50 +0800</pubDate>
       
-      <guid>http://hanjc.me/post/2014-04-05-recursion-and-dp/</guid>
+      <guid>/post/2014-04-05-recursion-and-dp/</guid>
       <description>
 
 &lt;h3 id=&#34;题目-wordbreak:53826fc2dcb894551367a127137aed4e&#34;&gt;题目：WordBreak&lt;/h3&gt;
@@ -126,10 +126,10 @@ bool stat(n) {
     
     <item>
       <title>ds-tree</title>
-      <link>http://hanjc.me/post/2014-03-31-ds-tree/</link>
+      <link>/post/2014-03-31-ds-tree/</link>
       <pubDate>Mon, 31 Mar 2014 21:21:33 +0800</pubDate>
       
-      <guid>http://hanjc.me/post/2014-03-31-ds-tree/</guid>
+      <guid>/post/2014-03-31-ds-tree/</guid>
       <description>
 
 &lt;h2 id=&#34;binary-search-tree:668551676aee55c1093deeefc0b62506&#34;&gt;Binary Search Tree&lt;/h2&gt;

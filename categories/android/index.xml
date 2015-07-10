@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Android on Zea&#39;s</title>
-    <link>http://hanjc.me/categories/android/</link>
+    <link>/categories/android/</link>
     <description>Recent content in Android on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Tue, 20 May 2014 20:26:25 +0800</lastBuildDate>
-    <atom:link href="http://hanjc.me/categories/android/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/categories/android/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>如何写 Ubuntu 的 Framebuffer</title>
-      <link>http://hanjc.me/post/2014-05-20-ubuntu-fbvnc/</link>
+      <link>/post/2014-05-20-ubuntu-fbvnc/</link>
       <pubDate>Tue, 20 May 2014 20:26:25 +0800</pubDate>
       
-      <guid>http://hanjc.me/post/2014-05-20-ubuntu-fbvnc/</guid>
+      <guid>/post/2014-05-20-ubuntu-fbvnc/</guid>
       <description>
 
 &lt;p&gt;最近有个小项目，想在 Android 上跑一个通过直接读写 framebuffer 实现的 vnc 客户端，

@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>C on Zea&#39;s</title>
-    <link>http://hanjc.me/categories/c/</link>
+    <link>/categories/c/</link>
     <description>Recent content in C on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Wed, 05 Mar 2014 19:54:09 +0800</lastBuildDate>
-    <atom:link href="http://hanjc.me/categories/c/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/categories/c/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Linux 下 c 的扩展内联汇编</title>
-      <link>http://hanjc.me/post/2014-03-05-c-asm/</link>
+      <link>/post/2014-03-05-c-asm/</link>
       <pubDate>Wed, 05 Mar 2014 19:54:09 +0800</pubDate>
       
-      <guid>http://hanjc.me/post/2014-03-05-c-asm/</guid>
+      <guid>/post/2014-03-05-c-asm/</guid>
       <description>
 
 &lt;p&gt;简单总结了一下自己看到用到的一些内联汇编的知识点，并不是一个完整的总结，以后对内联汇编有了新的了解会慢慢扩充。&lt;/p&gt;

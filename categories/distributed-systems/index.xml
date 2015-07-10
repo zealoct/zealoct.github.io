@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Distributed Systems on Zea&#39;s</title>
-    <link>http://hanjc.me/categories/distributed-systems/</link>
+    <link>/categories/distributed-systems/</link>
     <description>Recent content in Distributed Systems on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Wed, 09 Apr 2014 22:01:37 +0800</lastBuildDate>
-    <atom:link href="http://hanjc.me/categories/distributed-systems/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/categories/distributed-systems/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>6.824 Lab1 MapReduce Notes</title>
-      <link>http://hanjc.me/post/2014-04-09-6-dot-824-mapreduce-notes/</link>
+      <link>/post/2014-04-09-6-dot-824-mapreduce-notes/</link>
       <pubDate>Wed, 09 Apr 2014 22:01:37 +0800</pubDate>
       
-      <guid>http://hanjc.me/post/2014-04-09-6-dot-824-mapreduce-notes/</guid>
+      <guid>/post/2014-04-09-6-dot-824-mapreduce-notes/</guid>
       <description>
 
 &lt;p&gt;作为 MIT 6.824 &lt;em&gt;分布式系统&lt;/em&gt; 这门课的第一个 Lab，其主要的目的是让学生熟悉下 Go 语言，因此不是特别难。事实上，2013 年的 Lab1 是做一个 P/B 架构的 LockService，感觉今年的这个 MapReduce 难度上有所下降，更加适合上手，而内容方面涉及了 MapReduce 的简单应用和实现，做完之后收获更大，总的来说整体水准高于去年的 LockService。&lt;/p&gt;
@@ -39,10 +39,10 @@ func Map(value string) *list.List {}&lt;/p&gt;
     
     <item>
       <title>6.824-lab3-notes</title>
-      <link>http://hanjc.me/post/2014-02-21-6-dot-824-lab3-notes/</link>
+      <link>/post/2014-02-21-6-dot-824-lab3-notes/</link>
       <pubDate>Fri, 21 Feb 2014 14:08:02 +0800</pubDate>
       
-      <guid>http://hanjc.me/post/2014-02-21-6-dot-824-lab3-notes/</guid>
+      <guid>/post/2014-02-21-6-dot-824-lab3-notes/</guid>
       <description>
 
 &lt;h2 id=&#34;pre-read:6c805deaca0efd9342e0670f4a49bd04&#34;&gt;Pre-read&lt;/h2&gt;
@@ -50,7 +50,7 @@ func Map(value string) *list.List {}&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;http://pdos.csail.mit.edu/6.824-2013/notes/l05.txt&#34;&gt;[Lecture Notes] Fault Tolerance: Paxos&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;http://pdos.csail.mit.edu/6.824-2013/papers/paxos-simple.pdf&#34;&gt;[Paper] Paxos Made Simple&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://hanjc.me/reading/papers/paxos-simple.html&#34;&gt;My Paxos Notes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;/reading/papers/paxos-simple.html&#34;&gt;My Paxos Notes&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Paxos 键值存储系统包括&lt;/p&gt;
@@ -116,10 +116,10 @@ func Map(value string) *list.List {}&lt;/p&gt;
     
     <item>
       <title>Notes on Paxos Made Simple</title>
-      <link>http://hanjc.me/post/2014-02-12-paxos/</link>
+      <link>/post/2014-02-12-paxos/</link>
       <pubDate>Wed, 12 Feb 2014 16:21:02 +0800</pubDate>
       
-      <guid>http://hanjc.me/post/2014-02-12-paxos/</guid>
+      <guid>/post/2014-02-12-paxos/</guid>
       <description>
 
 &lt;p&gt;&lt;a href=&#34;http://pdos.csail.mit.edu/6.824-2013/papers/paxos-simple.pdf&#34;&gt;Origin paper link&lt;/a&gt;&lt;/p&gt;
@@ -359,10 +359,10 @@ proposal it has tried to issue.&lt;/p&gt;
     
     <item>
       <title>6.824 Lab2 Notes</title>
-      <link>http://hanjc.me/post/2014-02-08-6-dot-824-lab2-notes/</link>
+      <link>/post/2014-02-08-6-dot-824-lab2-notes/</link>
       <pubDate>Sat, 08 Feb 2014 15:53:24 +0800</pubDate>
       
-      <guid>http://hanjc.me/post/2014-02-08-6-dot-824-lab2-notes/</guid>
+      <guid>/post/2014-02-08-6-dot-824-lab2-notes/</guid>
       <description>
 
 &lt;p&gt;Lab2要实现一个分布式键-值存储服务（key/value storage service），依然使用primary/backup的架构，支持&lt;strong&gt;Put(key, value)&lt;/strong&gt;和&lt;strong&gt;Get(key)&lt;/strong&gt;两种操作，所有的键-值都存储在P的内存中，不写入硬盘，在正常运行中要保证P/B的状态一致。此外，这个lab要求实现P/B的动态分配，所以在B能正常工作之前要先与P进行状态同步，而且服务器在挂掉之后可能恢复运行，成为新的B。为了使所有人（客户端、所有的服务器）看到的状态（即P/B分别是谁）一致，lab2中引入了视图服务（viewservice）作为一个控制服务器（master server），视图服务负责监控所有键-值服务器的连接状态，在P或B挂掉之后动态的指定新的。&lt;/p&gt;
