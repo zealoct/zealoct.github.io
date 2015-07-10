@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>Exploit Exercises - Nebula Level 06 &middot; jc han</title>
+
+  
+  <link rel="stylesheet" href="/css/poole.css">
+  <link rel="stylesheet" href="/css/hyde.css">
+  <link rel="stylesheet" href="/css/poole-overrides.css">
+  <link rel="stylesheet" href="/css/hyde-overrides.css">
+  <link rel="stylesheet" href="/css/hyde-x.css">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link href="/favicon.png" rel="icon">
+
+  
+  
+  
+  
+
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+</head>
+<body>
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      
+      <h1>jc han</h1>
+      
+    </div>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="/">Blog</a></li>
+      
+    </ul>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+      <a href="http://github.com/zealoct"><i class="fa fa-github-square fa-3x"></i></a>
+      
+      
+      
+      
+      <a href="http://twitter.com/zealoct"><i class="fa fa-twitter-square fa-3x"></i></a>
+      </li>
+    </ul>
+
+    <p>Copyright &copy; 2015 <a href="/license">License</a><br/>
+       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
+  </div>
+</div>
+
+
+<div class="content container">
+  <div class="post">
+    <h1>Exploit Exercises - Nebula Level 06</h1>
+    <span class="post-date">Jan 13, 2014 &middot; 1 minute read &middot; <a href="/post/2014-01-13-nebula-level06/#disqus_thread">Comments</a>
+    
+    <br/>
+    
+    <a class="label" href="/categories/security">Security</a><a class="label" href="/categories/exercises">Exercises</a><a class="label" href="/categories/nebula">Nebula</a>
+    </span>
+    
+
+<h3 id="about:07ae660d00a2e044202f8e8de81227df">About</h3>
+
+<p>The <em>flag06</em> account credentials came from a legacy unix system.</p>
+
+<p>To do this level, log in as the <em>level06</em> account with the password <em>level06</em> . Files for this level can be found in /home/flag06.</p>
+
+<!-- more -->
+
+<p>Check out /etc/passwd</p>
+
+<pre><code>flag06:ueqwOCnSGdsuM:993:993::/home/flag06:/bin/sh
+</code></pre>
+
+<p>Decrypted with John the Ripper, and got the login password.</p>
+
+<p><a href="http://www.governmentsecurity.org/articles/crack-unix-linux-passwords.html">reference</a></p>
+
+  </div>
+  <div id="disqus_thread"></div>
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = "hanjc";
+(function () {
+    var s = document.createElement('script'); s.async = true;
+    s.type = 'text/javascript';
+    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+}());
+</script>
+
+
+
+<script type="text/javascript">
+    var disqus_shortname = "hanjc";
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>Exploit Exercises - Nebula Level 13 &middot; jc han</title>
+
+  
+  <link rel="stylesheet" href="/css/poole.css">
+  <link rel="stylesheet" href="/css/hyde.css">
+  <link rel="stylesheet" href="/css/poole-overrides.css">
+  <link rel="stylesheet" href="/css/hyde-overrides.css">
+  <link rel="stylesheet" href="/css/hyde-x.css">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link href="/favicon.png" rel="icon">
+
+  
+  
+  
+  
+
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+</head>
+<body>
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      
+      <h1>jc han</h1>
+      
+    </div>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="/">Blog</a></li>
+      
+    </ul>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+      <a href="http://github.com/zealoct"><i class="fa fa-github-square fa-3x"></i></a>
+      
+      
+      
+      
+      <a href="http://twitter.com/zealoct"><i class="fa fa-twitter-square fa-3x"></i></a>
+      </li>
+    </ul>
+
+    <p>Copyright &copy; 2015 <a href="/license">License</a><br/>
+       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
+  </div>
+</div>
+
+
+<div class="content container">
+  <div class="post">
+    <h1>Exploit Exercises - Nebula Level 13</h1>
+    <span class="post-date">Jan 26, 2014 &middot; 3 minute read &middot; <a href="/post/2014-01-26-nebula-level13/#disqus_thread">Comments</a>
+    
+    <br/>
+    
+    <a class="label" href="/categories/security">Security</a><a class="label" href="/categories/exercises">Exercises</a><a class="label" href="/categories/nebula">Nebula</a>
+    </span>
+    
+
+<h3 id="about:d770d09b6be1c937de3594898fdf59fe">About</h3>
+
+<p>There is a security check that prevents the program from continuing execution if the user invoking it does not match a specific user id.</p>
+
+<p>To do this level, log in as the <em>level13</em> account with the password <em>level13</em> . Files for this level can be found in /home/flag13.</p>
+
+<!-- more -->
+
+<h3 id="source-code:d770d09b6be1c937de3594898fdf59fe">Source code</h3>
+
+<pre><code class="language-c">#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;string.h&gt;
+
+#define FAKEUID 1000
+
+int main(int argc, char **argv, char **envp)
+{
+	int c;
+	char token[256];
+
+	if(getuid() != FAKEUID) {
+		printf(&quot;Security failure detected. UID %d started us, we expect %d\n&quot;, getuid(), FAKEUID);
+		printf(&quot;The system administrators will be notified of this violation\n&quot;);
+		exit(EXIT_FAILURE);
+	}
+
+	// snip, sorry :)
+
+	printf(&quot;your token is %s\n&quot;, token);
+
+}
+
+</code></pre>
+
+<h3 id="solution:d770d09b6be1c937de3594898fdf59fe">Solution</h3>
+
+<p>There is no way for me to be uid 1000, but this executable which contains the token is right here, we cannot be stopped by a simple <code>if</code> branch.</p>
+
+<p>Disassemble the executable <em>flag13</em></p>
+
+<pre><code class="language-bash">level13@nebula:~$ objdump -D /home/flag13/flag13 &gt; /home/level13/flag13.asm
+</code></pre>
+
+<p>Go to the instruction corresponding to the last <em>printf()</em> in the c code, I thought I could read the password out directly from the memory location where <em>token</em> is stored. Turned out that <em>token</em> is calculated with mass of code. Well, as I cannot read the password directly, I could always change the execution flow and let the program print that out.</p>
+
+<p>```text flag13.asm
+080484c4 <main>:
+ 80484c4:       55                      push   %ebp
+ 80484c5:       89 e5                   mov    %esp,%ebp
+ 80484c7:       57                      push   %edi
+ 80484c8:       53                      push   %ebx
+ 80484c9:       83 e4 f0                and    $0xfffffff0,%esp
+ 80484cc:       81 ec 30 01 00 00       sub    $0x130,%esp
+ 80484d2:       8b 45 0c                mov    0xc(%ebp),%eax
+ 80484d5:       89 44 24 1c             mov    %eax,0x1c(%esp)
+ 80484d9:       8b 45 10                mov    0x10(%ebp),%eax
+ 80484dc:       89 44 24 18             mov    %eax,0x18(%esp)
+ 80484e0:       65 a1 14 00 00 00       mov    %gs:0x14,%eax
+ 80484e6:       89 84 24 2c 01 00 00    mov    %eax,0x12c(%esp)
+ 80484ed:       31 c0                   xor    %eax,%eax
+ 80484ef:       e8 cc fe ff ff          call   80483c0 <a href="mailto:getuid@plt">getuid@plt</a>
+ 80484f4:       3d e8 03 00 00          cmp    $0x3e8,%eax
+ 80484f9:       74 36                   je     8048531 <main+0x6d>
+ 80484fb:       e8 c0 fe ff ff          call   80483c0 <a href="mailto:getuid@plt">getuid@plt</a>
+ 8048500:       ba d0 86 04 08          mov    $0x80486d0,%edx
+ 8048505:       c7 44 24 08 e8 03 00    movl   $0x3e8,0x8(%esp)
+&hellip;</p>
+
+<pre><code>
+This is the snippet of function *main()*, note that line 16 compare *%eax* (which is the return value of function call *getuid()*) with *0x3e8*, and line 17 will jump to memory location 0x8048531 if they are equal.
+
+In a normal execution, these are apparantly not equal, but we could make it equal with *gdb*.
+
+1. copy *flag13* into /home/level13
+1. start it with *gdb*
+1. set a break point at 0x80484f4, which is the instruction to compare
+1. run the program
+1. modify %eax to 1000 at the break point
+1. continue run the program
+
+``` bash
+# start flag13 with gdb
+level13@nebula:~$ gdb flag13
+# set break point and run
+(gdb) b *0x80484f4 
+Breakpoint 1 at 0x80484f4
+(gdb) run
+Starting program: /home/level13/flag13
+# reach break point, let's take a look at where we are
+Breakpoint 1, 0x080484f4 in main ()
+(gdb) disassemble
+Dump of assembler code for function main:
+   0x080484e0 &lt;+28&gt;:    mov    %gs:0x14,%eax
+   0x080484e6 &lt;+34&gt;:    mov    %eax,0x12c(%esp)
+   0x080484ed &lt;+41&gt;:    xor    %eax,%eax
+   0x080484ef &lt;+43&gt;:    call   0x80483c0 &lt;getuid@plt&gt;
+=&gt; 0x080484f4 &lt;+48&gt;:    cmp    $0x3e8,%eax
+   0x080484f9 &lt;+53&gt;:    je     0x8048531 &lt;main+109&gt;
+   0x080484fb &lt;+55&gt;:    call   0x80483c0 &lt;getuid@plt&gt;
+# here we print the registers out, %eax is 1014
+(gdb) i r
+eax            0x3f6    1014
+ecx            0xbffff804       -1073743868
+...
+# change %eax
+(gdb) set $eax=1000
+(gdb) i r
+eax            0x3e8    1000
+ecx            0xbffff804       -1073743868
+...
+# continue execution 
+(gdb) continue
+Continuing.
+your token is b705702b-76a8-42b0-8844-3adabbe5ac58
+[Inferior 1 (process 31018) exited with code 063]
+</code></pre>
+
+<p>Now <em>su</em> to <em>flag13</em> with the token.</p>
+
+  </div>
+  <div id="disqus_thread"></div>
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = "hanjc";
+(function () {
+    var s = document.createElement('script'); s.async = true;
+    s.type = 'text/javascript';
+    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+}());
+</script>
+
+
+
+<script type="text/javascript">
+    var disqus_shortname = "hanjc";
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+</body>
+</html>

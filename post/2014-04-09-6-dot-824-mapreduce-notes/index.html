@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>6.824 Lab1 MapReduce Notes &middot; jc han</title>
+
+  
+  <link rel="stylesheet" href="/css/poole.css">
+  <link rel="stylesheet" href="/css/hyde.css">
+  <link rel="stylesheet" href="/css/poole-overrides.css">
+  <link rel="stylesheet" href="/css/hyde-overrides.css">
+  <link rel="stylesheet" href="/css/hyde-x.css">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link href="/favicon.png" rel="icon">
+
+  
+  
+  
+  
+
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+</head>
+<body>
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      
+      <h1>jc han</h1>
+      
+    </div>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="/">Blog</a></li>
+      
+    </ul>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+      <a href="http://github.com/zealoct"><i class="fa fa-github-square fa-3x"></i></a>
+      
+      
+      
+      
+      <a href="http://twitter.com/zealoct"><i class="fa fa-twitter-square fa-3x"></i></a>
+      </li>
+    </ul>
+
+    <p>Copyright &copy; 2015 <a href="/license">License</a><br/>
+       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
+  </div>
+</div>
+
+
+<div class="content container">
+  <div class="post">
+    <h1>6.824 Lab1 MapReduce Notes</h1>
+    <span class="post-date">Apr 9, 2014 &middot; 1 minute read &middot; <a href="/post/2014-04-09-6-dot-824-mapreduce-notes/#disqus_thread">Comments</a>
+    
+    <br/>
+    
+    <a class="label" href="/categories/exercises">Exercises</a><a class="label" href="/categories/distributed-systems">Distributed Systems</a>
+    </span>
+    
+
+<p>作为 MIT 6.824 <em>分布式系统</em> 这门课的第一个 Lab，其主要的目的是让学生熟悉下 Go 语言，因此不是特别难。事实上，2013 年的 Lab1 是做一个 P/B 架构的 LockService，感觉今年的这个 MapReduce 难度上有所下降，更加适合上手，而内容方面涉及了 MapReduce 的简单应用和实现，做完之后收获更大，总的来说整体水准高于去年的 LockService。</p>
+
+<p>Lab 共分为三个部分，Part I 要求在 MapReduce 上实现一个 WordCount，因为大部分的 MapReduce 框架都已经实现好了，所以这部分非常简单；支持代码（ Support code ）中的 MapReduce 是个非常简化的版本，没有 Master，顺序执行每一个 Map 和 Reduce 操作，Part II 的要求是实现一个简单的 Master； Part III 要在 Part II 的基础之上实现容忍客户端失败的情况。</p>
+
+<p>总的来讲，这个 Lab 中我们只需要实现一个简化版的 MapReduce 中的 Master Node 的逻辑部分。</p>
+
+<h3 id="part-i:9d64eb79111af9673b332797623c91f4">Part I</h3>
+
+<p>只有一点点代码要写，不过在动手之前还是要认真阅读支持代码，主要需要搞明白的是 Map 和 Reduce 函数的输入输出分别是什么：</p>
+
+<p>``` go wc.go
+func Map(value string) *list.List {}</p>
+
+<p>func Reduce(key string, values *list.List) string {}
+```</p>
+
+<p>为此需要看一看 mapreduce.go 中 DoMap 和 DoReduce 这两个方法。</p>
+
+  </div>
+  <div id="disqus_thread"></div>
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = "hanjc";
+(function () {
+    var s = document.createElement('script'); s.async = true;
+    s.type = 'text/javascript';
+    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+}());
+</script>
+
+
+
+<script type="text/javascript">
+    var disqus_shortname = "hanjc";
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+</body>
+</html>
