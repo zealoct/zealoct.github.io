@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>Exploit Exercises - Nebula Level 08 &middot; jc han</title>
+
+  
+  <link rel="stylesheet" href="http://hanjc.me/css/poole.css">
+  <link rel="stylesheet" href="http://hanjc.me/css/hyde.css">
+  <link rel="stylesheet" href="http://hanjc.me/css/poole-overrides.css">
+  <link rel="stylesheet" href="http://hanjc.me/css/hyde-overrides.css">
+  <link rel="stylesheet" href="http://hanjc.me/css/hyde-x.css">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link href="/favicon.png" rel="icon">
+
+  
+  
+  
+  
+
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+</head>
+<body>
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      
+      <h1>jc han</h1>
+      
+    </div>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="http://hanjc.me/">Blog</a></li>
+      
+    </ul>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+      <a href="http://github.com/zealoct"><i class="fa fa-github-square fa-3x"></i></a>
+      
+      
+      
+      
+      <a href="@zealoct"><i class="fa fa-twitter-square fa-3x"></i></a>
+      </li>
+    </ul>
+
+    <p>Copyright &copy; 2015 <a href="http://hanjc.me/license">License</a><br/>
+       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
+  </div>
+</div>
+
+
+<div class="content container">
+  <div class="post">
+    <h1>Exploit Exercises - Nebula Level 08</h1>
+    <span class="post-date">Jan 24, 2014 &middot; 1 minute read &middot; <a href="http://hanjc.me/post/2014-01-24-nebula-level08/#disqus_thread">Comments</a>
+    
+    <br/>
+    
+    <a class="label" href="http://hanjc.me/categories/security">Security</a><a class="label" href="http://hanjc.me/categories/exercises">Exercises</a><a class="label" href="http://hanjc.me/categories/nebula">Nebula</a>
+    </span>
+    
+
+<h3 id="about:5292a1ddbf8ffdedd6d2a347c8ea1260">About</h3>
+
+<p>World readable files strike again. Check what that user was up to, and use it to log into flag08 account.</p>
+
+<p>To do this level, log in as the <em>level08</em> account with the password <em>level08</em>. Files for this level can be found in /home/flag08.</p>
+
+<!-- more -->
+
+<h3 id="solution:5292a1ddbf8ffdedd6d2a347c8ea1260">Solution</h3>
+
+<p>用*level08*登录之后回看到一个名为*capture.pcap*的文件，记录了一次抓包的结果。把这个文件scp出来之后分析，中间有一处显示：</p>
+
+<pre><code>Password: backdoor...00Rm8.ate
+</code></pre>
+
+<p>看样子是*flag08*用户的密码，不过用过十六进制编辑器的小伙伴们都知道，&rdquo;.&ldquo;可能是任何空白字符，不能简单的认为密码就是“backdoor&hellip;00Rm8.ate”。查看这部分的十六进制，发现“.”对应的是0x7f，查了一下<a href="http://www.asciitable.com/">ASCII码表</a>发现0x7f是DEL，也就是删除键，所以实际的密码应该是“backd00Rm8.ate”。</p>
+
+<p>还挺会玩儿的，拿0替代了o……</p>
+
+  </div>
+  <div id="disqus_thread"></div>
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = "hanjc";
+(function () {
+    var s = document.createElement('script'); s.async = true;
+    s.type = 'text/javascript';
+    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+}());
+</script>
+
+
+
+<script type="text/javascript">
+    var disqus_shortname = "hanjc";
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+</body>
+</html>

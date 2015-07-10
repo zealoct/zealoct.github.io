@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Notes on Zea&#39;s</title>
+    <link>http://hanjc.me/categories/notes/</link>
+    <description>Recent content in Notes on Zea&#39;s</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 24 Feb 2014 15:00:00 +0800</lastBuildDate>
+    <atom:link href="http://hanjc.me/categories/notes/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Vim Efficiency Notes</title>
+      <link>http://hanjc.me/post/2014-02-24-vim-notes/</link>
+      <pubDate>Mon, 24 Feb 2014 15:00:00 +0800</pubDate>
+      
+      <guid>http://hanjc.me/post/2014-02-24-vim-notes/</guid>
+      <description>
+
+&lt;p&gt;关于Vim的一些容易被忽视、却又能提升使用体验和操作效率的操作细节。同时记录Vim中一些（我见到过的）比较实用的配置，分享的同时也给自己留个备忘吧。
+一下子总结不完整，慢慢更新。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h2 id=&#34;基本操作:1f4c62931b7f7b8d6df24780dbe9cdb4&#34;&gt;基本操作&lt;/h2&gt;
+
+&lt;p&gt;基本按照幸福感排序，排在前边的是我觉得用了之后一口气儿上五楼都不累的，稍微靠后一点排的就比较随意了。每一项第一行的*斜体字*是我认为该组合比较有用的场景。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;使用Ctrl+[ 替代Esc&lt;/strong&gt;，&lt;em&gt;任何时候&lt;/em&gt;&lt;/br&gt;
+Ctrl+[ 功能与Esc键完全相同，用这一快捷键的好处就不用解释了，大家都知道按Esc是件多么令人伤神的事情&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;X和x&lt;/strong&gt;，&lt;em&gt;任何时候&lt;/em&gt;&lt;/br&gt;
+X 是退格（Backspace），x 是删除（Delete）&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;使用Ctrl+e 和 Ctrl+y逐行翻滚页面&lt;/strong&gt;，&lt;em&gt;阅读（代码）&lt;/em&gt;&lt;/br&gt;
+这两个组合非常有用，作用分别是维持当前坐标位置不变，页面上滚和下滚一行&lt;/p&gt;
+
+&lt;p&gt;** #和* *&lt;em&gt;，*阅读代码&lt;/em&gt;&lt;/br&gt;
+#（shift+3）用来向上搜索当前光标所在单词，*（shift+8）用来向下搜索&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;%&lt;/strong&gt;，&lt;em&gt;阅读代码&lt;/em&gt;&lt;/br&gt;
+在相对应的两个括号之间跳转，当一段函数体非常长的时候能方便的从反括号跳至函数/循环/if等结构的开始处&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;+ 和 -&lt;/strong&gt;&lt;/br&gt;
++ 的功能是跳转到下一行行首，与之相对应，- 是跳转到上一行行首&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;J&lt;/strong&gt;&lt;/br&gt;
+删除行末换行符，在把多行连接成一行时非常有用&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;zz和zt&lt;/strong&gt;，&lt;em&gt;阅读&lt;/em&gt;&lt;/br&gt;
+将光标所在行置于屏幕中间/顶部，阅读代码时比较有用&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;H，M 和 L&lt;/strong&gt;, &lt;em&gt;代码、文章编辑&lt;/em&gt;&lt;/br&gt;
+H，M和L（注意是大写）用来将光标快速移动到当前屏幕的最顶行/中间行/最底行&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;使用m 和` （Esc下边那个按键）进行标记和跳转&lt;/strong&gt;&lt;/br&gt;
+先按m，然后随意输入一个字母，就能用该字母标记当前行，之后在当前文件任意位置可以按 ` + 之前标记的字母快速跳转到这一行。在被标记的行按m，加同样的字母可以取消标记，如果连续按两次`，则光标会在当前位置，和上一次的跳转位置之间来回切换&lt;/br&gt;
+此外，这里还可以使用*单引号*代替反引号，他们俩的功能是一样一样的&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;A 和 I&lt;/strong&gt;&lt;/br&gt;
+A 是在本行行尾插入，I 是在本行行首插入。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Ctrl+a和Ctrl+x&lt;/strong&gt;
+将当前光标所在位置处的数字加1/减1，比较好玩儿的命令，一般用不到，不过用到的话确实很方便&lt;/p&gt;
+
+&lt;h2 id=&#34;配置:1f4c62931b7f7b8d6df24780dbe9cdb4&#34;&gt;配置&lt;/h2&gt;
+
+&lt;h4 id=&#34;wildmode-wildmenu:1f4c62931b7f7b8d6df24780dbe9cdb4&#34;&gt;wildmode, wildmenu&lt;/h4&gt;
+
+&lt;p&gt;输入命令&lt;code&gt;:set wildmode=list:longest,full&lt;/code&gt;和&lt;code&gt;:set wildmenu&lt;/code&gt;，在vim窗口下方会出现一条menu，当需要补全的时候（例如&lt;code&gt;:e&lt;/code&gt;命令打开新文件，或者输入&lt;code&gt;:s&lt;/code&gt;后希望模糊搜索所有s开头的vim命令），按Tab键时自动补全时行为会变为：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;出现一个list，为当前目录下所有文件，此时可进行并再次按Tab补全&lt;/li&gt;
+&lt;li&gt;跳至列表第一个选项，或者（如果第1步中输入了文件开头字母）自动补全当前输入&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;默认行为没有步骤1，直接跳转第一个选项，而且不会显示整体列表，使用起来体验极差。&lt;/p&gt;
+
+&lt;!-- 字符串匹配、替换 --&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Notes on Paxos Made Simple</title>
+      <link>http://hanjc.me/post/2014-02-12-paxos/</link>
+      <pubDate>Wed, 12 Feb 2014 16:21:02 +0800</pubDate>
+      
+      <guid>http://hanjc.me/post/2014-02-12-paxos/</guid>
+      <description>
+
+&lt;p&gt;&lt;a href=&#34;http://pdos.csail.mit.edu/6.824-2013/papers/paxos-simple.pdf&#34;&gt;Origin paper link&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;problem:6bec04965a0098d4a556c94eb1c1658c&#34;&gt;Problem&lt;/h3&gt;
+
+&lt;p&gt;safety requirements&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Only a value that has been proposed may be chosen&lt;/li&gt;
+&lt;li&gt;Only a single value is chosen, and&lt;/li&gt;
+&lt;li&gt;A process never learns that a value has been chosen unless it
+acutally has been&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;three agents: &lt;em&gt;proposers&lt;/em&gt;(P), &lt;em&gt;acceptors&lt;/em&gt;(A), and &lt;em&gt;learners&lt;/em&gt;(L).&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;use customary asynchronous, non-Byzantine model, in which:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Agents operate at arbitrary speed, may fail by stopping, and may
+restart&lt;/li&gt;
+&lt;li&gt;Messages can take arbitrarily long to be delivered, can be duplicated,
+and can be lost, but they are not corrupted.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;choosing-a-value:6bec04965a0098d4a556c94eb1c1658c&#34;&gt;Choosing a Value&lt;/h3&gt;
+
+&lt;p&gt;Single acceptor, simple but unsatisfacroty, suffer from failure
+of this single acceptor.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Majority of the agents?&lt;/strong&gt;
+Literally understand as more than half of acceptors.&lt;/p&gt;
+
+&lt;p&gt;To ensure that only a single value is chosen, we can let a large
+enough set consist of &lt;strong&gt;any majority of the agents&lt;/strong&gt;. Because any two
+majorities have at least one acceptor in common, this works if an
+acceptor can accept at most one value.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;P1. An acceptor must accept the first proposal that it receives.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This ensure that the value got chosen if there is only one value
+proposed. But raises the problem when more than two values are
+proposed and each got same amount of acceptors(3 values, each &lt;sup&gt;1&lt;/sup&gt;&amp;frasl;&lt;sub&gt;3&lt;/sub&gt; of
+all acceptors).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Acceptor must be allowed to accept more than one proposals&lt;/strong&gt;
+Though there can be only one value that got chosen, but each acceptor indeed could accept more than one proposals.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Proposal number is global? or for each acceptor? How to achieve global?&lt;/strong&gt;
+It should be global.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;P2. If a proposal with value &lt;em&gt;v&lt;/em&gt; is chosen, then every higher-numbered
+proposal that is chosen has value &lt;em&gt;v&lt;/em&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;P2 guarantees the crucial safety property that only a single value is chosen.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;P2a. If a proposal with value &lt;em&gt;v&lt;/em&gt; is chosen, then every higher-numbered
+proposal accepted by any acceptor has value &lt;em&gt;v&lt;/em&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;P1 may conficts P2a in some situations.
+Suppose a proposal was chosen with some particular acceptor &lt;em&gt;c&lt;/em&gt; never
+having received any proposal. A new proposer &amp;ldquo;wakes up&amp;rdquo; then and
+issues a higher-numbered proposal with a different value. P1 requires
+&lt;em&gt;c&lt;/em&gt; to accept this proposal, violating P2a.&lt;/p&gt;
+
+&lt;p&gt;Maintaining both P1 and P2a requires strengthening P2a to:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;P2b . If a proposal with value &lt;em&gt;v&lt;/em&gt; is chosen, then every higher-numbered
+proposal issued by any proposer has value &lt;em&gt;v&lt;/em&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;Difference between concepts &lt;em&gt;chosen&lt;/em&gt;, &lt;em&gt;accept&lt;/em&gt; and &lt;em&gt;issue&lt;/em&gt;?&lt;/strong&gt; &lt;em&gt;Chosen&lt;/em&gt; is a global state that a value &lt;em&gt;v&lt;/em&gt; has been accepted by majority of acceptors, the whole system can only choose one value. &lt;em&gt;Accept&lt;/em&gt; is the behavior of a single acceptor, the acceptor can change its mind to accept another newer proposal at any time. &lt;em&gt;Issue&lt;/em&gt; is the behavior of a single proposer, if a value &lt;em&gt;v&lt;/em&gt; is &lt;em&gt;chosen&lt;/em&gt; (globally accepted), then all proposers would make compromise to propose &lt;em&gt;v&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Given that &lt;strong&gt;any two sets of majaority acceptors must have at least one acceptor in common&lt;/strong&gt;. We want the following invariance meet:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;P2c. For any &lt;em&gt;v&lt;/em&gt; and &lt;em&gt;n&lt;/em&gt;, if a proposal with value &lt;em&gt;v&lt;/em&gt; and number &lt;em&gt;n&lt;/em&gt; is
+issued, then there is a set &lt;em&gt;S&lt;/em&gt; consisting of a majority of
+acceptors such that
+either (a) no acceptor in &lt;em&gt;S&lt;/em&gt; has accepted any proposal numbered less
+than &lt;em&gt;n&lt;/em&gt;, or (b) &lt;em&gt;v&lt;/em&gt; is the value of the highest-numbered proposal
+among all proposals numbered less than &lt;em&gt;n&lt;/em&gt; accepted by the acceptors
+in &lt;em&gt;S&lt;/em&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;To maintain the invariance of P2c, a proposer that wants to issue a
+proposal numbered &lt;em&gt;n&lt;/em&gt; must learn the highest-numbered proposal with
+number less than &lt;em&gt;n&lt;/em&gt; that has been or will be accepted by each
+acceptor in some majority of acceptors.&lt;/p&gt;
+
+&lt;p&gt;It is hard to predict future acceptances, instead, the proposer controls
+it by extracting a &lt;strong&gt;promise&lt;/strong&gt; that the acceptors won&amp;rsquo;t accept any more
+proposals numbered less than &lt;em&gt;n&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Note that P2c guaranteed that &lt;strong&gt;if a value &lt;em&gt;v&lt;/em&gt; is chosen, then the highest-numbered proposal must have value *v&lt;/strong&gt;*.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Algorithm for a proposer to issue proposals&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;A proposer choses &lt;em&gt;n&lt;/em&gt;, sends a request to each acceptors in some
+set, asking:
+
+&lt;ol&gt;
+&lt;li&gt;Promise it won&amp;rsquo;t accept a proposal numbered less than &lt;em&gt;n&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;The proposal with highest number less than &lt;em&gt;n&lt;/em&gt; that it has accepted.&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;The proposer can issue a proposal with number &lt;em&gt;n&lt;/em&gt; and &lt;em&gt;v&lt;/em&gt; if it
+receives responses from a majority of the acceptors, where &lt;em&gt;v&lt;/em&gt; is the
+value of the highest-numbered proposal among the responses, or is any
+value if responders reported no proposals.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The request in step 1 is a &lt;em&gt;prepare&lt;/em&gt; request, and that in step 2 is
+an &lt;em&gt;accept&lt;/em&gt; request.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;How an acceptor responds to requests?&lt;/strong&gt;
+It can always respond to a &lt;em&gt;prepare&lt;/em&gt; request, and it can respond to an
+&lt;em&gt;accept&lt;/em&gt; request iff it has not promised not to.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;P1a. An acceptor can accept a proposal numbered &lt;em&gt;n&lt;/em&gt; iff it has not
+responded to a prepare request having a number greater than &lt;em&gt;n&lt;/em&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;An acceptor needs to remember only the highest-numbered proposal that
+it has ever accepted and the number of the highest-numbered prepare
+request to which it has responded.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note that the proposer can always abandon a proposal and forget all about it—as long as it never tries to issue another proposal with the same number. What if a proposer got a promise but never issued?&lt;/strong&gt;
+Just like a network package lose. Will be eventually replaced by
+other proposals.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Phase 1.&lt;/strong&gt;
+&lt;strong&gt;(a)&lt;/strong&gt; A proposer selects a proposal number &lt;em&gt;n&lt;/em&gt; and sends a &lt;em&gt;prepare&lt;/em&gt;
+request with number &lt;em&gt;n&lt;/em&gt; to a majority of acceptors.
+&lt;strong&gt;(b)&lt;/strong&gt; If an acceptor receives a &lt;em&gt;prepare&lt;/em&gt; request with number &lt;em&gt;n&lt;/em&gt; greater
+than that of any &lt;em&gt;prepare&lt;/em&gt; request to which it has already responded,
+then it responds to the request with a promise not to accept any more
+proposals numbered less than &lt;em&gt;n&lt;/em&gt; and with the highest-numbered proposal
+(if any) that it has accepted.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Phase 2.&lt;/strong&gt;
+&lt;strong&gt;(a)&lt;/strong&gt; If the proposer receives a response to its &lt;em&gt;prepare&lt;/em&gt; requests
+(numbered &lt;em&gt;n&lt;/em&gt;) from a majority of acceptors, then it sends an &lt;em&gt;accept&lt;/em&gt;
+request to each of those acceptors for a proposal numbered &lt;em&gt;n&lt;/em&gt; with a
+value &lt;em&gt;v&lt;/em&gt; , where &lt;em&gt;v&lt;/em&gt; is the value of the highest-numbered proposal
+among the responses, or is any value if the responses reported no
+proposals.
+&lt;strong&gt;(b)&lt;/strong&gt; If an acceptor receives an &lt;em&gt;accept&lt;/em&gt; request for a proposal numbered
+&lt;em&gt;n&lt;/em&gt;, it accepts the proposal unless it has already responded to a
+&lt;em&gt;prepare&lt;/em&gt; request having a number greater than &lt;em&gt;n&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Optimization&lt;/strong&gt;: abandon a proposal if some proposers has begun trying to
+issue a higher-numbered one.&lt;/p&gt;
+
+&lt;h3 id=&#34;learning-a-chosen-value:6bec04965a0098d4a556c94eb1c1658c&#34;&gt;Learning a Chosen Value&lt;/h3&gt;
+
+&lt;p&gt;Acceptors return responds to &lt;em&gt;accept&lt;/em&gt; requests to all the learners,
+the number of responds that required equals to the product of the number
+of acceptors and the number of learners.&lt;/p&gt;
+
+&lt;p&gt;Acceptors could return only to a set of distinguished learners, these
+learners will inform other learners.&lt;/p&gt;
+
+&lt;h3 id=&#34;progress:6bec04965a0098d4a556c94eb1c1658c&#34;&gt;Progress&lt;/h3&gt;
+
+&lt;p&gt;It’s easy to construct a scenario in which two proposers each keep
+issuing a sequence of proposals with increasing numbers, none of which
+are ever chosen.&lt;/p&gt;
+
+&lt;p&gt;To guarantee progress, a distinguished proposer must be selected as the
+only one to try issuing proposals.&lt;/p&gt;
+
+&lt;p&gt;Result of &lt;a href=&#34;http://dl.acm.org/citation.cfm?id=214121&#34;&gt;Fischer, Lynch, and Patterson&lt;/a&gt; shows a reliable algorithm
+to electing a proposer must use either randomness or real time.&lt;/p&gt;
+
+&lt;h3 id=&#34;implementation:6bec04965a0098d4a556c94eb1c1658c&#34;&gt;Implementation&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://dl.acm.org/citation.cfm?id=279229&#34;&gt;The part-time parliament&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;No two proposals are ever issued with the same number?&lt;/strong&gt;
+Different proposers choose their numbers from disjoint sets of numbers,
+each proposer remembers (in stable storage) the highest-numbered
+proposal it has tried to issue.&lt;/p&gt;
+
+&lt;h2 id=&#34;my-summary:6bec04965a0098d4a556c94eb1c1658c&#34;&gt;My Summary&lt;/h2&gt;
+
+&lt;p&gt;Behavior of &lt;em&gt;Proposer&lt;/em&gt;, &lt;em&gt;Acceptor&lt;/em&gt; and &lt;em&gt;Learner&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;proposer:6bec04965a0098d4a556c94eb1c1658c&#34;&gt;Proposer&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;sends prepare request &lt;em&gt;n&lt;/em&gt; to all acceptors&lt;/li&gt;
+&lt;li&gt;after receives responds from majority of acceptors, choose a value &lt;em&gt;v&lt;/em&gt; according to responds
+
+&lt;ol&gt;
+&lt;li&gt;&lt;em&gt;v&lt;/em&gt; should be the value of the highest-numberd proposal in those responds&lt;/li&gt;
+&lt;li&gt;if none of responds returns any proposal, use arbitrary value&lt;/li&gt;
+&lt;li&gt;if any responds contains an error or a proposal whose number is bigger than &lt;em&gt;n&lt;/em&gt;, go to next step&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;repick a bigger &lt;em&gt;n&lt;/em&gt; and repeat step 1 &amp;amp; 2 until a value is chosen&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;acceptor:6bec04965a0098d4a556c94eb1c1658c&#34;&gt;Acceptor&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Acceptor should know the highest-numbered proposal it accepted &lt;em&gt;APa&lt;/em&gt; and the highest-numbered proposal it responsed &lt;em&gt;APr&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;Upon receiving a prepare request &lt;em&gt;P&lt;/em&gt;, compare &lt;em&gt;P.n&lt;/em&gt; with &lt;em&gt;APr.n&lt;/em&gt;
+
+&lt;ol&gt;
+&lt;li&gt;if &lt;em&gt;P.n&lt;/em&gt; &amp;gt; &lt;em&gt;APr.n&lt;/em&gt;, respond a promise and &lt;em&gt;APa&lt;/em&gt;, then change &lt;em&gt;APr&lt;/em&gt; to &lt;em&gt;P&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;if &lt;em&gt;P.n&lt;/em&gt; &amp;lt;= &lt;em&gt;APr.n&lt;/em&gt;, respond with some error or &lt;em&gt;APr&lt;/em&gt;?&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;Upon receiving a accept request &lt;em&gt;P&lt;/em&gt;
+
+&lt;ol&gt;
+&lt;li&gt;if &lt;em&gt;P.n&lt;/em&gt; &amp;gt;= &lt;em&gt;APr.n&lt;/em&gt;, accept it by making &lt;em&gt;APa&lt;/em&gt; equals to &lt;em&gt;P&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;if &lt;em&gt;P.n&lt;/em&gt; &amp;lt; &lt;em&gt;APr.n&lt;/em&gt;, abondon it&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;learner:6bec04965a0098d4a556c94eb1c1658c&#34;&gt;Learner&lt;/h3&gt;
+
+&lt;p&gt;TODO&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

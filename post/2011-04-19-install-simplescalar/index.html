@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>Install SimpleScalar on Ubuntu 10.10 with Gcc-4.4 &middot; jc han</title>
+
+  
+  <link rel="stylesheet" href="http://hanjc.me/css/poole.css">
+  <link rel="stylesheet" href="http://hanjc.me/css/hyde.css">
+  <link rel="stylesheet" href="http://hanjc.me/css/poole-overrides.css">
+  <link rel="stylesheet" href="http://hanjc.me/css/hyde-overrides.css">
+  <link rel="stylesheet" href="http://hanjc.me/css/hyde-x.css">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link href="/favicon.png" rel="icon">
+
+  
+  
+  
+  
+
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+</head>
+<body>
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      
+      <h1>jc han</h1>
+      
+    </div>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="http://hanjc.me/">Blog</a></li>
+      
+    </ul>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+      <a href="http://github.com/zealoct"><i class="fa fa-github-square fa-3x"></i></a>
+      
+      
+      
+      
+      <a href="@zealoct"><i class="fa fa-twitter-square fa-3x"></i></a>
+      </li>
+    </ul>
+
+    <p>Copyright &copy; 2015 <a href="http://hanjc.me/license">License</a><br/>
+       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
+  </div>
+</div>
+
+
+<div class="content container">
+  <div class="post">
+    <h1>Install SimpleScalar on Ubuntu 10.10 with Gcc-4.4</h1>
+    <span class="post-date">Apr 19, 2011 &middot; 3 minute read &middot; <a href="http://hanjc.me/post/2011-04-19-install-simplescalar/#disqus_thread">Comments</a>
+    </span>
+    
+
+<p>The project 1 of computer architecture is based on <em>SimplesSalar3.0</em>, and it is recommended to finished this project on <em>Redhat 9</em>, otherwise there would be some version problems. But I am used to writing code in my ubuntu and do not wanna reset up my whole development environment on <em>Redhat</em>. BTW, installing a new system is rather troublesome even on vm, I decided to install <em>SimplesSalar</em> on my ubuntu(it turns out to be much more troublesome than installing a new one…)</p>
+
+<h3 id="1:0ede656ad5422603e419e57764771235">1</h3>
+
+<p>You need flex and bison to install these things</p>
+
+<pre><code class="language-bash">$ sudo apt-get install bison flex
+</code></pre>
+
+<h3 id="2:0ede656ad5422603e419e57764771235">2</h3>
+
+<p>I was given the following packages:</p>
+
+<pre><code>simplesim-3v0d.gz
+simpletools-2v0.gz
+simpleutils-2v0.gz
+</code></pre>
+
+<p>also you could these packages from <a href="http://www.simplescalar.com/tools.html">here</a></p>
+
+<h3 id="3:0ede656ad5422603e419e57764771235">3</h3>
+
+<p>Set up some installation variables</p>
+
+<pre><code class="language-bash">$ export HOST=i386-unknown-linux
+$ export TARGET=sslittle-na-sstrix
+$ export IDIR=/home/yourname/simplescalar # path u wanna install simplescalar in
+</code></pre>
+
+<p>I also place the source packages in <em>$IDIR</em></p>
+
+<h3 id="4:0ede656ad5422603e419e57764771235">4</h3>
+
+<p>Extract source files</p>
+
+<pre><code class="language-bash">$ tar xvzf simplesim-3v0d.gz
+$ tar xvzf simpletools-2v0.gz
+$ tar xvzf simpleutils-2v0.gz
+</code></pre>
+
+<p>and u will get the following folders:
+<em>binutils-2.5.2</em>, <em>f2c-1994.09.27</em>, <em>gcc-2.6.3</em>, <em>glibc-1.09</em>, <em>simplesim-3.0</em>, <em>ssbig-na-sstrix</em>, <em>sslittle-na-sstrix</em></p>
+
+<h3 id="5:0ede656ad5422603e419e57764771235">5</h3>
+
+<p>Because the source code of simple code is out of date, we need to do some modifications on it</p>
+
+<ul>
+<li><p><strong>binutils-2.5.2/libiberty/functions.def</strong></br>
+Line: 36 </br>
+Action: comment out</br></br>
+Line: 56</br>
+Action: comment out</p></li>
+
+<li><p><strong>binutils-2.5.2/ld/ldlex.l</strong></br>
+Line: 476</br>
+Action: change <em>yy_current_buffer</em> to <em>YY_CURRENT_BUFFER</em></br></p></li>
+
+<li><p><strong>binutils-2.5.2/ld/ldmisc.c</strong></br>
+Line: 24</br>
+Action: change <em>varargs.h</em> to <em>stdarg.h</em></br></br>
+Line: 343 356 388 400</br>
+Action: change all four functions <em>info_msg()</em>, <em>einfo()</em>, <em>minfo()</em>, <em>finfo()</em> like this:</br></p></li>
+</ul>
+
+<pre><code class="language-c">343 void info_msg(const char* fmt, va_list ap)
+344 //va_dcl
+345 {
+346     char *fmt;
+347     va_list arg;
+348     /* va_start(arg);
+349     fmt = va_arg(arg, char *);
+350     vfinfo(stdout, fmt, arg);
+351     va_end(arg); */
+352 }
+</code></pre>
+
+<ul>
+<li><strong>gcc-2.6.3/cccp.c</strong></br>
+Line: 194</br>
+Action: comment out</br></li>
+<li><strong>gcc-2.6.3/cp/g++.c</strong></br>
+Line: 90</br>
+Action: comment out</br></li>
+<li><strong>gcc-2.6.3/sdbout.c</strong></br>
+Line: 56</br>
+Action: replace the whole line with ”#if 0”</br></li>
+<li><strong>gcc-2.6.3/gcc.c</strong></br>
+Line: 172</br>
+Action: comment out</br></li>
+</ul>
+
+<h3 id="6:0ede656ad5422603e419e57764771235">6</h3>
+
+<p>Install <em>binutil</em> and <em>simplesim</em>, and there should be no error anymore…</p>
+
+<pre><code class="language-bash">$ cd $IDIR/binutil-2.5.2
+$ ./configure --host=$HOST --target=$TARGET --with-gnu-as --with-gnu-ld --prefix=$IDIR
+$ make
+$ make install
+</code></pre>
+
+<p>after which there should be a folder named <em>bin</em> in your <em>$IDIR</em> directory</p>
+
+<pre><code class="language-bash">$ cd $IDIR/simplesim-3.0
+$ make config-pisa
+$ make
+</code></pre>
+
+<h3 id="7:0ede656ad5422603e419e57764771235">7</h3>
+
+<p>Build <em>gcc-2.6.3</em>, the most error-prone potion of all the work</p>
+
+<pre><code class="language-bash">$ cd $IDIR/gcc-2.6.3
+$ ./configure --host=$HOST --target=$TARGET --with-gnu-as --with-gnu-ld --prefix=$IDIR
+$ make LANGUAGES=c
+</code></pre>
+
+<p>After this, you would receive an error that lies in <em>insn-output.c</em>, here, once again you need to modify the source file of <em>gcc-2.6.3</em></p>
+
+<ul>
+<li><strong>gcc-2.6.3/insn-output.c</strong></br>
+Line: 675 750 823</br>
+Action: and a ‘\’ to the end of the line, and it will be</br></li>
+</ul>
+
+<pre><code class="language-c">675 return &quot;FIXME\n\
+750 return &quot;FIXME\n\
+823 return &quot;FIXME\n\
+</code></pre>
+
+<p>note that <em>insn-output.c</em> is generated by <em>flex</em> automatically, and your modification would be lost every time you make clean.</p>
+
+<p>Now, finally the gcc was able to compiled with no errors, and there are two steps left:</p>
+
+<pre><code class="language-bash">$ ../simplesim-3.0/sim-safe ./enquire -f &gt;! float.h-cross
+$ make install
+</code></pre>
+
+<h3 id="8:0ede656ad5422603e419e57764771235">8</h3>
+
+<p>Well, lets have a test on our <em>SimpleScalar</em></p>
+
+<pre><code class="language-bash">$IDIR/bin/sslittle-na-sstrix-gcc helloworld.c
+$IDIR/simplesim-3.0/sim-safe a.out
+</code></pre>
+
+<p>and it would print out “Hello World!”</p>
+
+  </div>
+  <div id="disqus_thread"></div>
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = "hanjc";
+(function () {
+    var s = document.createElement('script'); s.async = true;
+    s.type = 'text/javascript';
+    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+}());
+</script>
+
+
+
+<script type="text/javascript">
+    var disqus_shortname = "hanjc";
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+</body>
+</html>

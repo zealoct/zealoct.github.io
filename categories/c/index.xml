@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>C on Zea&#39;s</title>
+    <link>http://hanjc.me/categories/c/</link>
+    <description>Recent content in C on Zea&#39;s</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 05 Mar 2014 19:54:09 +0800</lastBuildDate>
+    <atom:link href="http://hanjc.me/categories/c/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Linux 下 c 的扩展内联汇编</title>
+      <link>http://hanjc.me/post/2014-03-05-c-asm/</link>
+      <pubDate>Wed, 05 Mar 2014 19:54:09 +0800</pubDate>
+      
+      <guid>http://hanjc.me/post/2014-03-05-c-asm/</guid>
+      <description>
+
+&lt;p&gt;简单总结了一下自己看到用到的一些内联汇编的知识点，并不是一个完整的总结，以后对内联汇编有了新的了解会慢慢扩充。&lt;/p&gt;
+
+&lt;p&gt;详细细节可以参考 gcc 关与扩展内联汇编的 &lt;a href=&#34;http://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Extended-Asm&#34;&gt;文档&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;格式说明:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;格式说明&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;__asm__　__volatile__(&amp;quot;Instruction List&amp;quot; : Output : Input : Clobber/Modify)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;冒号的使用原则（*O, I, C 分别指代 Output, Input, Clobber/Modify*）：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;C 为空，第三个冒号必须省略&lt;/li&gt;
+&lt;li&gt;O、I 为空时，前边的冒号（第一、二个）可选择性省略&lt;/li&gt;
+&lt;li&gt;O，I，C 中任何一个不为空，则之前的冒号均必须保留，如只有 I 不为空时，O 和 I 之前的冒号必须保留，只有 C 不为空时三个冒号都必须保留&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;合法的调用包括&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;__asm__(&amp;quot; &amp;quot; : : : &amp;quot;memory&amp;quot;);
+__asm__(&amp;quot; &amp;quot; : :);
+__asm__(&amp;quot;mov %1, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a));
+__asm__(&amp;quot;mov %1, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a) :);
+__asm__(&amp;quot;mov %%edx, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a) : &amp;quot;d&amp;quot;(var_d));
+__asm__(&amp;quot;mov %%edx, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a) : : &amp;quot;ebx&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;下面分别介绍指令列表、输出、输入和修改声明这四个部分。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h2 id=&#34;指令列表:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;指令列表&lt;/h2&gt;
+
+&lt;p&gt;基本上和 .S 文件的格式是一样的，不同的是要加个引号。需要注意的是每一行中只能有一个指令，如果一行中包含多条指令，则必须用 &lt;code&gt;;&lt;/code&gt; 或换行符隔开。注意字符串中的换行符会被asm识别，但字符串以外、代码中的不会，参见一下示例&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// 换行符在字符串内，不需显示添加换行符
+__asm__(&amp;quot;mov %edx, %eax
+         mov %ebx, %edx&amp;quot;)
+
+// 换行符在字符串外，需显示添加换行符
+__asm__(&amp;quot;mov %edx, %eax\n&amp;quot;
+        &amp;quot;mov %ebx, %edx&amp;quot;)
+
+// 没有换行符，使用 ; 分隔
+__asm__(&amp;quot;mov %edx, %eax; mov %ebx, %edx&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;关于指令中百分号的使用，当使用了冒号时，指令中&lt;strong&gt;必须&lt;/strong&gt;使用 &lt;code&gt;%%&lt;/code&gt; 来作为寄存器前缀；当没有使用冒号时，&lt;strong&gt;必须&lt;/strong&gt;使用 &lt;code&gt;%&lt;/code&gt; 作为寄存器前缀。&lt;/p&gt;
+
+&lt;h2 id=&#34;输出:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;输出&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;__asm__(&amp;quot;mov %%edx, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a) : &amp;quot;d&amp;quot;(var_d));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;输出部分 &lt;code&gt;&amp;quot;=a&amp;quot;(var_a)&lt;/code&gt; 的意思是把寄存器 &lt;em&gt;%eax&lt;/em&gt; 中的值放入变量 &lt;em&gt;var_a&lt;/em&gt; 中，由输出操作数（Operand） &lt;code&gt;var_a&lt;/code&gt; 和 操作数约束（Constraint） &lt;code&gt;&amp;quot;=a&amp;quot;&lt;/code&gt; 两部分组成。&lt;/p&gt;
+
+&lt;p&gt;其中，操作数制定了输出向哪个 c 变量，该例中即 *var_a*；操作约束中的修饰符（Modifier） “=” 表明输出操作数在指令中是只写的，并且只作为输出。常用的修饰符还有“+”，表明操作数可读可写，既作输入又作输出，而约束中的“a”表征寄存器 *%eax*。&lt;/p&gt;
+
+&lt;p&gt;详细的输出约束参见 GCC 文档 &lt;a href=&#34;http://gcc.gnu.org/onlinedocs/gcc/Constraints.html#Constraints&#34;&gt;6.42 Constraints for asm Operands&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;如果有多个输出，需要用 “,” 将这些输出分隔开，如&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;asm (&amp;quot;cpuid&amp;quot;
+	:&amp;quot;=a&amp;quot; (_eax),
+	 &amp;quot;=b&amp;quot; (_ebx),
+	 &amp;quot;=c&amp;quot; (_ecx),
+	 &amp;quot;=d&amp;quot; (_edx)
+	:&amp;quot;a&amp;quot; (op));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;输入:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;输入&lt;/h2&gt;
+
+&lt;p&gt;输入约束的基本意义与输出相同，不过不包含修饰符。&lt;/p&gt;
+
+&lt;p&gt;输入的操作数部分可以是表达式。&lt;/p&gt;
+
+&lt;h2 id=&#34;修改声明:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;修改声明&lt;/h2&gt;
+
+&lt;p&gt;声明在这段汇编中哪些寄存器的值会改变，以及是否会修改内存。在一些情况下，这对与 gcc 编译、优化程序而言非常重要，比如我们在汇编中修改了一个既不是输入也不是输出的寄存器，如果不显示声明的话 gcc 会认为这段汇编之后该寄存器的值不变，导致程序出错。&lt;/p&gt;
+
+&lt;h2 id=&#34;参考:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.ibm.com/developerworks/cn/linux/sdk/assemble/inline/index.html&#34;&gt;Linux 中 x86 的内联汇编 - IBM&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.cnblogs.com/latifrons/archive/2009/09/17/1568198.html&#34;&gt;C语言ASM汇编内嵌语法&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://andyhuzhill.github.io/ARM/GCC/ASM/2012/09/25/gcc-inline-assemly/&#34;&gt;ARM体系下的GCC内联汇编&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

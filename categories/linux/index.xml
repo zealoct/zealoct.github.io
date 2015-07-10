@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Linux on Zea&#39;s</title>
+    <link>http://hanjc.me/categories/linux/</link>
+    <description>Recent content in Linux on Zea&#39;s</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 20 May 2014 20:26:25 +0800</lastBuildDate>
+    <atom:link href="http://hanjc.me/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>如何写 Ubuntu 的 Framebuffer</title>
+      <link>http://hanjc.me/post/2014-05-20-ubuntu-fbvnc/</link>
+      <pubDate>Tue, 20 May 2014 20:26:25 +0800</pubDate>
+      
+      <guid>http://hanjc.me/post/2014-05-20-ubuntu-fbvnc/</guid>
+      <description>
+
+&lt;p&gt;最近有个小项目，想在 Android 上跑一个通过直接读写 framebuffer 实现的 vnc 客户端，
+所以发现了这个 &lt;a href=&#34;https://github.com/zohead/fbvnc&#34;&gt;fbvnc&lt;/a&gt;， 是 github 上一个小哥儿捣鼓的，基于现有的一个同名项目开发，专为嵌入式设备使用。这个小的 vnc 客户端的不足当然有很多，比如连基本的窗口都木有，直接占用了你整个 framebuffer，不能调整分辨率，巨慢无比，卡的紧了就直接挂，但是它有一个最大的优点，就是真的非常简单，除了一些基本的 Linux 库之外没有任何第三方的依赖。&lt;/p&gt;
+
+&lt;p&gt;以上算是个小广告吧 (=&lt;/p&gt;
+
+&lt;p&gt;但是一个很大的问题是，这货在 ubuntu 上不 work……什么原因呢，做个小测试看一看。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h2 id=&#34;ubuntu-下修改-framebuffer:821a63a0b482335aab43dab9792305ca&#34;&gt;Ubuntu 下修改 Framebuffer&lt;/h2&gt;
+
+&lt;p&gt;其实之前我写过小程序测试直接写 ubuntu 下的 &lt;a href=&#34;https://wiki.ubuntu.com/FrameBuffer&#34;&gt;framebuffer&lt;/a&gt; 的，当时也是神马效果都木有，当时只是猜测和 x11 或 unity 有关，也没深究，这次为了跑 fbvnc，特意去搜了下，后来在 &lt;a href=&#34;http://unix.stackexchange.com/questions/58420/writes-to-framebuffer-dev-fb0-do-not-seem-to-change-graphics-screen&#34;&gt;这里&lt;/a&gt; 找到了&lt;strong&gt;解决方法&lt;/strong&gt;：需要置上 &lt;code&gt;FB_ACTIVATE_NOW&lt;/code&gt; 和 &lt;code&gt;FB_ACTIVATE_FORCE&lt;/code&gt; 属性，具体代码如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;vinfo.activate |= FB_ACTIVATE_NOW | FB_ACTIVATE_FORCE;
+ioctl(fbfd, FBIOPUT_VSCREENINFO, &amp;amp;vinfo)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;加上这段代码之后，我写的测试程序终于可以看到修改屏幕的效果了！&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#include &amp;lt;unistd.h&amp;gt;
+#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;fcntl.h&amp;gt;
+#include &amp;lt;linux/fb.h&amp;gt;
+#include &amp;lt;sys/mman.h&amp;gt;
+
+int main()
+{
+    int fbfd = 0;
+    struct fb_var_screeninfo vinfo;
+    struct fb_fix_screeninfo finfo;
+    long int screensize = 0;
+    char *fbp = 0;
+    int x = 0, y = 0，color = 255;
+    long int location = 0;
+
+    /* 打开 fb 设备文件 */
+    fbfd = open(&amp;quot;/dev/fb0&amp;quot;, O_RDWR);
+    ioctl(fbfd, FBIOGET_FSCREENINFO, &amp;amp;finfo);
+    ioctl(fbfd, FBIOGET_VSCREENINFO, &amp;amp;vinfo);
+    /* 把 fb 映射到内存 */
+    screensize = vinfo.xres * vinfo.yres * vinfo.bits_per_pixel / 8;
+    fbp = (char *)mmap(0, screensize, PROT_READ | PROT_WRITE, MAP_SHARED,fbfd, 0);
+    /* 置上FB_ACTIVATE_NOW 和 FB_ACTIVATE_FORCE */
+    vinfo.activate |= FB_ACTIVATE_NOW | FB_ACTIVATE_FORCE;
+    ioctl(fbfd, FBIOPUT_VSCREENINFO, &amp;amp;vinfo);
+    /* 渐变修改 fb */
+    for(color = 255; color &amp;gt; 0 ; color --) {
+        for(x = 100 ;x &amp;lt; 200 ;x++) {
+            for(y = 100; y &amp;lt; 200; y++) {
+                location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) + (y+vinfo.yoffset) * finfo.line_length;
+                *(fbp + location) = color; /* B */
+                *(fbp + location + 1) = 0; /* G */
+                *(fbp + location + 2) = 0; /* R */
+                *(fbp + location + 3) = 0; /* A */
+            }
+        }
+
+        usleep(5000);
+    }    
+    munmap(fbp, screensize);
+    close(fbfd);
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;不过我预期中的效果是直接在当前屏幕上多出一个渐变的蓝色色块，实际效果是在一个纯黑背景上。看来还是和 x11 的实现有关，不过我不了解 x11，所以并不清楚具体的原因是什么，仿佛 x11 并没有这么简单的使用 fb。&lt;/p&gt;
+
+&lt;p&gt;除此之外，其实还有&lt;strong&gt;另一个&lt;/strong&gt;更加方便和人畜无害的方法去直接操作 framebuffer，那就是切到其他的 tty 去执行。&lt;/p&gt;
+
+&lt;h2 id=&#34;ubuntu-下运行-fbvnc:821a63a0b482335aab43dab9792305ca&#34;&gt;Ubuntu 下运行 fbvnc&lt;/h2&gt;
+
+&lt;p&gt;根据 fbvnc 的 Readme，在 Ubuntu 下运行需要修改 fbvnc.c 下的&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;typedef unsigned short fbval_t;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;为&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;typedef unsigned int fbval_t;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在 fbvnc 的源码中加入了修改 activate 属性的代码之后，执行成功！&lt;/p&gt;
+
+&lt;p&gt;等等，怎么退出……不得已 ssh 上去强制 kill 了 fbvnc 进程，结果我擦整个桌面都不好了，完全黑屏没有反映啊，切换到 tty6 关闭了很多工作的 tmux 窗口之后，回到 tty7 发现又好了，果然会有奇怪的问题，怪不得大家建议在 Linux 下不要直接修改 framebuffer，而是利用 X window 接口。&lt;/p&gt;
+
+&lt;p&gt;如果直接在 tty6 中执行 fbvnc 就正常多了，可惜性能实在太差，几乎不能用，而且还容易挂。&lt;/p&gt;
+
+&lt;h2 id=&#34;android-下编译运行-fbvnc:821a63a0b482335aab43dab9792305ca&#34;&gt;Android 下编译运行 fbvnc&lt;/h2&gt;
+
+&lt;p&gt;简单写个 Android 应用然后把 fbvnc 代码拷进去这种方法肯定不够，普通应用没有操作 framebuffer 的权限。我把 fbvnc 放到了 Android 源码 external 目录下，然后重新编译了 android 镜像。为了成功编译，需要做如下修改：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;注释掉 fbvnc.c 中所有的 dprintf，bionic 不支持此函数；&lt;/li&gt;
+&lt;li&gt;在 fbvnc.c 中把调用 getpass 函数那一行改成硬编码，或者自己实现个 getpass，bionic 也不支持此函数；&lt;/li&gt;
+&lt;li&gt;修改 draw.h 中的 FBDEV_PATH 为 &amp;ldquo;/dev/graphics/fb0&amp;rdquo;，Android 中 fb 设备路径和 Linux 默认路径不同；&lt;/li&gt;
+&lt;li&gt;在 fbvnc/ 下添加如下文件&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;``` text Android.mk
+LOCAL_PATH:= $(call my-dir)&lt;/p&gt;
+
+&lt;p&gt;include $(CLEAR_VARS)
+LOCAL_CFLAGS:= -Wall -Os
+LOCAL_MODULE_TAGS:= debug eng
+LOCAL_MODULE:= fbvnc
+LOCAL_SRC_FILES:= d3des.c draw.c vncauth.c fbvnc.c
+LOCAL_C_INCLUDES := $(LOCAL_PATH)
+LOCAL_SHARED_LIBRARIES := \
+        libcutils
+include $(BUILD_EXECUTABLE)
+```&lt;/p&gt;
+
+&lt;p&gt;OK，编译！好了之后 adb shell 上去，用 root 权限执行&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;fbenv myhostname
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;成功显示了远程 vnc 桌面，不过并不持久，很快就会被 Android 自己的界面刷掉。如果要解决这个问题，需要对 Android 系统进行更多的修改，以后有时间再写一篇吧。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Linux 下 c 的扩展内联汇编</title>
+      <link>http://hanjc.me/post/2014-03-05-c-asm/</link>
+      <pubDate>Wed, 05 Mar 2014 19:54:09 +0800</pubDate>
+      
+      <guid>http://hanjc.me/post/2014-03-05-c-asm/</guid>
+      <description>
+
+&lt;p&gt;简单总结了一下自己看到用到的一些内联汇编的知识点，并不是一个完整的总结，以后对内联汇编有了新的了解会慢慢扩充。&lt;/p&gt;
+
+&lt;p&gt;详细细节可以参考 gcc 关与扩展内联汇编的 &lt;a href=&#34;http://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Extended-Asm&#34;&gt;文档&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;格式说明:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;格式说明&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;__asm__　__volatile__(&amp;quot;Instruction List&amp;quot; : Output : Input : Clobber/Modify)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;冒号的使用原则（*O, I, C 分别指代 Output, Input, Clobber/Modify*）：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;C 为空，第三个冒号必须省略&lt;/li&gt;
+&lt;li&gt;O、I 为空时，前边的冒号（第一、二个）可选择性省略&lt;/li&gt;
+&lt;li&gt;O，I，C 中任何一个不为空，则之前的冒号均必须保留，如只有 I 不为空时，O 和 I 之前的冒号必须保留，只有 C 不为空时三个冒号都必须保留&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;合法的调用包括&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;__asm__(&amp;quot; &amp;quot; : : : &amp;quot;memory&amp;quot;);
+__asm__(&amp;quot; &amp;quot; : :);
+__asm__(&amp;quot;mov %1, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a));
+__asm__(&amp;quot;mov %1, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a) :);
+__asm__(&amp;quot;mov %%edx, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a) : &amp;quot;d&amp;quot;(var_d));
+__asm__(&amp;quot;mov %%edx, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a) : : &amp;quot;ebx&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;下面分别介绍指令列表、输出、输入和修改声明这四个部分。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h2 id=&#34;指令列表:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;指令列表&lt;/h2&gt;
+
+&lt;p&gt;基本上和 .S 文件的格式是一样的，不同的是要加个引号。需要注意的是每一行中只能有一个指令，如果一行中包含多条指令，则必须用 &lt;code&gt;;&lt;/code&gt; 或换行符隔开。注意字符串中的换行符会被asm识别，但字符串以外、代码中的不会，参见一下示例&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// 换行符在字符串内，不需显示添加换行符
+__asm__(&amp;quot;mov %edx, %eax
+         mov %ebx, %edx&amp;quot;)
+
+// 换行符在字符串外，需显示添加换行符
+__asm__(&amp;quot;mov %edx, %eax\n&amp;quot;
+        &amp;quot;mov %ebx, %edx&amp;quot;)
+
+// 没有换行符，使用 ; 分隔
+__asm__(&amp;quot;mov %edx, %eax; mov %ebx, %edx&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;关于指令中百分号的使用，当使用了冒号时，指令中&lt;strong&gt;必须&lt;/strong&gt;使用 &lt;code&gt;%%&lt;/code&gt; 来作为寄存器前缀；当没有使用冒号时，&lt;strong&gt;必须&lt;/strong&gt;使用 &lt;code&gt;%&lt;/code&gt; 作为寄存器前缀。&lt;/p&gt;
+
+&lt;h2 id=&#34;输出:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;输出&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;__asm__(&amp;quot;mov %%edx, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a) : &amp;quot;d&amp;quot;(var_d));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;输出部分 &lt;code&gt;&amp;quot;=a&amp;quot;(var_a)&lt;/code&gt; 的意思是把寄存器 &lt;em&gt;%eax&lt;/em&gt; 中的值放入变量 &lt;em&gt;var_a&lt;/em&gt; 中，由输出操作数（Operand） &lt;code&gt;var_a&lt;/code&gt; 和 操作数约束（Constraint） &lt;code&gt;&amp;quot;=a&amp;quot;&lt;/code&gt; 两部分组成。&lt;/p&gt;
+
+&lt;p&gt;其中，操作数制定了输出向哪个 c 变量，该例中即 *var_a*；操作约束中的修饰符（Modifier） “=” 表明输出操作数在指令中是只写的，并且只作为输出。常用的修饰符还有“+”，表明操作数可读可写，既作输入又作输出，而约束中的“a”表征寄存器 *%eax*。&lt;/p&gt;
+
+&lt;p&gt;详细的输出约束参见 GCC 文档 &lt;a href=&#34;http://gcc.gnu.org/onlinedocs/gcc/Constraints.html#Constraints&#34;&gt;6.42 Constraints for asm Operands&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;如果有多个输出，需要用 “,” 将这些输出分隔开，如&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;asm (&amp;quot;cpuid&amp;quot;
+	:&amp;quot;=a&amp;quot; (_eax),
+	 &amp;quot;=b&amp;quot; (_ebx),
+	 &amp;quot;=c&amp;quot; (_ecx),
+	 &amp;quot;=d&amp;quot; (_edx)
+	:&amp;quot;a&amp;quot; (op));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;输入:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;输入&lt;/h2&gt;
+
+&lt;p&gt;输入约束的基本意义与输出相同，不过不包含修饰符。&lt;/p&gt;
+
+&lt;p&gt;输入的操作数部分可以是表达式。&lt;/p&gt;
+
+&lt;h2 id=&#34;修改声明:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;修改声明&lt;/h2&gt;
+
+&lt;p&gt;声明在这段汇编中哪些寄存器的值会改变，以及是否会修改内存。在一些情况下，这对与 gcc 编译、优化程序而言非常重要，比如我们在汇编中修改了一个既不是输入也不是输出的寄存器，如果不显示声明的话 gcc 会认为这段汇编之后该寄存器的值不变，导致程序出错。&lt;/p&gt;
+
+&lt;h2 id=&#34;参考:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.ibm.com/developerworks/cn/linux/sdk/assemble/inline/index.html&#34;&gt;Linux 中 x86 的内联汇编 - IBM&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.cnblogs.com/latifrons/archive/2009/09/17/1568198.html&#34;&gt;C语言ASM汇编内嵌语法&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://andyhuzhill.github.io/ARM/GCC/ASM/2012/09/25/gcc-inline-assemly/&#34;&gt;ARM体系下的GCC内联汇编&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

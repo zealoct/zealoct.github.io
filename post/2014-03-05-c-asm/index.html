@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>Linux 下 c 的扩展内联汇编 &middot; jc han</title>
+
+  
+  <link rel="stylesheet" href="http://hanjc.me/css/poole.css">
+  <link rel="stylesheet" href="http://hanjc.me/css/hyde.css">
+  <link rel="stylesheet" href="http://hanjc.me/css/poole-overrides.css">
+  <link rel="stylesheet" href="http://hanjc.me/css/hyde-overrides.css">
+  <link rel="stylesheet" href="http://hanjc.me/css/hyde-x.css">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link href="/favicon.png" rel="icon">
+
+  
+  
+  
+  
+
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+</head>
+<body>
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      
+      <h1>jc han</h1>
+      
+    </div>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="http://hanjc.me/">Blog</a></li>
+      
+    </ul>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+      <a href="http://github.com/zealoct"><i class="fa fa-github-square fa-3x"></i></a>
+      
+      
+      
+      
+      <a href="@zealoct"><i class="fa fa-twitter-square fa-3x"></i></a>
+      </li>
+    </ul>
+
+    <p>Copyright &copy; 2015 <a href="http://hanjc.me/license">License</a><br/>
+       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
+  </div>
+</div>
+
+
+<div class="content container">
+  <div class="post">
+    <h1>Linux 下 c 的扩展内联汇编</h1>
+    <span class="post-date">Mar 5, 2014 &middot; 1 minute read &middot; <a href="http://hanjc.me/post/2014-03-05-c-asm/#disqus_thread">Comments</a>
+    
+    <br/>
+    
+    <a class="label" href="http://hanjc.me/categories/c">C</a><a class="label" href="http://hanjc.me/categories/assemble">Assemble</a><a class="label" href="http://hanjc.me/categories/linux">Linux</a>
+    </span>
+    
+
+<p>简单总结了一下自己看到用到的一些内联汇编的知识点，并不是一个完整的总结，以后对内联汇编有了新的了解会慢慢扩充。</p>
+
+<p>详细细节可以参考 gcc 关与扩展内联汇编的 <a href="http://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Extended-Asm">文档</a></p>
+
+<h2 id="格式说明:f467db7656345f29d7121e6fc1e20d0c">格式说明</h2>
+
+<pre><code>__asm__　__volatile__(&quot;Instruction List&quot; : Output : Input : Clobber/Modify)
+</code></pre>
+
+<p>冒号的使用原则（*O, I, C 分别指代 Output, Input, Clobber/Modify*）：</p>
+
+<ol>
+<li>C 为空，第三个冒号必须省略</li>
+<li>O、I 为空时，前边的冒号（第一、二个）可选择性省略</li>
+<li>O，I，C 中任何一个不为空，则之前的冒号均必须保留，如只有 I 不为空时，O 和 I 之前的冒号必须保留，只有 C 不为空时三个冒号都必须保留</li>
+</ol>
+
+<p>合法的调用包括</p>
+
+<pre><code class="language-c">__asm__(&quot; &quot; : : : &quot;memory&quot;);
+__asm__(&quot; &quot; : :);
+__asm__(&quot;mov %1, %%eax&quot; : &quot;=a&quot;(var_a));
+__asm__(&quot;mov %1, %%eax&quot; : &quot;=a&quot;(var_a) :);
+__asm__(&quot;mov %%edx, %%eax&quot; : &quot;=a&quot;(var_a) : &quot;d&quot;(var_d));
+__asm__(&quot;mov %%edx, %%eax&quot; : &quot;=a&quot;(var_a) : : &quot;ebx&quot;);
+</code></pre>
+
+<p>下面分别介绍指令列表、输出、输入和修改声明这四个部分。</p>
+
+<!-- more -->
+
+<h2 id="指令列表:f467db7656345f29d7121e6fc1e20d0c">指令列表</h2>
+
+<p>基本上和 .S 文件的格式是一样的，不同的是要加个引号。需要注意的是每一行中只能有一个指令，如果一行中包含多条指令，则必须用 <code>;</code> 或换行符隔开。注意字符串中的换行符会被asm识别，但字符串以外、代码中的不会，参见一下示例</p>
+
+<pre><code class="language-c">// 换行符在字符串内，不需显示添加换行符
+__asm__(&quot;mov %edx, %eax
+         mov %ebx, %edx&quot;)
+
+// 换行符在字符串外，需显示添加换行符
+__asm__(&quot;mov %edx, %eax\n&quot;
+        &quot;mov %ebx, %edx&quot;)
+
+// 没有换行符，使用 ; 分隔
+__asm__(&quot;mov %edx, %eax; mov %ebx, %edx&quot;)
+</code></pre>
+
+<p>关于指令中百分号的使用，当使用了冒号时，指令中<strong>必须</strong>使用 <code>%%</code> 来作为寄存器前缀；当没有使用冒号时，<strong>必须</strong>使用 <code>%</code> 作为寄存器前缀。</p>
+
+<h2 id="输出:f467db7656345f29d7121e6fc1e20d0c">输出</h2>
+
+<pre><code class="language-c">__asm__(&quot;mov %%edx, %%eax&quot; : &quot;=a&quot;(var_a) : &quot;d&quot;(var_d));
+</code></pre>
+
+<p>输出部分 <code>&quot;=a&quot;(var_a)</code> 的意思是把寄存器 <em>%eax</em> 中的值放入变量 <em>var_a</em> 中，由输出操作数（Operand） <code>var_a</code> 和 操作数约束（Constraint） <code>&quot;=a&quot;</code> 两部分组成。</p>
+
+<p>其中，操作数制定了输出向哪个 c 变量，该例中即 *var_a*；操作约束中的修饰符（Modifier） “=” 表明输出操作数在指令中是只写的，并且只作为输出。常用的修饰符还有“+”，表明操作数可读可写，既作输入又作输出，而约束中的“a”表征寄存器 *%eax*。</p>
+
+<p>详细的输出约束参见 GCC 文档 <a href="http://gcc.gnu.org/onlinedocs/gcc/Constraints.html#Constraints">6.42 Constraints for asm Operands</a></p>
+
+<p>如果有多个输出，需要用 “,” 将这些输出分隔开，如</p>
+
+<pre><code class="language-c">asm (&quot;cpuid&quot;
+	:&quot;=a&quot; (_eax),
+	 &quot;=b&quot; (_ebx),
+	 &quot;=c&quot; (_ecx),
+	 &quot;=d&quot; (_edx)
+	:&quot;a&quot; (op));
+</code></pre>
+
+<h2 id="输入:f467db7656345f29d7121e6fc1e20d0c">输入</h2>
+
+<p>输入约束的基本意义与输出相同，不过不包含修饰符。</p>
+
+<p>输入的操作数部分可以是表达式。</p>
+
+<h2 id="修改声明:f467db7656345f29d7121e6fc1e20d0c">修改声明</h2>
+
+<p>声明在这段汇编中哪些寄存器的值会改变，以及是否会修改内存。在一些情况下，这对与 gcc 编译、优化程序而言非常重要，比如我们在汇编中修改了一个既不是输入也不是输出的寄存器，如果不显示声明的话 gcc 会认为这段汇编之后该寄存器的值不变，导致程序出错。</p>
+
+<h2 id="参考:f467db7656345f29d7121e6fc1e20d0c">参考</h2>
+
+<ul>
+<li><p><a href="http://www.ibm.com/developerworks/cn/linux/sdk/assemble/inline/index.html">Linux 中 x86 的内联汇编 - IBM</a></p></li>
+
+<li><p><a href="http://www.cnblogs.com/latifrons/archive/2009/09/17/1568198.html">C语言ASM汇编内嵌语法</a></p></li>
+
+<li><p><a href="http://andyhuzhill.github.io/ARM/GCC/ASM/2012/09/25/gcc-inline-assemly/">ARM体系下的GCC内联汇编</a></p></li>
+</ul>
+
+  </div>
+  <div id="disqus_thread"></div>
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = "hanjc";
+(function () {
+    var s = document.createElement('script'); s.async = true;
+    s.type = 'text/javascript';
+    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+}());
+</script>
+
+
+
+<script type="text/javascript">
+    var disqus_shortname = "hanjc";
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+</body>
+</html>

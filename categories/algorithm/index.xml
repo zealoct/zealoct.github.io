@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Algorithm on Zea&#39;s</title>
+    <link>http://hanjc.me/categories/algorithm/</link>
+    <description>Recent content in Algorithm on Zea&#39;s</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 05 Apr 2014 13:31:50 +0800</lastBuildDate>
+    <atom:link href="http://hanjc.me/categories/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>简单的递归和动态规划</title>
+      <link>http://hanjc.me/post/2014-04-05-recursion-and-dp/</link>
+      <pubDate>Sat, 05 Apr 2014 13:31:50 +0800</pubDate>
+      
+      <guid>http://hanjc.me/post/2014-04-05-recursion-and-dp/</guid>
+      <description>
+
+&lt;h3 id=&#34;题目-wordbreak:53826fc2dcb894551367a127137aed4e&#34;&gt;题目：WordBreak&lt;/h3&gt;
+
+&lt;p&gt;首先定义如下表示&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;str[n:m]&lt;/strong&gt;为字符串 str 从下标 n 开始到下标 m-1 的字串&lt;/p&gt;
+
+&lt;p&gt;例如 str = &amp;ldquo;abcdef&amp;rdquo; str[4:6] = &amp;ldquo;ef&amp;rdquo;，str[1:3] = &amp;ldquo;bc&amp;rdquo;，str[3:4] = &amp;ldquo;d&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;str[n:]&lt;/strong&gt;为字符串从下标 n 开始直到字符串结束的子串&lt;/p&gt;
+
+&lt;p&gt;例如 str = &amp;ldquo;abcdef&amp;rdquo; str[2:] = ”cdef“&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;str[:m]&lt;/strong&gt;为字符串从头开始直到下标 m-1 的子串&lt;/p&gt;
+
+&lt;p&gt;例如 str = &amp;ldquo;abcdef&amp;rdquo; str[:3] = ”abc“&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;stat[n]&lt;/strong&gt;表示子串 str[n:] 能不能用字典中的单词表示&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;假设字符串长度是 L，那么字符下标从 0 到 L-1，定义 stat[L] = True （因为 str[L:] 是空字符串）&lt;/p&gt;
+
+&lt;p&gt;这道题的目标是计算 stat[0]，为了计算 stat[n]，我们有如下&lt;strong&gt;递归方程&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;stat[n] = 
+{ dict.contains( str[n:n+1] ) &amp;amp;&amp;amp; stat[n+1] } ||
+{ dict.contains( str[n:n+2] ) &amp;amp;&amp;amp; stat[n+2] } ||
+...
+{ dict.contains( str[n:L] ) &amp;amp;&amp;amp; stat[L] }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其中花括号括起来的部分 &lt;code&gt;dict.contains( str[n:n+m] ) &amp;amp;&amp;amp; stat[n+m]&lt;/code&gt; 表示：子串 str[n:] 的前 m 个字符组成的子字符串是字典中的单词，并且，子串 str[n+m:] 可以被字典中的单词组成&lt;/p&gt;
+
+&lt;p&gt;只要有任意一个 m 满足上述语句，就可以说 stat[n] 为 True！&lt;/p&gt;
+
+&lt;p&gt;对于&lt;strong&gt;递归思想&lt;/strong&gt;来说，我们&lt;strong&gt;从等式左边到右边&lt;/strong&gt;，不去管函数具体怎么解决子问题的，只是&lt;strong&gt;给出如何把问题分解为更小的子问题的方法&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;所以一个递归方法去解这道题就是：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;bool stat(n) {
+    if n = L { return True }
+
+    for i = n+1..L {
+        #依次计算每一个花括号，任何一个为 True 就返回 True
+        if dict.contains(str[n:i]) &amp;amp;&amp;amp; stat(i) 
+            return True
+    }
+
+    #所有花括号都是 False，返回 False
+    return False
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这跟你写的那个递归方法是一样的，只不过我参数里用的并不是一个真正的字符串，而是用一个数字表示当前子字符串是从那个下标开始的。&lt;/p&gt;
+
+&lt;p&gt;递归方法的一个问题就是&lt;strong&gt;重复计算&lt;/strong&gt;，比如 str=&amp;ldquo;aaaaab&amp;rdquo;, dict = [&amp;ldquo;a&amp;rdquo;, &amp;ldquo;aa&amp;rdquo;, &amp;ldquo;aaa&amp;rdquo;, &amp;ldquo;aaaa&amp;rdquo;, &amp;ldquo;aaaaa&amp;rdquo;] 这个问题，当你计算 stat(&amp;ldquo;aaaaab&amp;rdquo;) 和 stat(&amp;ldquo;aaaab&amp;rdquo;) 的时候都要去计算 stat(&amp;ldquo;aaab&amp;rdquo;)，字符串越长，递归调用层数越深，这个问题越明显。&lt;/p&gt;
+
+&lt;p&gt;如何解决重复计算的问题，一个直观的方法就是，每当我计算完一个 stat(n) 的值的时候，我把 stat(n) 缓存下来，下次再需要计算 stat(n) 的时候我直接返回，而不去计算。这种思想用递归写是这样的：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;boole stat_cache[L]; #缓存 stat[n] 的结果
+boole stat_calced[L]; #标识 stat[n] 是否已计算
+bool stat(n) {
+    if n = L { return True }
+
+    if stat_calced[n] { return stat_cache[n] }
+
+    stat_calced[n] = True
+
+    for i = n+1..L {
+        #依次计算每一个花括号，任何一个为 True 就返回 True
+        if dict.contains(str[n:i]) &amp;amp;&amp;amp; stat(i) 
+            stat_cache[n] = True
+            return True
+    }
+
+    #所有花括号都是 False，返回 False
+    stat_cache[n] = False
+    return False
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我没有试过，这种方法应该已经可以解决超时的问题了，但是这种方法还是会出现多层函数调用栈，而且需要一个额外的 stat_calced 数组，怎么办嘞？&lt;/p&gt;
+
+&lt;p&gt;我们再去看看那个递归方程，发现要计算 stat[n] 的值，我们需要知道 stat[n+1]&amp;hellip;stat[L] 的值，这次我们换个方向思考，从&lt;strong&gt;等式右边到左边&lt;/strong&gt;，先把右边需要用到的都计算好，然后再计算 stat[n]，先尝试解决子问题，进而解决更大的问题，这就是&lt;strong&gt;动态规划的方法&lt;/strong&gt;，在这里，递归方程被称为&lt;strong&gt;状态转移方程&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;已知计算 stat[n] 需要 stat[n+1]..stat[L]，而计算 stat[n+1] 需要 stat[n+2]..stat[L]，一步步退下来，我们从 stat[L] 开始，一步步往前算。当然，递归也好，动态规划也好，都需要一个&lt;strong&gt;根&lt;/strong&gt;，就像数学归纳法中的 base 一样，这一题中我们的根就是 stat[L] = True&lt;/p&gt;
+
+&lt;p&gt;所以我们的代码应该是这个样子的：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;for n = L-1 .. 0 { #loop1
+    #假设所有花括号都是 False
+    stat[n] = False
+    for i = n+1..L { #loop2
+        #依次计算每一个花括号，任何一个为 True 就返回 True
+        if dict.contains(str[n:i]) &amp;amp;&amp;amp; stat(i) 
+            stat[n] = True
+            break
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;注意在上述代码中，loop1 相当于递归方法中的函数调用，都是对 n 做轮询，不同的是递归是从 0 到 L-1 轮询，而这里是从 L-1 到 0 来轮询。而 loop2 和递归函数中的循环是一模一样的。&lt;/p&gt;
+
+&lt;p&gt;总结一下，递归的思想是这样的，我要算 stat[n]，那我就直接开始算 stat[n]（递归调用从stat(0)开始，直接尝试计算 stat[0] ），算到算不下去了（发现计算 stat[0] 需要 stat[1] ），那就把当前的执行压栈，然后去算 stat[1]。而动态规划的思想是这样的，我先观察，发现 stat[0] 需要 stat[1]，而 stat[1] 又需要 stat[2]，最终发现 stat[L] 不依赖任何人，直接是 True，那么这时候知道了 stat[L] 我就可以算 stat[L-1]，进而可以算 stat[L-2]，然后一步步算出 stat[0]。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>ds-tree</title>
+      <link>http://hanjc.me/post/2014-03-31-ds-tree/</link>
+      <pubDate>Mon, 31 Mar 2014 21:21:33 +0800</pubDate>
+      
+      <guid>http://hanjc.me/post/2014-03-31-ds-tree/</guid>
+      <description>
+
+&lt;h2 id=&#34;binary-search-tree:668551676aee55c1093deeefc0b62506&#34;&gt;Binary Search Tree&lt;/h2&gt;
+
+&lt;h3 id=&#34;avl-tree:668551676aee55c1093deeefc0b62506&#34;&gt;AVL Tree&lt;/h3&gt;
+
+&lt;p&gt;查询较快，适用于&lt;strong&gt;一次构造、多次查询&lt;/strong&gt;的需求。&lt;/p&gt;
+
+&lt;h3 id=&#34;red-black-tree:668551676aee55c1093deeefc0b62506&#34;&gt;Red-Black Tree&lt;/h3&gt;
+
+&lt;p&gt;相比平衡二叉树，红黑树在平衡性上限制并不严格，因此红黑树的修改操作（插入、删除）性能更优，但是查询操作稍慢。&lt;/p&gt;
+
+&lt;h4 id=&#34;insertion:668551676aee55c1093deeefc0b62506&#34;&gt;Insertion&lt;/h4&gt;
+
+&lt;p&gt;插入时首先找到要替换的叶子结点，用一个红色结点来代替，该红色结点的值即为要插入的值，节点的两个子节点为黑色的 NIL。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;property 3&lt;/strong&gt; (叶子结点均为黑色) 总是成立。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;property 4&lt;/strong&gt; (红色结点的两个孩子都是黑色节点) 下列情况可能会不成立：添加一个红色结点，把一个黑色结点变成红色，旋转&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;property 5&lt;/strong&gt; (从根到叶子结点的所有路径上包含的黑色结点的数量相同) 下列情况可能会不成立：添加黑色结点，改变结点颜色，旋转&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Note: N, 当前节点; P, N 的父节点; G, N 的祖父; U, N 的叔叔（P 的兄弟）&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Case 1:&lt;/strong&gt; N 为根, 改变其颜色为黑；&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void insert_case1(struct node *n)
+{
+ if (n-&amp;gt;parent == NULL)
+  n-&amp;gt;color = BLACK;
+ else
+  insert_case2(n);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Case 2:&lt;/strong&gt; P 为黑色，所有限制均满足，不需要变化；&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void insert_case2(struct node *n)
+{
+if (n-&amp;gt;parent-&amp;gt;color == BLACK)
+  return; /* Tree is still valid */
+else
+  insert_case3(n);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Case 3:&lt;/strong&gt; P 和 U 都是红色，则改变 P 和 U 为黑色，同时把 G 变成红色。此时 G 可能违反了限制2和4，需要递归的调整&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void marnsert_case3(struct node *n)
+{
+struct node *u = uncle(n), *g;
+
+if ((u != NULL) &amp;amp;&amp;amp; (u-&amp;gt;color == RED)) {
+  n-&amp;gt;parent-&amp;gt;color = BLACK;
+  u-&amp;gt;color = BLACK;
+  g = grandparent(n);
+  g-&amp;gt;color = RED;
+  insert_case1(g);
+} else {
+  insert_case4(n);
+}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Case 4:&lt;/strong&gt; P 是红色而 U 是黑色，且 N 是 P 的右子结点，则对 P 坐一次左旋操作，转为 Case 5；&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void insert_case4(struct node *n)
+{
+ struct node *g = grandparent(n);
+ 
+ if ((n == n-&amp;gt;parent-&amp;gt;right) &amp;amp;&amp;amp; (n-&amp;gt;parent == g-&amp;gt;left)) {
+  rotate_left(n-&amp;gt;parent);
+ 
+ /*
+ * rotate_left can be the below because of already having *g =  grandparent(n) 
+ *
+ * struct node *saved_p=g-&amp;gt;left, *saved_left_n=n-&amp;gt;left;
+ * g-&amp;gt;left=n; 
+ * n-&amp;gt;left=saved_p;
+ * saved_p-&amp;gt;right=saved_left_n;
+ * 
+ * and modify the parent&#39;s nodes properly
+ */
+ 
+  n = n-&amp;gt;left; 
+ 
+ } else if ((n == n-&amp;gt;parent-&amp;gt;left) &amp;amp;&amp;amp; (n-&amp;gt;parent == g-&amp;gt;right)) {
+  rotate_right(n-&amp;gt;parent);
+ 
+ /*
+ * rotate_right can be the below to take advantage of already having *g =  grandparent(n) 
+ *
+ * struct node *saved_p=g-&amp;gt;right, *saved_right_n=n-&amp;gt;right;
+ * g-&amp;gt;right=n; 
+ * n-&amp;gt;right=saved_p;
+ * saved_p-&amp;gt;left=saved_right_n;
+ * 
+ */
+ 
+  n = n-&amp;gt;right; 
+ }
+ insert_case5(n);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Case 5:&lt;/strong&gt; P 是红色而 U 是黑色，且 N 是 P 的左子结点，则对 G 进行一次右旋操作，并把 G 标为红色，把 P 标为黑色。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void insert_case5(struct node *n)
+{
+struct node *g = grandparent(n);
+
+n-&amp;gt;parent-&amp;gt;color = BLACK;
+g-&amp;gt;color = RED;
+if (n == n-&amp;gt;parent-&amp;gt;left)
+  rotate_right(g);
+else
+  rotate_left(g);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;removal:668551676aee55c1093deeefc0b62506&#34;&gt;Removal&lt;/h4&gt;
+
+&lt;h3 id=&#34;left-leaning-red-black-tree-llrb:668551676aee55c1093deeefc0b62506&#34;&gt;Left-Leaning Red–Black Tree (LLRB)&lt;/h3&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
