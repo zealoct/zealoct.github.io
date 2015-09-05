@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Distributed Systems on Zea&#39;s</title>
-    <link>hanjc.me/categories/distributed-systems/</link>
+    <link>/categories/distributed-systems/</link>
     <description>Recent content in Distributed Systems on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Wed, 12 Feb 2014 16:21:02 +0800</lastBuildDate>
-    <atom:link href="hanjc.me/categories/distributed-systems/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/categories/distributed-systems/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Notes on Paxos Made Simple</title>
-      <link>/hanjc.me/post/2014-02-12-paxos/</link>
+      <link>/post/2014-02-12-paxos/</link>
       <pubDate>Wed, 12 Feb 2014 16:21:02 +0800</pubDate>
       
-      <guid>/hanjc.me/post/2014-02-12-paxos/</guid>
+      <guid>/post/2014-02-12-paxos/</guid>
       <description>
 
 &lt;p&gt;&lt;a href=&#34;http://pdos.csail.mit.edu/6.824-2013/papers/paxos-simple.pdf&#34;&gt;Origin paper link&lt;/a&gt;&lt;/p&gt;

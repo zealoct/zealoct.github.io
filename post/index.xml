@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Zea&#39;s</title>
-    <link>hanjc.me/post/</link>
+    <link>/post/</link>
     <description>Recent content in Posts on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Thu, 27 Aug 2015 18:31:48 +0800</lastBuildDate>
-    <atom:link href="hanjc.me/post/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Linux下VIM编码设置——解决中文乱码问题</title>
-      <link>/hanjc.me/post/2015-08-27-Xshell-VIM-encoding/</link>
+      <link>/post/2015-08-27-Xshell-VIM-encoding/</link>
       <pubDate>Thu, 27 Aug 2015 18:31:48 +0800</pubDate>
       
-      <guid>/hanjc.me/post/2015-08-27-Xshell-VIM-encoding/</guid>
+      <guid>/post/2015-08-27-Xshell-VIM-encoding/</guid>
       <description>
 
 &lt;p&gt;日常工作与生活中经常需要在Windows下通过Xshell、Putty等SSH客户端远程连接Linux服务器，
@@ -135,10 +135,10 @@ Xshell只要使用GBK编码解码，就依然可以正确地显示中文。&lt;/
     
     <item>
       <title>Windows 下使用 Cocos2d-x 3.x &#43; Lua 开发基础</title>
-      <link>/hanjc.me/post/2014-07-06-cocos2d-lua-basic/</link>
+      <link>/post/2014-07-06-cocos2d-lua-basic/</link>
       <pubDate>Sun, 06 Jul 2014 10:59:17 -0700</pubDate>
       
-      <guid>/hanjc.me/post/2014-07-06-cocos2d-lua-basic/</guid>
+      <guid>/post/2014-07-06-cocos2d-lua-basic/</guid>
       <description>
 
 &lt;p&gt;&lt;a href=&#34;http://cocos2d-x.org/&#34;&gt;Cocos2d-x&lt;/a&gt; 是国内非常成熟的 2d 游戏开发引擎了，拥有非常广大的开发者群体和活跃的社区，支持 Windows、Linux、Mac OS、iOS、Android 和 Window Phone 等各个平台，其本身是用 C++ 语言实现的，主要提供了面向 C++ 的接口，也提供了对 Lua、object-c 和 JavaScript 的支持。我们的 minigame 要基于 Cocos（为简单起见，我就把 Cocos2d-x 称为 Cocos 了） 和 Lua 实现，这有好处也有弊端，Lua 作为一门脚本语言，开发起来确实非常快捷，不过 Cocos 社区 Lua 相关的文档和资料并不如 C++ 那么完备，使得上手的难度增加，而且 Lua 本质并不是面向对象的编程语言，我们编码时的一些 OO 的思想也要需要转变。&lt;/p&gt;
@@ -177,19 +177,19 @@ Xshell只要使用GBK编码解码，就依然可以正确地显示中文。&lt;/
 
 &lt;p&gt;Cocos C++ 项目根目录如下：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;hanjc.me/images/blog/cocos-basic-cpp.png&#34; alt=&#34;&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;/images/blog/cocos-basic-cpp.png&#34; alt=&#34;&#34; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;其中 &lt;code&gt;/Classes&lt;/code&gt; 文件夹是主要的代码文件夹，开发者所需要写的全部代码文件都包含在这个文件夹中，&lt;code&gt;/Resources&lt;/code&gt; 则是资源文件夹，开发者的资源都存储在这个文件夹中，&lt;code&gt;/cocos2d&lt;/code&gt; 文件夹则包扩了 Cocos 完整的源代码。除此之外我们看到还有大量的 &lt;code&gt;/proj.xxxx&lt;/code&gt; 文件夹，这是 Cocos 为不同平台、不同编辑器生成的项目文件夹，所有这些项目均使用 &lt;code&gt;/Classes&lt;/code&gt; 中的源代码和 &lt;code&gt;/Resources&lt;/code&gt; 中的资源文件。&lt;/p&gt;
 
 &lt;p&gt;而 Cocos Lua 项目目录如下：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;hanjc.me/images/blog/cocos-basic-lua.png&#34; alt=&#34;&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;/images/blog/cocos-basic-lua.png&#34; alt=&#34;&#34; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;与 C++ 项目结构类似，Lua 项目所有的程序文件都在 &lt;code&gt;/src&lt;/code&gt; 文件夹下，资源文件都在 &lt;code&gt;/res&lt;/code&gt; 文件夹下，&lt;code&gt;/frameworks&lt;/code&gt; 包含了 Cocos 的完整源代码以及各个项目文件夹， 如下图所示为 &lt;code&gt;/frameworks/runtime-src&lt;/code&gt; 文件夹的结构：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;hanjc.me/images/blog/cocos-basic-lua-runtime-src.png&#34; alt=&#34;&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;/images/blog/cocos-basic-lua-runtime-src.png&#34; alt=&#34;&#34; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;而 &lt;code&gt;/runtime&lt;/code&gt; 文件夹内则包含了生成的个平台的可执行代码。&lt;/p&gt;
@@ -263,10 +263,10 @@ Xshell只要使用GBK编码解码，就依然可以正确地显示中文。&lt;/
     
     <item>
       <title>暑期实习开始</title>
-      <link>/hanjc.me/post/2014-07-05-summer-intern/</link>
+      <link>/post/2014-07-05-summer-intern/</link>
       <pubDate>Sat, 05 Jul 2014 21:44:53 -0700</pubDate>
       
-      <guid>/hanjc.me/post/2014-07-05-summer-intern/</guid>
+      <guid>/post/2014-07-05-summer-intern/</guid>
       <description>&lt;p&gt;记得很清楚，拿到网易暑期实习 offer 是 4 月 30 号，正好是劳动节放假前一天，当时真的是很开心，感觉实习终于有着落了，而且还是我的首选网易游戏，所以那个劳动节过的格外开心。实习从 7 月开始，6 月末收到公司邮件通知，从 6 月 29 号开始就可以去杭州报道了，这点不得不称赞网易，对实习生的待遇非常不错，公司食堂免费吃，还提供住宿，不过因为实习生较多，公司的宿舍不够用了，所以我被分在了公司附近的乐通酒店。去之前特意查了下地图，发现公司提供住宿的几家酒店里乐通是离得最近的，跟公司只隔了一个街区，走路 10 分钟妥妥儿的，这一点还是非常方便的。&lt;/p&gt;
 
 &lt;p&gt;我跟几个朋友一起，乘坐 29 号的火车来杭州，出了火车站几个人做的第一件事就是去办了张杭州一卡通，可以租自行车的那种，后来证明这个举动真是太明智了，因为我跟老缪出了地铁站之后就是租量小车慢慢悠悠骑到乐通的。我们就这样，骑着租来的橘黄色的小破车，拖着的拉杆箱，慢慢悠悠的开始了暑期杭州的日子。&lt;/p&gt;
@@ -288,10 +288,10 @@ Xshell只要使用GBK编码解码，就依然可以正确地显示中文。&lt;/
     
     <item>
       <title>如何写 Ubuntu 的 Framebuffer</title>
-      <link>/hanjc.me/post/2014-05-20-ubuntu-fbvnc/</link>
+      <link>/post/2014-05-20-ubuntu-fbvnc/</link>
       <pubDate>Tue, 20 May 2014 20:26:25 +0800</pubDate>
       
-      <guid>/hanjc.me/post/2014-05-20-ubuntu-fbvnc/</guid>
+      <guid>/post/2014-05-20-ubuntu-fbvnc/</guid>
       <description>
 
 &lt;p&gt;最近有个小项目，想在 Android 上跑一个通过直接读写 framebuffer 实现的 vnc 客户端，
@@ -417,10 +417,10 @@ include $(BUILD_EXECUTABLE)
     
     <item>
       <title>简单的递归和动态规划</title>
-      <link>/hanjc.me/post/2014-04-05-recursion-and-dp/</link>
+      <link>/post/2014-04-05-recursion-and-dp/</link>
       <pubDate>Sat, 05 Apr 2014 13:31:50 +0800</pubDate>
       
-      <guid>/hanjc.me/post/2014-04-05-recursion-and-dp/</guid>
+      <guid>/post/2014-04-05-recursion-and-dp/</guid>
       <description>
 
 &lt;h3 id=&#34;题目-wordbreak:53826fc2dcb894551367a127137aed4e&#34;&gt;题目：WordBreak&lt;/h3&gt;
@@ -532,10 +532,10 @@ bool stat(n) {
     
     <item>
       <title>Linux 下 c 的扩展内联汇编</title>
-      <link>/hanjc.me/post/2014-03-05-c-asm/</link>
+      <link>/post/2014-03-05-c-asm/</link>
       <pubDate>Wed, 05 Mar 2014 19:54:09 +0800</pubDate>
       
-      <guid>/hanjc.me/post/2014-03-05-c-asm/</guid>
+      <guid>/post/2014-03-05-c-asm/</guid>
       <description>
 
 &lt;p&gt;简单总结了一下自己看到用到的一些内联汇编的知识点，并不是一个完整的总结，以后对内联汇编有了新的了解会慢慢扩充。&lt;/p&gt;
@@ -632,10 +632,10 @@ __asm__(&amp;quot;mov %edx, %eax; mov %ebx, %edx&amp;quot;)
     
     <item>
       <title>Notes on iOS Security Whitepaper</title>
-      <link>/hanjc.me/post/2014-03-03-ios-security/</link>
+      <link>/post/2014-03-03-ios-security/</link>
       <pubDate>Mon, 03 Mar 2014 19:56:09 +0800</pubDate>
       
-      <guid>/hanjc.me/post/2014-03-03-ios-security/</guid>
+      <guid>/post/2014-03-03-ios-security/</guid>
       <description>
 
 &lt;p&gt;This notes is based on &lt;em&gt;iOS Security - February 2014&lt;/em&gt;, origin link can be found &lt;a href=&#34;http://images.apple.com/iphone/business/docs/iOS_Security_Feb14.pdf&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
@@ -949,10 +949,10 @@ on the computer where the device is backed up. The backed-up data is &lt;strong&
     
     <item>
       <title>Using theme Greyshade</title>
-      <link>/hanjc.me/post/2014-02-27-using-theme-greyshade/</link>
+      <link>/post/2014-02-27-using-theme-greyshade/</link>
       <pubDate>Thu, 27 Feb 2014 14:11:32 +0800</pubDate>
       
-      <guid>/hanjc.me/post/2014-02-27-using-theme-greyshade/</guid>
+      <guid>/post/2014-02-27-using-theme-greyshade/</guid>
       <description>
 
 &lt;p&gt;Sometimes ago I came across a blog &lt;a href=&#34;http://samwize.com/&#34;&gt;samwize&lt;/a&gt;, who uses a slightly
@@ -998,10 +998,10 @@ so I need to patch my modification and merge it into the Greyshade. I would do t
     
     <item>
       <title>Vim Efficiency Notes</title>
-      <link>/hanjc.me/post/2014-02-24-vim-notes/</link>
+      <link>/post/2014-02-24-vim-notes/</link>
       <pubDate>Mon, 24 Feb 2014 15:00:00 +0800</pubDate>
       
-      <guid>/hanjc.me/post/2014-02-24-vim-notes/</guid>
+      <guid>/post/2014-02-24-vim-notes/</guid>
       <description>
 
 &lt;p&gt;关于Vim的一些容易被忽视、却又能提升使用体验和操作效率的操作细节。同时记录Vim中一些（我见到过的）比较实用的配置，分享的同时也给自己留个备忘吧。
@@ -1069,10 +1069,10 @@ A 是在本行行尾插入，I 是在本行行首插入。&lt;/p&gt;
     
     <item>
       <title>Notes on Paxos Made Simple</title>
-      <link>/hanjc.me/post/2014-02-12-paxos/</link>
+      <link>/post/2014-02-12-paxos/</link>
       <pubDate>Wed, 12 Feb 2014 16:21:02 +0800</pubDate>
       
-      <guid>/hanjc.me/post/2014-02-12-paxos/</guid>
+      <guid>/post/2014-02-12-paxos/</guid>
       <description>
 
 &lt;p&gt;&lt;a href=&#34;http://pdos.csail.mit.edu/6.824-2013/papers/paxos-simple.pdf&#34;&gt;Origin paper link&lt;/a&gt;&lt;/p&gt;
@@ -1312,10 +1312,10 @@ proposal it has tried to issue.&lt;/p&gt;
     
     <item>
       <title>Exploit Exercises - Nebula Level 13</title>
-      <link>/hanjc.me/post/2014-01-26-nebula-level13/</link>
+      <link>/post/2014-01-26-nebula-level13/</link>
       <pubDate>Sun, 26 Jan 2014 21:54:12 +0800</pubDate>
       
-      <guid>/hanjc.me/post/2014-01-26-nebula-level13/</guid>
+      <guid>/post/2014-01-26-nebula-level13/</guid>
       <description>
 
 &lt;h3 id=&#34;about:d770d09b6be1c937de3594898fdf59fe&#34;&gt;About&lt;/h3&gt;
@@ -1444,10 +1444,10 @@ your token is b705702b-76a8-42b0-8844-3adabbe5ac58
     
     <item>
       <title>Exploit Exercises - Nebula Level 12</title>
-      <link>/hanjc.me/post/2014-01-26-nebula-level12/</link>
+      <link>/post/2014-01-26-nebula-level12/</link>
       <pubDate>Sun, 26 Jan 2014 20:12:53 +0800</pubDate>
       
-      <guid>/hanjc.me/post/2014-01-26-nebula-level12/</guid>
+      <guid>/post/2014-01-26-nebula-level12/</guid>
       <description>
 
 &lt;h3 id=&#34;about:4f2f3bde9982f1888f7baf64aff676f9&#34;&gt;About&lt;/h3&gt;
@@ -1557,10 +1557,10 @@ drwxr-xr-x 1 root   root     280 2012-08-27 07:18 ../
     
     <item>
       <title>Exploit Exercises - Nebula Level 11</title>
-      <link>/hanjc.me/post/2014-01-26-nebula-level11/</link>
+      <link>/post/2014-01-26-nebula-level11/</link>
       <pubDate>Sun, 26 Jan 2014 16:44:20 +0800</pubDate>
       
-      <guid>/hanjc.me/post/2014-01-26-nebula-level11/</guid>
+      <guid>/post/2014-01-26-nebula-level11/</guid>
       <description>
 
 &lt;h3 id=&#34;about:c12d59b551e63f0317c82c8d90952a0f&#34;&gt;About&lt;/h3&gt;
@@ -1810,10 +1810,10 @@ uid=1012(level11) gid=1012(level11) groups=1012(level11)
     
     <item>
       <title>Exploit Exercises - Nebula Level 10</title>
-      <link>/hanjc.me/post/2014-01-25-nebula-level10/</link>
+      <link>/post/2014-01-25-nebula-level10/</link>
       <pubDate>Sat, 25 Jan 2014 12:40:53 +0800</pubDate>
       
-      <guid>/hanjc.me/post/2014-01-25-nebula-level10/</guid>
+      <guid>/post/2014-01-25-nebula-level10/</guid>
       <description>
 
 &lt;h3 id=&#34;about:14691d9c48d881479fa7a5e0fa8d86be&#34;&gt;About&lt;/h3&gt;
@@ -1949,10 +1949,10 @@ RECV: 615a2ce1-b2b5-4c76-8eed-8aa5c4015c27
     
     <item>
       <title>Exploit Exercises - Nebula Level 09</title>
-      <link>/hanjc.me/post/2014-01-24-nebula-level09/</link>
+      <link>/post/2014-01-24-nebula-level09/</link>
       <pubDate>Fri, 24 Jan 2014 11:43:40 +0800</pubDate>
       
-      <guid>/hanjc.me/post/2014-01-24-nebula-level09/</guid>
+      <guid>/post/2014-01-24-nebula-level09/</guid>
       <description>
 
 &lt;h3 id=&#34;about:e4424096463f5985d9de53dfe658d56b&#34;&gt;About&lt;/h3&gt;

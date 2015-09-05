@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Vim on Zea&#39;s</title>
-    <link>hanjc.me/categories/vim/</link>
+    <link>/categories/vim/</link>
     <description>Recent content in Vim on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Mon, 24 Feb 2014 15:00:00 +0800</lastBuildDate>
-    <atom:link href="hanjc.me/categories/vim/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/categories/vim/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Vim Efficiency Notes</title>
-      <link>/hanjc.me/post/2014-02-24-vim-notes/</link>
+      <link>/post/2014-02-24-vim-notes/</link>
       <pubDate>Mon, 24 Feb 2014 15:00:00 +0800</pubDate>
       
-      <guid>/hanjc.me/post/2014-02-24-vim-notes/</guid>
+      <guid>/post/2014-02-24-vim-notes/</guid>
       <description>
 
 &lt;p&gt;关于Vim的一些容易被忽视、却又能提升使用体验和操作效率的操作细节。同时记录Vim中一些（我见到过的）比较实用的配置，分享的同时也给自己留个备忘吧。
