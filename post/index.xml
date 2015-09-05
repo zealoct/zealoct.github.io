@@ -72,7 +72,7 @@ export LC_ALL=&#39;en_US.UTF-8&#39;
 该编码对用户并不可见，默认为ISO-8859-1（latin1），一般情况下不需要配置。
 Vim打开文件时，会从&lt;code&gt;fencs&lt;/code&gt;列表内匹配编码，并将文件内容从该编码转换为&lt;code&gt;enc&lt;/code&gt;编码存储在Vim进程的内存里。&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;fenc&lt;/code&gt;为文件保存编码，当Vim存储一个文件时，会将工作内存内缓存的内容由&lt;code&gt;enc&lt;/code&gt;编码转换为&lt;code&gt;fenc&lt;/code&gt;编码，并写道相应的文件里。
+&lt;p&gt;&lt;code&gt;fenc&lt;/code&gt;为文件保存编码，当Vim存储一个文件时，会将工作内存内缓存的内容由&lt;code&gt;enc&lt;/code&gt;编码转换为&lt;code&gt;fenc&lt;/code&gt;编码，并写到相应的文件里。
 需要注意的是&lt;code&gt;fenc&lt;/code&gt;选项在Vim启动时会根据&lt;code&gt;fencs&lt;/code&gt;设定，因此在.vimrc内配置&lt;code&gt;fenc&lt;/code&gt;并没有意义，
 一般只有在需要进行文件编码转换的时候会动态设定该选项的值。
 如果&lt;code&gt;fenc&lt;/code&gt;选项为空字符串，则默认使用&lt;code&gt;enc&lt;/code&gt;选项所指定的编码保存文件。&lt;/p&gt;
@@ -117,11 +117,11 @@ Xshell只要使用GBK编码解码，就依然可以正确地显示中文。&lt;/
 因为Xshell虽然知道文件内容是GBK编码，但是Vim并不知道，Vim会尝试把文件内容从latin1转换到UTF-8保存。
 这一步转换并不会报错，只是转出来的UTF-8并不是你想要的UTF-8罢了，
 因为从GBK转UTF-8会遇到2个字节（一个汉字）转一个UTF-8的情况，而latin1转UTF-8都是单字节转一个UTF-8编码，
-如果把转换之后的文件拷到Windows下使用Sublime等编辑器打开，就会发现全部都是乱码。&lt;/p&gt;
+如果把转换之后的文件拷到Windows下使用Sublime等编辑器打开，就会发现中文全部都是乱码。&lt;/p&gt;
 
 &lt;p&gt;好玩儿的是，虽然Windows下看该UTF-8文件是乱码，同样的配置下在远程Vim里依然可以“正确”地解读该UTF-8文件。
 原因也很简单，Vim打开该文件发现是UTF-8编码，会将UTF-8转换为内部缓冲编码latin1，这实际上还原了原本的GBK编码，
-使得Xshell可以继续以GBK解码该文件了，但是如果尝试使用&lt;code&gt;iconv&lt;/code&gt;把这个UTF-8文件直接转换为GBK就会报错了。&lt;/p&gt;
+使得Xshell可以继续以GBK解码该数据流，但是如果尝试使用&lt;code&gt;iconv&lt;/code&gt;把这个UTF-8文件直接转换为GBK就会报错。&lt;/p&gt;
 
 &lt;p&gt;因此，为了避免不必要的麻烦，日常工作中还是建议将终端编码、SSH客户端编码都设为UTF-8。&lt;/p&gt;
 
