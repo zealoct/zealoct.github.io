@@ -10,11 +10,11 @@
   <title>Kosaraju算法——关于图的后序遍历的特征 &middot; jc han</title>
 
   
-  <link rel="stylesheet" href="/css/poole.css">
-  <link rel="stylesheet" href="/css/hyde.css">
-  <link rel="stylesheet" href="/css/poole-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-x.css">
+  <link rel="stylesheet" href="/hanjc.me/css/poole.css">
+  <link rel="stylesheet" href="/hanjc.me/css/hyde.css">
+  <link rel="stylesheet" href="/hanjc.me/css/poole-overrides.css">
+  <link rel="stylesheet" href="/hanjc.me/css/hyde-overrides.css">
+  <link rel="stylesheet" href="/hanjc.me/css/hyde-x.css">
   
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -42,7 +42,11 @@
     </div>
 
     <ul class="sidebar-nav">
-      <li class="sidebar-nav-item"><a href="/">Blog</a></li>
+      <li class="sidebar-nav-item"><a href="/hanjc.me/">Blog</a></li>
+      
+      <li class="sidebar-nav-item"><a href="/hanjc.me/post/">Archives</a></li>
+      
+      <li class="sidebar-nav-item"><a href="/hanjc.me/notes/">Notes</a></li>
       
     </ul>
 
@@ -57,7 +61,7 @@
       </li>
     </ul>
 
-    <p>Copyright &copy; 2015 <a href="/license">License</a><br/>
+    <p>Copyright &copy; 2015 <a href="/hanjc.me/license">License</a><br/>
        Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
   </div>
 </div>
@@ -66,7 +70,7 @@
 <div class="content container">
   <div class="post">
     <h1>Kosaraju算法——关于图的后序遍历的特征</h1>
-    <span class="post-date">Jan 4, 2014 &middot; 1 minute read &middot; <a href="/post/2014-01-04-postordering-dfs/#disqus_thread">Comments</a>
+    <span class="post-date">Jan 4, 2014 &middot; 1 minute read &middot; <a href="/hanjc.me/post/2014-01-04-postordering-dfs/#disqus_thread">Comments</a>
     </span>
     <p><a href="http://en.wikipedia.org/wiki/Kosaraju%27s_algorithm">Kosaraju算法</a>是一种常见的求图的强联通分量的算法，该算法先从任意结点开始对原图G进行一次DFS后序遍历，之后依据第一次DFS的结果的反向序列（即根据reverse postordering），对原图的反向图G&rsquo;进行前序的DFS。在第二次DFS中，每个联通分量即为一个强联通分量。</p>
 

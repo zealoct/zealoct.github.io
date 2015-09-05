@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Algorithm on Zea&#39;s</title>
-    <link>/categories/algorithm/</link>
+    <link>hanjc.me/categories/algorithm/</link>
     <description>Recent content in Algorithm on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sat, 05 Apr 2014 13:31:50 +0800</lastBuildDate>
-    <atom:link href="/categories/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="hanjc.me/categories/algorithm/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>简单的递归和动态规划</title>
-      <link>/post/2014-04-05-recursion-and-dp/</link>
+      <link>/hanjc.me/post/2014-04-05-recursion-and-dp/</link>
       <pubDate>Sat, 05 Apr 2014 13:31:50 +0800</pubDate>
       
-      <guid>/post/2014-04-05-recursion-and-dp/</guid>
+      <guid>/hanjc.me/post/2014-04-05-recursion-and-dp/</guid>
       <description>
 
 &lt;h3 id=&#34;题目-wordbreak:53826fc2dcb894551367a127137aed4e&#34;&gt;题目：WordBreak&lt;/h3&gt;
@@ -121,148 +121,6 @@ bool stat(n) {
 &lt;p&gt;注意在上述代码中，loop1 相当于递归方法中的函数调用，都是对 n 做轮询，不同的是递归是从 0 到 L-1 轮询，而这里是从 L-1 到 0 来轮询。而 loop2 和递归函数中的循环是一模一样的。&lt;/p&gt;
 
 &lt;p&gt;总结一下，递归的思想是这样的，我要算 stat[n]，那我就直接开始算 stat[n]（递归调用从stat(0)开始，直接尝试计算 stat[0] ），算到算不下去了（发现计算 stat[0] 需要 stat[1] ），那就把当前的执行压栈，然后去算 stat[1]。而动态规划的思想是这样的，我先观察，发现 stat[0] 需要 stat[1]，而 stat[1] 又需要 stat[2]，最终发现 stat[L] 不依赖任何人，直接是 True，那么这时候知道了 stat[L] 我就可以算 stat[L-1]，进而可以算 stat[L-2]，然后一步步算出 stat[0]。&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>ds-tree</title>
-      <link>/post/2014-03-31-ds-tree/</link>
-      <pubDate>Mon, 31 Mar 2014 21:21:33 +0800</pubDate>
-      
-      <guid>/post/2014-03-31-ds-tree/</guid>
-      <description>
-
-&lt;h2 id=&#34;binary-search-tree:668551676aee55c1093deeefc0b62506&#34;&gt;Binary Search Tree&lt;/h2&gt;
-
-&lt;h3 id=&#34;avl-tree:668551676aee55c1093deeefc0b62506&#34;&gt;AVL Tree&lt;/h3&gt;
-
-&lt;p&gt;查询较快，适用于&lt;strong&gt;一次构造、多次查询&lt;/strong&gt;的需求。&lt;/p&gt;
-
-&lt;h3 id=&#34;red-black-tree:668551676aee55c1093deeefc0b62506&#34;&gt;Red-Black Tree&lt;/h3&gt;
-
-&lt;p&gt;相比平衡二叉树，红黑树在平衡性上限制并不严格，因此红黑树的修改操作（插入、删除）性能更优，但是查询操作稍慢。&lt;/p&gt;
-
-&lt;h4 id=&#34;insertion:668551676aee55c1093deeefc0b62506&#34;&gt;Insertion&lt;/h4&gt;
-
-&lt;p&gt;插入时首先找到要替换的叶子结点，用一个红色结点来代替，该红色结点的值即为要插入的值，节点的两个子节点为黑色的 NIL。&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;property 3&lt;/strong&gt; (叶子结点均为黑色) 总是成立。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;property 4&lt;/strong&gt; (红色结点的两个孩子都是黑色节点) 下列情况可能会不成立：添加一个红色结点，把一个黑色结点变成红色，旋转&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;property 5&lt;/strong&gt; (从根到叶子结点的所有路径上包含的黑色结点的数量相同) 下列情况可能会不成立：添加黑色结点，改变结点颜色，旋转&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Note: N, 当前节点; P, N 的父节点; G, N 的祖父; U, N 的叔叔（P 的兄弟）&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Case 1:&lt;/strong&gt; N 为根, 改变其颜色为黑；&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void insert_case1(struct node *n)
-{
- if (n-&amp;gt;parent == NULL)
-  n-&amp;gt;color = BLACK;
- else
-  insert_case2(n);
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Case 2:&lt;/strong&gt; P 为黑色，所有限制均满足，不需要变化；&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void insert_case2(struct node *n)
-{
-if (n-&amp;gt;parent-&amp;gt;color == BLACK)
-  return; /* Tree is still valid */
-else
-  insert_case3(n);
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Case 3:&lt;/strong&gt; P 和 U 都是红色，则改变 P 和 U 为黑色，同时把 G 变成红色。此时 G 可能违反了限制2和4，需要递归的调整&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void marnsert_case3(struct node *n)
-{
-struct node *u = uncle(n), *g;
-
-if ((u != NULL) &amp;amp;&amp;amp; (u-&amp;gt;color == RED)) {
-  n-&amp;gt;parent-&amp;gt;color = BLACK;
-  u-&amp;gt;color = BLACK;
-  g = grandparent(n);
-  g-&amp;gt;color = RED;
-  insert_case1(g);
-} else {
-  insert_case4(n);
-}
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Case 4:&lt;/strong&gt; P 是红色而 U 是黑色，且 N 是 P 的右子结点，则对 P 坐一次左旋操作，转为 Case 5；&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void insert_case4(struct node *n)
-{
- struct node *g = grandparent(n);
- 
- if ((n == n-&amp;gt;parent-&amp;gt;right) &amp;amp;&amp;amp; (n-&amp;gt;parent == g-&amp;gt;left)) {
-  rotate_left(n-&amp;gt;parent);
- 
- /*
- * rotate_left can be the below because of already having *g =  grandparent(n) 
- *
- * struct node *saved_p=g-&amp;gt;left, *saved_left_n=n-&amp;gt;left;
- * g-&amp;gt;left=n; 
- * n-&amp;gt;left=saved_p;
- * saved_p-&amp;gt;right=saved_left_n;
- * 
- * and modify the parent&#39;s nodes properly
- */
- 
-  n = n-&amp;gt;left; 
- 
- } else if ((n == n-&amp;gt;parent-&amp;gt;left) &amp;amp;&amp;amp; (n-&amp;gt;parent == g-&amp;gt;right)) {
-  rotate_right(n-&amp;gt;parent);
- 
- /*
- * rotate_right can be the below to take advantage of already having *g =  grandparent(n) 
- *
- * struct node *saved_p=g-&amp;gt;right, *saved_right_n=n-&amp;gt;right;
- * g-&amp;gt;right=n; 
- * n-&amp;gt;right=saved_p;
- * saved_p-&amp;gt;left=saved_right_n;
- * 
- */
- 
-  n = n-&amp;gt;right; 
- }
- insert_case5(n);
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Case 5:&lt;/strong&gt; P 是红色而 U 是黑色，且 N 是 P 的左子结点，则对 G 进行一次右旋操作，并把 G 标为红色，把 P 标为黑色。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void insert_case5(struct node *n)
-{
-struct node *g = grandparent(n);
-
-n-&amp;gt;parent-&amp;gt;color = BLACK;
-g-&amp;gt;color = RED;
-if (n == n-&amp;gt;parent-&amp;gt;left)
-  rotate_right(g);
-else
-  rotate_left(g);
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;removal:668551676aee55c1093deeefc0b62506&#34;&gt;Removal&lt;/h4&gt;
-
-&lt;h3 id=&#34;left-leaning-red-black-tree-llrb:668551676aee55c1093deeefc0b62506&#34;&gt;Left-Leaning Red–Black Tree (LLRB)&lt;/h3&gt;
 </description>
     </item>
     

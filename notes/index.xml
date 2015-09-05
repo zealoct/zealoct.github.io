@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Notes on Zea&#39;s</title>
+    <link>hanjc.me/notes/</link>
+    <description>Recent content in Notes on Zea&#39;s</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 20 Aug 2015 17:46:35 +0800</lastBuildDate>
+    <atom:link href="hanjc.me/notes/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Placeholder for Notes</title>
+      <link>/hanjc.me/notes/placeholder/</link>
+      <pubDate>Thu, 20 Aug 2015 17:46:35 +0800</pubDate>
+      
+      <guid>/hanjc.me/notes/placeholder/</guid>
+      <description>
+
+&lt;h1 id=&#34;hello-world:394e6acbe333d11bb02cd8153aec9aa7&#34;&gt;Hello World&lt;/h1&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

