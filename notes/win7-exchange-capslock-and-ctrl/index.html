@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>[转]windows下交换CapsLock和Ctrl键 &middot; jc han</title>
+
+  
+  <link rel="stylesheet" href="http://localhost:1313/css/poole.css">
+  <link rel="stylesheet" href="http://localhost:1313/css/hyde.css">
+  <link rel="stylesheet" href="http://localhost:1313/css/poole-overrides.css">
+  <link rel="stylesheet" href="http://localhost:1313/css/hyde-overrides.css">
+  <link rel="stylesheet" href="http://localhost:1313/css/hyde-x.css">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link href="/favicon.png" rel="icon">
+
+  
+  
+  
+  
+
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+</head>
+<body>
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      
+      <h1>jc han</h1>
+      
+    </div>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="http://localhost:1313/">Blog</a></li>
+      
+      <li class="sidebar-nav-item"><a href="/post/">Archives</a></li>
+      
+      <li class="sidebar-nav-item"><a href="/notes/">Notes</a></li>
+      
+    </ul>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+      <a href="http://github.com/zealoct"><i class="fa fa-github-square fa-3x"></i></a>
+      
+      
+      
+      
+      <a href="http://twitter.com/zealoct"><i class="fa fa-twitter-square fa-3x"></i></a>
+      </li>
+    </ul>
+
+    <p>Copyright &copy; 2015 <a href="http://localhost:1313/license">License</a><br/>
+       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
+  </div>
+</div>
+
+
+<div class="content container">
+  <div class="post">
+    <h1>[转]windows下交换CapsLock和Ctrl键</h1>
+    <p>原文地址：<a href="http://www.kodiva.com/post/swapping-caps-lock-and-control-keys">http://www.kodiva.com/post/swapping-caps-lock-and-control-keys</a></p>
+
+<p>NOTE：原文描述该方法在 Windows XP，Windows Vista，Windows 7下可用，本人测试在Win10下亦可用</p>
+
+<p>In our opinion this is the best way to swap the control and caps lock keys in Windows because you don&rsquo;t have to rely on any external program and the registry edit works 100% perfectly (for the paranoid).</p>
+
+<p>Why should one bother changing the caps lock and control keys, what&rsquo;s wrong with the control key where it is? After extensive testing, our conclusion is that - if you use the control key a lot (like in Emacs or Vim), then you should definitely swap the control and caps lock keys as it&rsquo;s extremely ergo-dynamic to have the control key in the home row.</p>
+
+<ol>
+<li><p>Click Start -&gt; Run</p></li>
+
+<li><p>Type: <em>regedit</em>, and click OK</p></li>
+
+<li><p>Go to: <em>HKEY_LOCAL_MACHINE</em> -&gt; <em>System</em> -&gt; <em>CurrentControlSet</em> -&gt; <em>Control</em> -&gt; <em>KeyBoard Layout</em></p>
+
+<p>Note: <em>KeyBoard Layout</em>, and NOT <em>KeyBoard Layouts</em></p></li>
+
+<li><p>Right-click: Keyboard Layout, and select New -&gt; Binary value</p></li>
+
+<li><p>Rename: New Value #1 -&gt; Scancode Map</p></li>
+
+<li><p>Right click: Scancode Map -&gt; Modify</p>
+
+<pre><code>0000  00 00 00 00 00 00 00 00       
+0008  03 00 00 00 1d 00 3a 00
+0010  3a 00 1d 00 00 00 00 00
+0018
+</code></pre></li>
+
+<li><p>Close regedit and restart your computer</p></li>
+</ol>
+
+  </div>
+</div>
+
+
+<script data-no-instant>document.write('<script src="http://'
+        + (location.host || 'localhost').split(':')[0]
+		+ ':1313/livereload.js?mindelay=10"></'
+        + 'script>')</script></body>
+</html>

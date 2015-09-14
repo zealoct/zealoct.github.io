@@ -6,8 +6,48 @@
     <description>Recent content in Posts on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 27 Aug 2015 18:31:48 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 14 Sep 2015 16:51:18 +0800</lastBuildDate>
     <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>[转]windows下交换CapsLock和Ctrl键</title>
+      <link>/post/2015-09-14-win7-exchange-capslock-and-ctrl/</link>
+      <pubDate>Mon, 14 Sep 2015 16:51:18 +0800</pubDate>
+      
+      <guid>/post/2015-09-14-win7-exchange-capslock-and-ctrl/</guid>
+      <description>&lt;p&gt;原文地址：&lt;a href=&#34;http://www.kodiva.com/post/swapping-caps-lock-and-control-keys&#34;&gt;http://www.kodiva.com/post/swapping-caps-lock-and-control-keys&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;NOTE：原文描述该方法在 Windows XP，Windows Vista，Windows 7下可用，本人测试在Win10下亦可用&lt;/p&gt;
+
+&lt;p&gt;In our opinion this is the best way to swap the control and caps lock keys in Windows because you don&amp;rsquo;t have to rely on any external program and the registry edit works 100% perfectly (for the paranoid).&lt;/p&gt;
+
+&lt;p&gt;Why should one bother changing the caps lock and control keys, what&amp;rsquo;s wrong with the control key where it is? After extensive testing, our conclusion is that - if you use the control key a lot (like in Emacs or Vim), then you should definitely swap the control and caps lock keys as it&amp;rsquo;s extremely ergo-dynamic to have the control key in the home row.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;Click Start -&amp;gt; Run&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Type: &lt;em&gt;regedit&lt;/em&gt;, and click OK&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Go to: &lt;em&gt;HKEY_LOCAL_MACHINE&lt;/em&gt; -&amp;gt; &lt;em&gt;System&lt;/em&gt; -&amp;gt; &lt;em&gt;CurrentControlSet&lt;/em&gt; -&amp;gt; &lt;em&gt;Control&lt;/em&gt; -&amp;gt; &lt;em&gt;KeyBoard Layout&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Note: &lt;em&gt;KeyBoard Layout&lt;/em&gt;, and NOT &lt;em&gt;KeyBoard Layouts&lt;/em&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Right-click: Keyboard Layout, and select New -&amp;gt; Binary value&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Rename: New Value #1 -&amp;gt; Scancode Map&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Right click: Scancode Map -&amp;gt; Modify&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;0000  00 00 00 00 00 00 00 00       
+0008  03 00 00 00 1d 00 3a 00
+0010  3a 00 1d 00 00 00 00 00
+0018
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Close regedit and restart your computer&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+    </item>
     
     <item>
       <title>Linux下VIM编码设置——解决中文乱码问题</title>
@@ -1943,93 +1983,6 @@ RECV: hello world
 level10@nebula:~$ ruby serv.rb 
 RECV: .oO Oo.
 RECV: 615a2ce1-b2b5-4c76-8eed-8aa5c4015c27
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Exploit Exercises - Nebula Level 09</title>
-      <link>/post/2014-01-24-nebula-level09/</link>
-      <pubDate>Fri, 24 Jan 2014 11:43:40 +0800</pubDate>
-      
-      <guid>/post/2014-01-24-nebula-level09/</guid>
-      <description>
-
-&lt;h3 id=&#34;about:e4424096463f5985d9de53dfe658d56b&#34;&gt;About&lt;/h3&gt;
-
-&lt;p&gt;There&amp;rsquo;s a C setuid wrapper for some vulnerable PHP code&amp;hellip;&lt;/p&gt;
-
-&lt;p&gt;To do this level, log in as the &lt;em&gt;level09&lt;/em&gt; account with the password &lt;em&gt;level09&lt;/em&gt;. Files for this level can be found in /home/flag09.&lt;/p&gt;
-
-&lt;h3 id=&#34;source-code:e4424096463f5985d9de53dfe658d56b&#34;&gt;Source code&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-php&#34;&gt;&amp;lt;?php
-
-function spam($email)
-{
-  $email = preg_replace(&amp;quot;/\./&amp;quot;, &amp;quot; dot &amp;quot;, $email);
-  $email = preg_replace(&amp;quot;/@/&amp;quot;, &amp;quot; AT &amp;quot;, $email);
-  
-  return $email;
-}
-
-function markup($filename, $use_me)
-{
-  $contents = file_get_contents($filename);
-
-  $contents = preg_replace(&amp;quot;/(\[email (.*)\])/e&amp;quot;, &amp;quot;spam(\&amp;quot;\\2\&amp;quot;)&amp;quot;, $contents);
-  $contents = preg_replace(&amp;quot;/\[/&amp;quot;, &amp;quot;&amp;lt;&amp;quot;, $contents);
-  $contents = preg_replace(&amp;quot;/\]/&amp;quot;, &amp;quot;&amp;gt;&amp;quot;, $contents);
-
-  return $contents;
-}
-
-$output = markup($argv[1], $argv[2]);
-
-print $output;
-
-?&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;!-- more --&gt;
-
-&lt;h3 id=&#34;solution:e4424096463f5985d9de53dfe658d56b&#34;&gt;Solution&lt;/h3&gt;
-
-&lt;p&gt;This php snippet does the following things:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;read the content of file $argv[1]&lt;/li&gt;
-&lt;li&gt;replace all the text paterns liket &amp;ldquo;[email hjc@hanjc.me]&amp;rdquo; with &amp;ldquo;hjc AT hanjc dot me&amp;rdquo;&lt;/li&gt;
-&lt;li&gt;replace all the &amp;ldquo;[&amp;rdquo; with &amp;ldquo;&amp;lt;&amp;ldquo;, replace &amp;ldquo;]&amp;rdquo; with &amp;ldquo;&amp;gt;&amp;rdquo;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;At the very first glace, there seems to be no problem about this code (well, turns out to be that anyone who is familiar with php security would recognize immediatly the vulnerability). But what I knew was that if there be something wrong, it must be the php function &lt;code&gt;preg_replace&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Google this function and I found many useful thing. There is a &lt;a href=&#34;https://bugs.php.net/bug.php?id=35960&#34;&gt;bug report&lt;/a&gt; related to this function, and another &lt;a href=&#34;http://www.madirish.net/402&#34;&gt;article&lt;/a&gt; explains in detail about how to exploit this vulnerability.&lt;/p&gt;
-
-&lt;p&gt;In general, the vulnerability exists when a &amp;ldquo;\e&amp;rdquo; is set in the PCRE expression provided to the &lt;code&gt;preg_replace&lt;/code&gt; function (as in the code above), in this case, php will do normal substitution of backreferences in the replacement string, evaluate it as PHP code, and use the result for replacing the search string, as mentioned &lt;a href=&#34;http://php.net/manual/en/reference.pcre.pattern.modifiers.php&#34;&gt;here&lt;/a&gt;. This link also provides an input string tha could exploit this function, which is&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;h1&amp;gt;{${eval($_GET[php_code])}}&amp;lt;/h1&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;As my goal is to run system command with this function, I modified this attack string to be&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[email {${system(&#39;touch /home/flag09/test&#39;)}}]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Save this string in /tmp/txt, and run the following command&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ /home/flag09/flag09 /tmp/txt noused
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Although the program produced some errors, the file /home/flag09/test indeed appeared! So this should be a doable way to execute any command, but it is not convenient. Notice there is an additional argument &lt;code&gt;$use_me&lt;/code&gt; to function &lt;code&gt;markup&lt;/code&gt; that is never used in the function, the name of this variable indicates its purpose, which is too obvious to ignore. So I modified /tmp/txt to&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[email {${system($use_me)}}]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now I could run any command with&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ /home/flag09/flag09 /tmp/txt &amp;quot;any command&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
 </description>
     </item>

