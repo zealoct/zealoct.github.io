@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
-  <title>Exploit Exercises - Nebula Level01 &middot; jc han</title>
+  <title>Zsh git prompt &middot; jc han</title>
 
   
   <link rel="stylesheet" href="/css/poole.css">
@@ -69,46 +69,39 @@
 
 <div class="content container">
   <div class="post">
-    <h1>Exploit Exercises - Nebula Level01</h1>
-    <span class="post-date">Jan 9, 2014 &middot; 1 minute read &middot; <a href="/post/2014-01-09-nebula-level01/#disqus_thread">Comments</a>
+    <h1>Zsh git prompt</h1>
+    <span class="post-date">Jun 30, 2016 &middot; 1 minute read &middot; <a href="/post/2016-06-30-zsh-git-prompt/#disqus_thread">Comments</a>
     
     <br/>
     
-    <a class="label" href="/categories/security">Security</a><a class="label" href="/categories/exercises">Exercises</a><a class="label" href="/categories/nebula">Nebula</a>
+    <a class="label" href="/categories/zsh">zsh</a><a class="label" href="/categories/git">git</a>
     </span>
-    <p>有了level00的铺垫，level01就非常简单直接了。感觉上Nebula系列的基本要求是用levelXX用户登录，通过放在/home/flagXX目录下的可执行程序来获得flagXX的用户权限，对于level01而言，可执行程序为/home/flag01/flag01，其源代码在网站上给出了：</p>
+    <p>之前在Zsh中手动添加了<a href="https://github.com/olivierverdier/zsh-git-prompt">zsh-git-prompt</a>插件，
+不过一直存在一个问题，就是更换文件夹后<code>$PROMPT</code>中的<code>$(git_super_status)</code>变量不会自动更新，
+必须重新执行<code>source ~/.zshrc</code>才行。</p>
 
-<pre><code class="language-c">#include &lt;stdlib.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;string.h&gt;
-#include &lt;sys/types.h&gt;
-#include &lt;stdio.h&gt;
+<p>当时没有时间折腾，今天有时间仔细看了一下问题所在，原来是<code>$PROMPT</code>变量的设置有问题，原本的设置是：</p>
 
-int main(int argc, char **argv, char **envp)
-{
-  gid_t gid;
-  uid_t uid;
-  gid = getegid();
-  uid = geteuid();
-
-  setresgid(gid, gid, gid);
-  setresuid(uid, uid, uid);
-
-  system(&quot;/usr/bin/env echo and now what?&quot;);
-}
+<pre><code class="language-bash">PROMPT=&quot;$(git_super_status) %# &quot;
 </code></pre>
 
-<!-- more --> 
+<p>在这里，错误地使用了双引号，导致<code>$(git_super_status)</code>函数在赋值阶段就被字符串替换成了当时该函数的值，
+因此之后即使更换文件夹，这个部分的显示内容也不会发生变化。双引号情况下<code>$PROMPT</code>变量实际的值：</p>
 
-<p>前边代码的作用在上一篇博客中提到了，为了使当前的effective uid为flag01，所以system这一句是以flag01这个user的权限执行的。通过/usr/bin/env程序执行了echo程序，在屏幕上打印“and now what？”，不过在执行echo这个命令的时候没有使用绝对路径，使得通过修改$PATH来执行任意程序成为了可能。在本例中，通过修改$PATH和重定向来直接以flag01用户执行/bin/getflag程序：</p>
-
-<pre><code class="language-bash">~ $ export PATH=/home/level01:$PATH
-~ $ ln -s /bin/getflag /home/level01/echo
-~ $ /home/flag01/flag01
-You have successfully executed getflag on a target account
+<pre><code class="language-bash">(master|✚1) % echo $PROMPT
+(%{%}master%{%}|%{%}%{✚%G%}1%{%}%{%}) %# 
 </code></pre>
 
-<p>这样就可以了。通过重定向其他程序为/home/level01/echo，可以用flag01用户执行任意程序。</p>
+<p>可以看到<code>$PROMPT</code>中的<code>$(git_super_status)</code>已经被替换为<code>(%{%}master%{%}|%{%}%{✚%G%}1%{%}%{%})</code>，
+故而每次显示的都是同样的内容。正确的做法是在<code>.zshrc</code>中使用单引号替代双引号，
+保证脚本处理的时候不会对字符串内容进行替换，从而保留真正的内容，留待运行时再进行替换：</p>
+
+<pre><code class="language-bash">PROMPT='$(git_super_status) %# '
+</code></pre>
+
+<pre><code class="language-bash">(master|✚1) % echo $PROMPT   
+$(git_super_status) %# 
+</code></pre>
 
   </div>
   <div id="disqus_thread"></div>

