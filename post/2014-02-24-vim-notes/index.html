@@ -1,89 +1,73 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
-<head>
-  <link href="http://gmpg.org/xfn/11" rel="profile">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vim Efficiency Notes | Zea&#39;s</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <header>
 
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-
-  <title>Vim Efficiency Notes &middot; jc han</title>
-
-  
-  <link rel="stylesheet" href="/css/poole.css">
-  <link rel="stylesheet" href="/css/hyde.css">
-  <link rel="stylesheet" href="/css/poole-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-x.css">
-  
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-  
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
-  <link href="/favicon.png" rel="icon">
-
-  
-  
-  
-  
-
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  
-</head>
-<body>
-  <div class="sidebar">
-  <div class="container sidebar-sticky">
-    <div class="sidebar-about">
-      
-      <h1>jc han</h1>
-      
-    </div>
-
-    <ul class="sidebar-nav">
-      <li class="sidebar-nav-item"><a href="/">Blog</a></li>
-      
-      <li class="sidebar-nav-item"><a href="/post/">Archives</a></li>
-      
-      <li class="sidebar-nav-item"><a href="/notes/">Notes</a></li>
-      
-    </ul>
-
-    <ul class="sidebar-nav">
-      <li class="sidebar-nav-item">
-      <a href="http://github.com/zealoct"><i class="fa fa-github-square fa-3x"></i></a>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <nav>
+    <ul>
       
       
-      
-      
-      <a href="http://twitter.com/zealoct"><i class="fa fa-twitter-square fa-3x"></i></a>
+      <li class="pull-left ">
+        <a href="http://zealoct.github.io/">/home/zea&#39;s</a>
       </li>
-    </ul>
+      
+      
+      <li class="pull-left ">
+        <a href="/post/">~/archives</a>
+      </li>
+      
+      
+      <li class="pull-left ">
+        <a href="/notes/">~/notes</a>
+      </li>
+      
 
-    <p>Copyright &copy; 2016 <a href="/license">License</a><br/>
-       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
-  </div>
+      
+
+    </ul>
+  </nav>
+</header>
+
+  </head>
+
+  <body>
+    <br/>
+
+<div class="article-meta">
+<h1><span class="title">Vim Efficiency Notes</span></h1>
+
+<h2 class="date">2014/02/24</h2>
+<p class="terms">
+  
+  
+  Categories: <a href="/categories/notes">Notes</a> <a href="/categories/vim">Vim</a> 
+  
+  
+  
+  
+</p>
 </div>
 
 
-<div class="content container">
-  <div class="post">
-    <h1>Vim Efficiency Notes</h1>
-    <span class="post-date">Feb 24, 2014 &middot; 1 minute read &middot; <a href="/post/2014-02-24-vim-notes/#disqus_thread">Comments</a>
-    
-    <br/>
-    
-    <a class="label" href="/categories/notes">Notes</a><a class="label" href="/categories/vim">Vim</a>
-    </span>
-    
+
+<main>
+
 
 <p>关于Vim的一些容易被忽视、却又能提升使用体验和操作效率的操作细节。同时记录Vim中一些（我见到过的）比较实用的配置，分享的同时也给自己留个备忘吧。
 一下子总结不完整，慢慢更新。</p>
 
 <!-- more -->
 
-<h2 id="基本操作:1f4c62931b7f7b8d6df24780dbe9cdb4">基本操作</h2>
+<h2 id="基本操作">基本操作</h2>
 
 <p>基本按照幸福感排序，排在前边的是我觉得用了之后一口气儿上五楼都不累的，稍微靠后一点排的就比较随意了。每一项第一行的*斜体字*是我认为该组合比较有用的场景。</p>
 
@@ -96,7 +80,7 @@ X 是退格（Backspace），x 是删除（Delete）</p>
 <p><strong>使用Ctrl+e 和 Ctrl+y逐行翻滚页面</strong>，<em>阅读（代码）</em></br>
 这两个组合非常有用，作用分别是维持当前坐标位置不变，页面上滚和下滚一行</p>
 
-<p>** #和* *<em>，*阅读代码</em></br>
+<p>** #和* **，<em>阅读代码</em></br>
 #（shift+3）用来向上搜索当前光标所在单词，*（shift+8）用来向下搜索</p>
 
 <p><strong>%</strong>，<em>阅读代码</em></br>
@@ -124,9 +108,9 @@ A 是在本行行尾插入，I 是在本行行首插入。</p>
 <p><strong>Ctrl+a和Ctrl+x</strong>
 将当前光标所在位置处的数字加1/减1，比较好玩儿的命令，一般用不到，不过用到的话确实很方便</p>
 
-<h2 id="配置:1f4c62931b7f7b8d6df24780dbe9cdb4">配置</h2>
+<h2 id="配置">配置</h2>
 
-<h4 id="wildmode-wildmenu:1f4c62931b7f7b8d6df24780dbe9cdb4">wildmode, wildmenu</h4>
+<h4 id="wildmode-wildmenu">wildmode, wildmenu</h4>
 
 <p>输入命令<code>:set wildmode=list:longest,full</code>和<code>:set wildmenu</code>，在vim窗口下方会出现一条menu，当需要补全的时候（例如<code>:e</code>命令打开新文件，或者输入<code>:s</code>后希望模糊搜索所有s开头的vim命令），按Tab键时自动补全时行为会变为：</p>
 
@@ -139,35 +123,14 @@ A 是在本行行尾插入，I 是在本行行首插入。</p>
 
 <!-- 字符串匹配、替换 -->
 
-  </div>
-  <div id="disqus_thread"></div>
-</div>
+</main>
 
+    <footer>
+      
+<script async src="//yihui.name/js/center-img.js"></script>
 
-<script type="text/javascript">
-var disqus_shortname = "hanjc";
-(function () {
-    var s = document.createElement('script'); s.async = true;
-    s.type = 'text/javascript';
-    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-}());
-</script>
-
-
-
-<script type="text/javascript">
-    var disqus_shortname = "hanjc";
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-
-
-
-</body>
+      
+    </footer>
+  </body>
 </html>
+

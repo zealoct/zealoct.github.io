@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on Zea&#39;s</title>
+    <link>http://zealoct.github.io/categories/</link>
+    <description>Recent content in Categories on Zea&#39;s</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 05 Apr 2014 13:31:50 +0800</lastBuildDate>
+    
+	<atom:link href="http://zealoct.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Algorithm</title>
+      <link>http://zealoct.github.io/categories/algorithm/</link>
+      <pubDate>Sat, 05 Apr 2014 13:31:50 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/algorithm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Android</title>
+      <link>http://zealoct.github.io/categories/android/</link>
+      <pubDate>Tue, 20 May 2014 20:26:25 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Assemble</title>
+      <link>http://zealoct.github.io/categories/assemble/</link>
+      <pubDate>Wed, 05 Mar 2014 19:54:09 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/assemble/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>C</title>
+      <link>http://zealoct.github.io/categories/c/</link>
+      <pubDate>Wed, 05 Mar 2014 19:54:09 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/c/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cocos2d X</title>
+      <link>http://zealoct.github.io/categories/cocos2d-x/</link>
+      <pubDate>Sun, 06 Jul 2014 10:59:17 -0700</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/cocos2d-x/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Distributed Systems</title>
+      <link>http://zealoct.github.io/categories/distributed-systems/</link>
+      <pubDate>Wed, 12 Feb 2014 16:21:02 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/distributed-systems/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Efficiency</title>
+      <link>http://zealoct.github.io/categories/efficiency/</link>
+      <pubDate>Mon, 14 Sep 2015 16:51:18 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/efficiency/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Exercises</title>
+      <link>http://zealoct.github.io/categories/exercises/</link>
+      <pubDate>Sun, 26 Jan 2014 21:54:12 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/exercises/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Framebuffer</title>
+      <link>http://zealoct.github.io/categories/framebuffer/</link>
+      <pubDate>Tue, 20 May 2014 20:26:25 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/framebuffer/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Git</title>
+      <link>http://zealoct.github.io/categories/git/</link>
+      <pubDate>Thu, 30 Jun 2016 17:46:35 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/git/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Life</title>
+      <link>http://zealoct.github.io/categories/life/</link>
+      <pubDate>Sat, 05 Jul 2014 21:44:53 -0700</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/life/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>http://zealoct.github.io/categories/linux/</link>
+      <pubDate>Thu, 27 Aug 2015 18:31:48 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Lua</title>
+      <link>http://zealoct.github.io/categories/lua/</link>
+      <pubDate>Sun, 06 Jul 2014 10:59:17 -0700</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/lua/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Nebula</title>
+      <link>http://zealoct.github.io/categories/nebula/</link>
+      <pubDate>Sun, 26 Jan 2014 21:54:12 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/nebula/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Notes</title>
+      <link>http://zealoct.github.io/categories/notes/</link>
+      <pubDate>Mon, 24 Feb 2014 15:00:00 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/notes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Security</title>
+      <link>http://zealoct.github.io/categories/security/</link>
+      <pubDate>Sun, 26 Jan 2014 21:54:12 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/security/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ssh</title>
+      <link>http://zealoct.github.io/categories/ssh/</link>
+      <pubDate>Thu, 27 Aug 2015 18:31:48 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/ssh/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ubuntu</title>
+      <link>http://zealoct.github.io/categories/ubuntu/</link>
+      <pubDate>Tue, 20 May 2014 20:26:25 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/ubuntu/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vim</title>
+      <link>http://zealoct.github.io/categories/vim/</link>
+      <pubDate>Thu, 27 Aug 2015 18:31:48 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/vim/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Windows</title>
+      <link>http://zealoct.github.io/categories/windows/</link>
+      <pubDate>Mon, 14 Sep 2015 16:51:18 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/windows/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Zsh</title>
+      <link>http://zealoct.github.io/categories/zsh/</link>
+      <pubDate>Thu, 30 Jun 2016 17:46:35 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/zsh/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

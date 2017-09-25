@@ -2,364 +2,70 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Linux on Zea&#39;s</title>
-    <link>/categories/linux/</link>
+    <link>http://zealoct.github.io/categories/linux/</link>
     <description>Recent content in Linux on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Thu, 27 Aug 2015 18:31:48 +0800</lastBuildDate>
-    <atom:link href="/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+    
+	<atom:link href="http://zealoct.github.io/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Linux下VIM编码设置——解决中文乱码问题</title>
-      <link>/post/2015-08-27-Xshell-VIM-encoding/</link>
+      <link>http://zealoct.github.io/post/2015-08-27-xshell-vim-encoding/</link>
       <pubDate>Thu, 27 Aug 2015 18:31:48 +0800</pubDate>
       
-      <guid>/post/2015-08-27-Xshell-VIM-encoding/</guid>
-      <description>
-
-&lt;p&gt;日常工作与生活中经常需要在Windows下通过Xshell、Putty等SSH客户端远程连接Linux服务器，
-在这种场景下使用Vim编辑器查看与录入中文经常会遇到乱码问题。
-此外，网上也有很多文章提到过使用Vim将GBK编码的文件转换为UTF-8编码的方法，
-这种文件编码的转换在远程Vim的情况下尤其应当小心操作，并提前备份，否则一旦转换失败可能再也难以恢复。
-本文记录了一些远程Vim配置方面的心得，希望对大家有所帮助。&lt;/p&gt;
-
-&lt;p&gt;远程Vim的工作原理可以简单地理解为从文件读取数据，将数据从&lt;strong&gt;文件的存储编码&lt;/strong&gt;转换到终端可识别的&lt;strong&gt;终端编码&lt;/strong&gt;，
-终端将数据流转发给SSH客户端，SSH客户端则根据客户端内配置的&lt;strong&gt;SSH客户端编码&lt;/strong&gt;来对数据流解码，并将内容呈现给用户。
-这三个编码我们最关心的是文件的存储编码，然而在配置的时候必须保证三个编码都配置正确，才能正确地显示和转换中文。&lt;/p&gt;
-
-&lt;h3 id=&#34;正确的配置-utf-8:6b2cc54d300b512f7a11f2054528901a&#34;&gt;正确的配置（UTF-8）&lt;/h3&gt;
-
-&lt;p&gt;废话少说，先来看正确的配置是怎样的，以及如何正确地配置。&lt;/p&gt;
-
-&lt;p&gt;首先，&lt;strong&gt;终端编码与SSH客户端编码需保持一致&lt;/strong&gt;，客户端编码的查看与配置方法各有差异，在此不作分析；终端编码可通过如下命令查看：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;locale charmap
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;如果不是UTF-8的话（默认为ISO-8859-1），可以通过修改环境变量&lt;code&gt;LANG&lt;/code&gt;和&lt;code&gt;LC_ALL&lt;/code&gt;来修改，将如下两行添加进&lt;code&gt;.bashrc&lt;/code&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;export LANG=&#39;en_US.UTF-8&#39;
-export LC_ALL=&#39;en_US.UTF-8&#39;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;这时再通过&lt;code&gt;locale&lt;/code&gt;命令查看终端编码应该已经变成UTF-8了。&lt;/p&gt;
-
-&lt;p&gt;接下来要配置Vim，在正确地配置了终端编码为UTF-8之后，将下面一行添加进.vimrc即可：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;set fencs=utf-8, gbk
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;注意：无需配置&lt;code&gt;fenc&lt;/code&gt;、&lt;code&gt;enc&lt;/code&gt;、&lt;code&gt;tenc&lt;/code&gt;这三个变量！&lt;/p&gt;
-
-&lt;p&gt;至此，Vim显示中文的问题应该可以完美解决了！&lt;/p&gt;
-
-&lt;h3 id=&#34;vim配置解析:6b2cc54d300b512f7a11f2054528901a&#34;&gt;Vim配置解析&lt;/h3&gt;
-
-&lt;p&gt;前边快速地描述了应当如何配置Vim，但并未详细解释这几个选项的作用，但若要做到清楚明白地使用Vim转换文件编码，
-了解这些选项的意义还是很有必要的。&lt;/p&gt;
-
-&lt;p&gt;Vim与编码相关的配置选项有四个，分别是&lt;code&gt;fileencodings(fencs)&lt;/code&gt;，&lt;code&gt;fileencoding(fenc)&lt;/code&gt;，
-&lt;code&gt;encoding(enc)&lt;/code&gt;和&lt;code&gt;termencoding(tenc)&lt;/code&gt;，其中
-&lt;code&gt;fencs&lt;/code&gt;为一个编码列表，当打开一个文件时，Vim会依次尝试利用列表中的编码去解读文件内容；
-&lt;code&gt;fenc&lt;/code&gt;告诉Vim以哪种编码保存文件内容；
-&lt;code&gt;enc&lt;/code&gt;告诉Vim将文件内容转为哪种编码存储在Vim工作缓冲区内；
-&lt;code&gt;tenc&lt;/code&gt;告诉Vim将缓冲区内的编码转换为何种编码发送给终端。&lt;/p&gt;
-
-&lt;p&gt;当Vim打开一个文件的时候，会首先读取&lt;code&gt;fencs&lt;/code&gt;列表，并尝试以第一个编码去解码文件内容，如果失败则继续尝试第二个，
-直到找到一个解码成功的编码，&lt;strong&gt;并将&lt;/strong&gt;&lt;code&gt;fenc&lt;/code&gt;&lt;strong&gt;变量设为该编码&lt;/strong&gt;。如果列表内的编码全部解码失败，则设置&lt;code&gt;fenc&lt;/code&gt;变量为空字符串。&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;enc&lt;/code&gt;选项为Vim工作区内容编码，即Vim工作缓存内文件内容的编码，
-该编码对用户并不可见，默认为ISO-8859-1（latin1），一般情况下不需要配置。
-Vim打开文件时，会从&lt;code&gt;fencs&lt;/code&gt;列表内匹配编码，并将文件内容从该编码转换为&lt;code&gt;enc&lt;/code&gt;编码存储在Vim进程的内存里。&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;fenc&lt;/code&gt;为文件保存编码，当Vim存储一个文件时，会将工作内存内缓存的内容由&lt;code&gt;enc&lt;/code&gt;编码转换为&lt;code&gt;fenc&lt;/code&gt;编码，并写到相应的文件里。
-需要注意的是&lt;code&gt;fenc&lt;/code&gt;选项在Vim启动时会根据&lt;code&gt;fencs&lt;/code&gt;设定，因此在.vimrc内配置&lt;code&gt;fenc&lt;/code&gt;并没有意义，
-一般只有在需要进行文件编码转换的时候会动态设定该选项的值。
-如果&lt;code&gt;fenc&lt;/code&gt;选项为空字符串，则默认使用&lt;code&gt;enc&lt;/code&gt;选项所指定的编码保存文件。&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;tenc&lt;/code&gt;告诉Vim终端编码类型，Vim会将缓冲区内容由&lt;code&gt;enc&lt;/code&gt;编码转换为&lt;code&gt;tenc&lt;/code&gt;编码之后发送给终端渲染。
-与&lt;code&gt;fenc&lt;/code&gt;类似，如果&lt;code&gt;tenc&lt;/code&gt;为空字符串，则不进行转换，直接输出&lt;code&gt;enc&lt;/code&gt;编码到终端。&lt;/p&gt;
-
-&lt;p&gt;如果你对这些编码转来转去的感觉比较麻烦，一个简单不会出错的方法就是把这些全部都设为UTF-8，世界就清净了 (=&lt;/p&gt;
-
-&lt;h4 id=&#34;文件编码转换:6b2cc54d300b512f7a11f2054528901a&#34;&gt;文件编码转换&lt;/h4&gt;
-
-&lt;p&gt;在进行文件编码转换之前，最好保证上述配置都正确无误（都是UTF-8），并且你的Vim可以正确地解读目标文件编码内容，
-简单来说就是&lt;code&gt;fenc&lt;/code&gt;不是空字符串（这一点很重要，在后面会详细讲述），那么此时你的状态应当是，Vim知道源文件编码，
-缓冲区内的编码为&lt;code&gt;enc&lt;/code&gt;，此时若要进行编码转换，只需在Vim内执行命令（假设UTF-8转GBK）：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;:set fenc=gbk
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;之后保存的时候，Vim就会自动将缓冲区内容从&lt;code&gt;enc&lt;/code&gt;转到新的&lt;code&gt;fenc&lt;/code&gt;编码保存了。&lt;/p&gt;
-
-&lt;h3 id=&#34;我能显示中文就是配置正确了么:6b2cc54d300b512f7a11f2054528901a&#34;&gt;我能显示中文就是配置正确了么？&lt;/h3&gt;
-
-&lt;p&gt;答案当然是&lt;strong&gt;否定&lt;/strong&gt;的，而且我就在这个问题上栽过跟头。&lt;/p&gt;
-
-&lt;p&gt;远程Vim过程中，可以“正常显示”中文意味着什么呢？答案是，终端发送给SSH客户端的数据被正确地解码了。
-但是，这并不代表你的配置是正确的了，在这种场景下进行文件编码转换是&lt;strong&gt;非常危险&lt;/strong&gt;的行为！&lt;/p&gt;
-
-&lt;p&gt;举一个配置错误、转换错误但是显示正常的例子吧。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;LANG=&#39;en_US&#39;
-LC_ALL=&#39;en_US&#39;
-fencs=utf-8,gbk
-Xshell encoding=&#39;gbk&#39;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;此时，终端编码为latin1，Vim内部编码亦为latin1，打开一个GBK编码的中文文件，中文却是可以正常显示的！
-其根本原因在于，&lt;strong&gt;GBK和latin1都是ASCII编码方式&lt;/strong&gt;（使用latin1来解码GBK数据流并不会出错，只是会出现乱码），
-尝试用latin1编码打开GBK编码的文件&lt;strong&gt;并不会进行实质上的编码转换&lt;/strong&gt;，终端把它认为是latin1编码的内容发送给Xshell，
-Xshell只要使用GBK编码解码，就依然可以正确地显示中文。&lt;/p&gt;
-
-&lt;p&gt;但是，这种情况下如果尝试通过修改&lt;code&gt;fenc&lt;/code&gt;来进行文件编码转换（希望从GBK转到UTF-8），就会出现问题，
-因为Xshell虽然知道文件内容是GBK编码，但是Vim并不知道，Vim会尝试把文件内容从latin1转换到UTF-8保存。
-这一步转换并不会报错，只是转出来的UTF-8并不是你想要的UTF-8罢了，
-因为从GBK转UTF-8会遇到2个字节（一个汉字）转一个UTF-8的情况，而latin1转UTF-8都是单字节转一个UTF-8编码，
-如果把转换之后的文件拷到Windows下使用Sublime等编辑器打开，就会发现中文全部都是乱码。&lt;/p&gt;
-
-&lt;p&gt;好玩儿的是，虽然Windows下看该UTF-8文件是乱码，同样的配置下在远程Vim里依然可以“正确”地解读该UTF-8文件。
-原因也很简单，Vim打开该文件发现是UTF-8编码，会将UTF-8转换为内部缓冲编码latin1，这实际上还原了原本的GBK编码，
-使得Xshell可以继续以GBK解码该数据流，但是如果尝试使用&lt;code&gt;iconv&lt;/code&gt;把这个UTF-8文件直接转换为GBK就会报错。&lt;/p&gt;
-
-&lt;p&gt;因此，为了避免不必要的麻烦，日常工作中还是建议将终端编码、SSH客户端编码都设为UTF-8。&lt;/p&gt;
-
-&lt;h3 id=&#34;gbk-vs-utf-8:6b2cc54d300b512f7a11f2054528901a&#34;&gt;GBK vs. UTF-8&lt;/h3&gt;
-
-&lt;p&gt;根据前文可以看出来，由于GBK本质上是ASCII编码，因此单纯读取文件内容是无法判断其具体编码的（利用latin1和GBK去解码都正确），
-而UTF-8编码的文件会有标示，编辑器可以非常清晰的分辨出这个文件确实是UTF-8编码的文件，因此UTF-8编码在实际使用过程中更不容易出问题，
-乱码也就不太会出现了。&lt;/p&gt;
-</description>
+      <guid>http://zealoct.github.io/post/2015-08-27-xshell-vim-encoding/</guid>
+      <description>日常工作与生活中经常需要在Windows下通过Xshell、Putty等SSH客户端远程连接Linux服务器， 在这种场景下使用Vim编辑器查看与录入中文经常会遇到乱码问题。 此外，网上也有很多文章提到过使用Vim将GBK编码的文件转换为UTF-8编码的方法， 这种文件编码的转换在远程Vim的情况下尤其应当小心操作，并提前备份，否则一旦转换失败可能再也难以恢复。 本文记录了一些远程Vim配置方面的心得，希望对大家有所帮助。
+远程Vim的工作原理可以简单地理解为从文件读取数据，将数据从文件的存储编码转换到终端可识别的终端编码， 终端将数据流转发给SSH客户端，SSH客户端则根据客户端内配置的SSH客户端编码来对数据流解码，并将内容呈现给用户。 这三个编码我们最关心的是文件的存储编码，然而在配置的时候必须保证三个编码都配置正确，才能正确地显示和转换中文。
+正确的配置（UTF-8） 废话少说，先来看正确的配置是怎样的，以及如何正确地配置。
+首先，终端编码与SSH客户端编码需保持一致，客户端编码的查看与配置方法各有差异，在此不作分析；终端编码可通过如下命令查看：
+locale charmap  如果不是UTF-8的话（默认为ISO-8859-1），可以通过修改环境变量LANG和LC_ALL来修改，将如下两行添加进.bashrc
+export LANG=&#39;en_US.UTF-8&#39; export LC_ALL=&#39;en_US.UTF-8&#39;  这时再通过locale命令查看终端编码应该已经变成UTF-8了。
+接下来要配置Vim，在正确地配置了终端编码为UTF-8之后，将下面一行添加进.vimrc即可：
+set fencs=utf-8, gbk  注意：无需配置fenc、enc、tenc这三个变量！
+至此，Vim显示中文的问题应该可以完美解决了！
+Vim配置解析 前边快速地描述了应当如何配置Vim，但并未详细解释这几个选项的作用，但若要做到清楚明白地使用Vim转换文件编码， 了解这些选项的意义还是很有必要的。
+Vim与编码相关的配置选项有四个，分别是fileencodings(fencs)，fileencoding(fenc)， encoding(enc)和termencoding(tenc)，其中 fencs为一个编码列表，当打开一个文件时，Vim会依次尝试利用列表中的编码去解读文件内容； fenc告诉Vim以哪种编码保存文件内容； enc告诉Vim将文件内容转为哪种编码存储在Vim工作缓冲区内； tenc告诉Vim将缓冲区内的编码转换为何种编码发送给终端。
+当Vim打开一个文件的时候，会首先读取fencs列表，并尝试以第一个编码去解码文件内容，如果失败则继续尝试第二个， 直到找到一个解码成功的编码，并将fenc变量设为该编码。如果列表内的编码全部解码失败，则设置fenc变量为空字符串。
+enc选项为Vim工作区内容编码，即Vim工作缓存内文件内容的编码， 该编码对用户并不可见，默认为ISO-8859-1（latin1），一般情况下不需要配置。 Vim打开文件时，会从fencs列表内匹配编码，并将文件内容从该编码转换为enc编码存储在Vim进程的内存里。
+fenc为文件保存编码，当Vim存储一个文件时，会将工作内存内缓存的内容由enc编码转换为fenc编码，并写到相应的文件里。 需要注意的是fenc选项在Vim启动时会根据fencs设定，因此在.vimrc内配置fenc并没有意义， 一般只有在需要进行文件编码转换的时候会动态设定该选项的值。 如果fenc选项为空字符串，则默认使用enc选项所指定的编码保存文件。
+tenc告诉Vim终端编码类型，Vim会将缓冲区内容由enc编码转换为tenc编码之后发送给终端渲染。 与fenc类似，如果tenc为空字符串，则不进行转换，直接输出enc编码到终端。
+如果你对这些编码转来转去的感觉比较麻烦，一个简单不会出错的方法就是把这些全部都设为UTF-8，世界就清净了 (=
+文件编码转换 在进行文件编码转换之前，最好保证上述配置都正确无误（都是UTF-8），并且你的Vim可以正确地解读目标文件编码内容， 简单来说就是fenc不是空字符串（这一点很重要，在后面会详细讲述），那么此时你的状态应当是，Vim知道源文件编码， 缓冲区内的编码为enc，此时若要进行编码转换，只需在Vim内执行命令（假设UTF-8转GBK）：
+:set fenc=gbk  之后保存的时候，Vim就会自动将缓冲区内容从enc转到新的fenc编码保存了。
+我能显示中文就是配置正确了么？ 答案当然是否定的，而且我就在这个问题上栽过跟头。
+远程Vim过程中，可以“正常显示”中文意味着什么呢？答案是，终端发送给SSH客户端的数据被正确地解码了。 但是，这并不代表你的配置是正确的了，在这种场景下进行文件编码转换是非常危险的行为！
+举一个配置错误、转换错误但是显示正常的例子吧。
+LANG=&#39;en_US&#39; LC_ALL=&#39;en_US&#39; fencs=utf-8,gbk Xshell encoding=&#39;gbk&#39;  此时，终端编码为latin1，Vim内部编码亦为latin1，打开一个GBK编码的中文文件，中文却是可以正常显示的！ 其根本原因在于，GBK和latin1都是ASCII编码方式（使用latin1来解码GBK数据流并不会出错，只是会出现乱码）， 尝试用latin1编码打开GBK编码的文件并不会进行实质上的编码转换，终端把它认为是latin1编码的内容发送给Xshell， Xshell只要使用GBK编码解码，就依然可以正确地显示中文。</description>
     </item>
     
     <item>
       <title>如何写 Ubuntu 的 Framebuffer</title>
-      <link>/post/2014-05-20-ubuntu-fbvnc/</link>
+      <link>http://zealoct.github.io/post/2014-05-20-ubuntu-fbvnc/</link>
       <pubDate>Tue, 20 May 2014 20:26:25 +0800</pubDate>
       
-      <guid>/post/2014-05-20-ubuntu-fbvnc/</guid>
-      <description>
-
-&lt;p&gt;最近有个小项目，想在 Android 上跑一个通过直接读写 framebuffer 实现的 vnc 客户端，
-所以发现了这个 &lt;a href=&#34;https://github.com/zohead/fbvnc&#34;&gt;fbvnc&lt;/a&gt;， 是 github 上一个小哥儿捣鼓的，基于现有的一个同名项目开发，专为嵌入式设备使用。这个小的 vnc 客户端的不足当然有很多，比如连基本的窗口都木有，直接占用了你整个 framebuffer，不能调整分辨率，巨慢无比，卡的紧了就直接挂，但是它有一个最大的优点，就是真的非常简单，除了一些基本的 Linux 库之外没有任何第三方的依赖。&lt;/p&gt;
-
-&lt;p&gt;以上算是个小广告吧 (=&lt;/p&gt;
-
-&lt;p&gt;但是一个很大的问题是，这货在 ubuntu 上不 work……什么原因呢，做个小测试看一看。&lt;/p&gt;
-
-&lt;!-- more --&gt;
-
-&lt;h2 id=&#34;ubuntu-下修改-framebuffer:821a63a0b482335aab43dab9792305ca&#34;&gt;Ubuntu 下修改 Framebuffer&lt;/h2&gt;
-
-&lt;p&gt;其实之前我写过小程序测试直接写 ubuntu 下的 &lt;a href=&#34;https://wiki.ubuntu.com/FrameBuffer&#34;&gt;framebuffer&lt;/a&gt; 的，当时也是神马效果都木有，当时只是猜测和 x11 或 unity 有关，也没深究，这次为了跑 fbvnc，特意去搜了下，后来在 &lt;a href=&#34;http://unix.stackexchange.com/questions/58420/writes-to-framebuffer-dev-fb0-do-not-seem-to-change-graphics-screen&#34;&gt;这里&lt;/a&gt; 找到了&lt;strong&gt;解决方法&lt;/strong&gt;：需要置上 &lt;code&gt;FB_ACTIVATE_NOW&lt;/code&gt; 和 &lt;code&gt;FB_ACTIVATE_FORCE&lt;/code&gt; 属性，具体代码如下：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;vinfo.activate |= FB_ACTIVATE_NOW | FB_ACTIVATE_FORCE;
-ioctl(fbfd, FBIOPUT_VSCREENINFO, &amp;amp;vinfo)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;加上这段代码之后，我写的测试程序终于可以看到修改屏幕的效果了！&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#include &amp;lt;unistd.h&amp;gt;
-#include &amp;lt;stdio.h&amp;gt;
-#include &amp;lt;fcntl.h&amp;gt;
-#include &amp;lt;linux/fb.h&amp;gt;
-#include &amp;lt;sys/mman.h&amp;gt;
-
-int main()
-{
-    int fbfd = 0;
-    struct fb_var_screeninfo vinfo;
-    struct fb_fix_screeninfo finfo;
-    long int screensize = 0;
-    char *fbp = 0;
-    int x = 0, y = 0，color = 255;
-    long int location = 0;
-
-    /* 打开 fb 设备文件 */
-    fbfd = open(&amp;quot;/dev/fb0&amp;quot;, O_RDWR);
-    ioctl(fbfd, FBIOGET_FSCREENINFO, &amp;amp;finfo);
-    ioctl(fbfd, FBIOGET_VSCREENINFO, &amp;amp;vinfo);
-    /* 把 fb 映射到内存 */
-    screensize = vinfo.xres * vinfo.yres * vinfo.bits_per_pixel / 8;
-    fbp = (char *)mmap(0, screensize, PROT_READ | PROT_WRITE, MAP_SHARED,fbfd, 0);
-    /* 置上FB_ACTIVATE_NOW 和 FB_ACTIVATE_FORCE */
-    vinfo.activate |= FB_ACTIVATE_NOW | FB_ACTIVATE_FORCE;
-    ioctl(fbfd, FBIOPUT_VSCREENINFO, &amp;amp;vinfo);
-    /* 渐变修改 fb */
-    for(color = 255; color &amp;gt; 0 ; color --) {
-        for(x = 100 ;x &amp;lt; 200 ;x++) {
-            for(y = 100; y &amp;lt; 200; y++) {
-                location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) + (y+vinfo.yoffset) * finfo.line_length;
-                *(fbp + location) = color; /* B */
-                *(fbp + location + 1) = 0; /* G */
-                *(fbp + location + 2) = 0; /* R */
-                *(fbp + location + 3) = 0; /* A */
-            }
-        }
-
-        usleep(5000);
-    }    
-    munmap(fbp, screensize);
-    close(fbfd);
-    return 0;
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;不过我预期中的效果是直接在当前屏幕上多出一个渐变的蓝色色块，实际效果是在一个纯黑背景上。看来还是和 x11 的实现有关，不过我不了解 x11，所以并不清楚具体的原因是什么，仿佛 x11 并没有这么简单的使用 fb。&lt;/p&gt;
-
-&lt;p&gt;除此之外，其实还有&lt;strong&gt;另一个&lt;/strong&gt;更加方便和人畜无害的方法去直接操作 framebuffer，那就是切到其他的 tty 去执行。&lt;/p&gt;
-
-&lt;h2 id=&#34;ubuntu-下运行-fbvnc:821a63a0b482335aab43dab9792305ca&#34;&gt;Ubuntu 下运行 fbvnc&lt;/h2&gt;
-
-&lt;p&gt;根据 fbvnc 的 Readme，在 Ubuntu 下运行需要修改 fbvnc.c 下的&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;typedef unsigned short fbval_t;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;为&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;typedef unsigned int fbval_t;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;在 fbvnc 的源码中加入了修改 activate 属性的代码之后，执行成功！&lt;/p&gt;
-
-&lt;p&gt;等等，怎么退出……不得已 ssh 上去强制 kill 了 fbvnc 进程，结果我擦整个桌面都不好了，完全黑屏没有反映啊，切换到 tty6 关闭了很多工作的 tmux 窗口之后，回到 tty7 发现又好了，果然会有奇怪的问题，怪不得大家建议在 Linux 下不要直接修改 framebuffer，而是利用 X window 接口。&lt;/p&gt;
-
-&lt;p&gt;如果直接在 tty6 中执行 fbvnc 就正常多了，可惜性能实在太差，几乎不能用，而且还容易挂。&lt;/p&gt;
-
-&lt;h2 id=&#34;android-下编译运行-fbvnc:821a63a0b482335aab43dab9792305ca&#34;&gt;Android 下编译运行 fbvnc&lt;/h2&gt;
-
-&lt;p&gt;简单写个 Android 应用然后把 fbvnc 代码拷进去这种方法肯定不够，普通应用没有操作 framebuffer 的权限。我把 fbvnc 放到了 Android 源码 external 目录下，然后重新编译了 android 镜像。为了成功编译，需要做如下修改：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;注释掉 fbvnc.c 中所有的 dprintf，bionic 不支持此函数；&lt;/li&gt;
-&lt;li&gt;在 fbvnc.c 中把调用 getpass 函数那一行改成硬编码，或者自己实现个 getpass，bionic 也不支持此函数；&lt;/li&gt;
-&lt;li&gt;修改 draw.h 中的 FBDEV_PATH 为 &amp;ldquo;/dev/graphics/fb0&amp;rdquo;，Android 中 fb 设备路径和 Linux 默认路径不同；&lt;/li&gt;
-&lt;li&gt;在 fbvnc/ 下添加如下文件&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;``` text Android.mk
-LOCAL_PATH:= $(call my-dir)&lt;/p&gt;
-
-&lt;p&gt;include $(CLEAR_VARS)
-LOCAL_CFLAGS:= -Wall -Os
-LOCAL_MODULE_TAGS:= debug eng
-LOCAL_MODULE:= fbvnc
-LOCAL_SRC_FILES:= d3des.c draw.c vncauth.c fbvnc.c
-LOCAL_C_INCLUDES := $(LOCAL_PATH)
-LOCAL_SHARED_LIBRARIES := \
-        libcutils
-include $(BUILD_EXECUTABLE)
-```&lt;/p&gt;
-
-&lt;p&gt;OK，编译！好了之后 adb shell 上去，用 root 权限执行&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;fbenv myhostname
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;成功显示了远程 vnc 桌面，不过并不持久，很快就会被 Android 自己的界面刷掉。如果要解决这个问题，需要对 Android 系统进行更多的修改，以后有时间再写一篇吧。&lt;/p&gt;
-</description>
+      <guid>http://zealoct.github.io/post/2014-05-20-ubuntu-fbvnc/</guid>
+      <description>最近有个小项目，想在 Android 上跑一个通过直接读写 framebuffer 实现的 vnc 客户端， 所以发现了这个 fbvnc， 是 github 上一个小哥儿捣鼓的，基于现有的一个同名项目开发，专为嵌入式设备使用。这个小的 vnc 客户端的不足当然有很多，比如连基本的窗口都木有，直接占用了你整个 framebuffer，不能调整分辨率，巨慢无比，卡的紧了就直接挂，但是它有一个最大的优点，就是真的非常简单，除了一些基本的 Linux 库之外没有任何第三方的依赖。
+以上算是个小广告吧 (=
+但是一个很大的问题是，这货在 ubuntu 上不 work……什么原因呢，做个小测试看一看。
+Ubuntu 下修改 Framebuffer 其实之前我写过小程序测试直接写 ubuntu 下的 framebuffer 的，当时也是神马效果都木有，当时只是猜测和 x11 或 unity 有关，也没深究，这次为了跑 fbvnc，特意去搜了下，后来在 这里 找到了解决方法：需要置上 FB_ACTIVATE_NOW 和 FB_ACTIVATE_FORCE 属性，具体代码如下：
+vinfo.activate |= FB_ACTIVATE_NOW | FB_ACTIVATE_FORCE; ioctl(fbfd, FBIOPUT_VSCREENINFO, &amp;amp;vinfo)  加上这段代码之后，我写的测试程序终于可以看到修改屏幕的效果了！
+#include &amp;lt;unistd.h&amp;gt; #include &amp;lt;stdio.h&amp;gt; #include &amp;lt;fcntl.h&amp;gt; #include &amp;lt;linux/fb.h&amp;gt; #include &amp;lt;sys/mman.h&amp;gt; int main() { int fbfd = 0; struct fb_var_screeninfo vinfo; struct fb_fix_screeninfo finfo; long int screensize = 0; char *fbp = 0; int x = 0, y = 0，color = 255; long int location = 0; /* 打开 fb 设备文件 */ fbfd = open(&amp;quot;/dev/fb0&amp;quot;, O_RDWR); ioctl(fbfd, FBIOGET_FSCREENINFO, &amp;amp;finfo); ioctl(fbfd, FBIOGET_VSCREENINFO, &amp;amp;vinfo); /* 把 fb 映射到内存 */ screensize = vinfo.</description>
     </item>
     
     <item>
       <title>Linux 下 c 的扩展内联汇编</title>
-      <link>/post/2014-03-05-c-asm/</link>
+      <link>http://zealoct.github.io/post/2014-03-05-c-asm/</link>
       <pubDate>Wed, 05 Mar 2014 19:54:09 +0800</pubDate>
       
-      <guid>/post/2014-03-05-c-asm/</guid>
-      <description>
-
-&lt;p&gt;简单总结了一下自己看到用到的一些内联汇编的知识点，并不是一个完整的总结，以后对内联汇编有了新的了解会慢慢扩充。&lt;/p&gt;
-
-&lt;p&gt;详细细节可以参考 gcc 关与扩展内联汇编的 &lt;a href=&#34;http://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Extended-Asm&#34;&gt;文档&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&#34;格式说明:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;格式说明&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code&gt;__asm__　__volatile__(&amp;quot;Instruction List&amp;quot; : Output : Input : Clobber/Modify)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;冒号的使用原则（*O, I, C 分别指代 Output, Input, Clobber/Modify*）：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;C 为空，第三个冒号必须省略&lt;/li&gt;
-&lt;li&gt;O、I 为空时，前边的冒号（第一、二个）可选择性省略&lt;/li&gt;
-&lt;li&gt;O，I，C 中任何一个不为空，则之前的冒号均必须保留，如只有 I 不为空时，O 和 I 之前的冒号必须保留，只有 C 不为空时三个冒号都必须保留&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;合法的调用包括&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;__asm__(&amp;quot; &amp;quot; : : : &amp;quot;memory&amp;quot;);
-__asm__(&amp;quot; &amp;quot; : :);
-__asm__(&amp;quot;mov %1, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a));
-__asm__(&amp;quot;mov %1, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a) :);
-__asm__(&amp;quot;mov %%edx, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a) : &amp;quot;d&amp;quot;(var_d));
-__asm__(&amp;quot;mov %%edx, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a) : : &amp;quot;ebx&amp;quot;);
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;下面分别介绍指令列表、输出、输入和修改声明这四个部分。&lt;/p&gt;
-
-&lt;!-- more --&gt;
-
-&lt;h2 id=&#34;指令列表:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;指令列表&lt;/h2&gt;
-
-&lt;p&gt;基本上和 .S 文件的格式是一样的，不同的是要加个引号。需要注意的是每一行中只能有一个指令，如果一行中包含多条指令，则必须用 &lt;code&gt;;&lt;/code&gt; 或换行符隔开。注意字符串中的换行符会被asm识别，但字符串以外、代码中的不会，参见一下示例&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// 换行符在字符串内，不需显示添加换行符
-__asm__(&amp;quot;mov %edx, %eax
-         mov %ebx, %edx&amp;quot;)
-
-// 换行符在字符串外，需显示添加换行符
-__asm__(&amp;quot;mov %edx, %eax\n&amp;quot;
-        &amp;quot;mov %ebx, %edx&amp;quot;)
-
-// 没有换行符，使用 ; 分隔
-__asm__(&amp;quot;mov %edx, %eax; mov %ebx, %edx&amp;quot;)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;关于指令中百分号的使用，当使用了冒号时，指令中&lt;strong&gt;必须&lt;/strong&gt;使用 &lt;code&gt;%%&lt;/code&gt; 来作为寄存器前缀；当没有使用冒号时，&lt;strong&gt;必须&lt;/strong&gt;使用 &lt;code&gt;%&lt;/code&gt; 作为寄存器前缀。&lt;/p&gt;
-
-&lt;h2 id=&#34;输出:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;输出&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;__asm__(&amp;quot;mov %%edx, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a) : &amp;quot;d&amp;quot;(var_d));
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;输出部分 &lt;code&gt;&amp;quot;=a&amp;quot;(var_a)&lt;/code&gt; 的意思是把寄存器 &lt;em&gt;%eax&lt;/em&gt; 中的值放入变量 &lt;em&gt;var_a&lt;/em&gt; 中，由输出操作数（Operand） &lt;code&gt;var_a&lt;/code&gt; 和 操作数约束（Constraint） &lt;code&gt;&amp;quot;=a&amp;quot;&lt;/code&gt; 两部分组成。&lt;/p&gt;
-
-&lt;p&gt;其中，操作数制定了输出向哪个 c 变量，该例中即 *var_a*；操作约束中的修饰符（Modifier） “=” 表明输出操作数在指令中是只写的，并且只作为输出。常用的修饰符还有“+”，表明操作数可读可写，既作输入又作输出，而约束中的“a”表征寄存器 *%eax*。&lt;/p&gt;
-
-&lt;p&gt;详细的输出约束参见 GCC 文档 &lt;a href=&#34;http://gcc.gnu.org/onlinedocs/gcc/Constraints.html#Constraints&#34;&gt;6.42 Constraints for asm Operands&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;如果有多个输出，需要用 “,” 将这些输出分隔开，如&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;asm (&amp;quot;cpuid&amp;quot;
-	:&amp;quot;=a&amp;quot; (_eax),
-	 &amp;quot;=b&amp;quot; (_ebx),
-	 &amp;quot;=c&amp;quot; (_ecx),
-	 &amp;quot;=d&amp;quot; (_edx)
-	:&amp;quot;a&amp;quot; (op));
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;输入:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;输入&lt;/h2&gt;
-
-&lt;p&gt;输入约束的基本意义与输出相同，不过不包含修饰符。&lt;/p&gt;
-
-&lt;p&gt;输入的操作数部分可以是表达式。&lt;/p&gt;
-
-&lt;h2 id=&#34;修改声明:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;修改声明&lt;/h2&gt;
-
-&lt;p&gt;声明在这段汇编中哪些寄存器的值会改变，以及是否会修改内存。在一些情况下，这对与 gcc 编译、优化程序而言非常重要，比如我们在汇编中修改了一个既不是输入也不是输出的寄存器，如果不显示声明的话 gcc 会认为这段汇编之后该寄存器的值不变，导致程序出错。&lt;/p&gt;
-
-&lt;h2 id=&#34;参考:f467db7656345f29d7121e6fc1e20d0c&#34;&gt;参考&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.ibm.com/developerworks/cn/linux/sdk/assemble/inline/index.html&#34;&gt;Linux 中 x86 的内联汇编 - IBM&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.cnblogs.com/latifrons/archive/2009/09/17/1568198.html&#34;&gt;C语言ASM汇编内嵌语法&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://andyhuzhill.github.io/ARM/GCC/ASM/2012/09/25/gcc-inline-assemly/&#34;&gt;ARM体系下的GCC内联汇编&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
+      <guid>http://zealoct.github.io/post/2014-03-05-c-asm/</guid>
+      <description>简单总结了一下自己看到用到的一些内联汇编的知识点，并不是一个完整的总结，以后对内联汇编有了新的了解会慢慢扩充。
+详细细节可以参考 gcc 关与扩展内联汇编的 文档
+格式说明 __asm__　__volatile__(&amp;quot;Instruction List&amp;quot; : Output : Input : Clobber/Modify)  冒号的使用原则（*O, I, C 分别指代 Output, Input, Clobber/Modify*）：
+ C 为空，第三个冒号必须省略 O、I 为空时，前边的冒号（第一、二个）可选择性省略 O，I，C 中任何一个不为空，则之前的冒号均必须保留，如只有 I 不为空时，O 和 I 之前的冒号必须保留，只有 C 不为空时三个冒号都必须保留  合法的调用包括
+__asm__(&amp;quot; &amp;quot; : : : &amp;quot;memory&amp;quot;); __asm__(&amp;quot; &amp;quot; : :); __asm__(&amp;quot;mov %1, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a)); __asm__(&amp;quot;mov %1, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a) :); __asm__(&amp;quot;mov %%edx, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a) : &amp;quot;d&amp;quot;(var_d)); __asm__(&amp;quot;mov %%edx, %%eax&amp;quot; : &amp;quot;=a&amp;quot;(var_a) : : &amp;quot;ebx&amp;quot;);  下面分别介绍指令列表、输出、输入和修改声明这四个部分。</description>
     </item>
     
   </channel>

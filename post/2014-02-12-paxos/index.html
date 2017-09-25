@@ -1,86 +1,70 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
-<head>
-  <link href="http://gmpg.org/xfn/11" rel="profile">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Notes on Paxos Made Simple | Zea&#39;s</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <header>
 
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-
-  <title>Notes on Paxos Made Simple &middot; jc han</title>
-
-  
-  <link rel="stylesheet" href="/css/poole.css">
-  <link rel="stylesheet" href="/css/hyde.css">
-  <link rel="stylesheet" href="/css/poole-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-x.css">
-  
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-  
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
-  <link href="/favicon.png" rel="icon">
-
-  
-  
-  
-  
-
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  
-</head>
-<body>
-  <div class="sidebar">
-  <div class="container sidebar-sticky">
-    <div class="sidebar-about">
-      
-      <h1>jc han</h1>
-      
-    </div>
-
-    <ul class="sidebar-nav">
-      <li class="sidebar-nav-item"><a href="/">Blog</a></li>
-      
-      <li class="sidebar-nav-item"><a href="/post/">Archives</a></li>
-      
-      <li class="sidebar-nav-item"><a href="/notes/">Notes</a></li>
-      
-    </ul>
-
-    <ul class="sidebar-nav">
-      <li class="sidebar-nav-item">
-      <a href="http://github.com/zealoct"><i class="fa fa-github-square fa-3x"></i></a>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <nav>
+    <ul>
       
       
-      
-      
-      <a href="http://twitter.com/zealoct"><i class="fa fa-twitter-square fa-3x"></i></a>
+      <li class="pull-left ">
+        <a href="http://zealoct.github.io/">/home/zea&#39;s</a>
       </li>
-    </ul>
+      
+      
+      <li class="pull-left ">
+        <a href="/post/">~/archives</a>
+      </li>
+      
+      
+      <li class="pull-left ">
+        <a href="/notes/">~/notes</a>
+      </li>
+      
 
-    <p>Copyright &copy; 2016 <a href="/license">License</a><br/>
-       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
-  </div>
+      
+
+    </ul>
+  </nav>
+</header>
+
+  </head>
+
+  <body>
+    <br/>
+
+<div class="article-meta">
+<h1><span class="title">Notes on Paxos Made Simple</span></h1>
+
+<h2 class="date">2014/02/12</h2>
+<p class="terms">
+  
+  
+  Categories: <a href="/categories/notes">Notes</a> <a href="/categories/distributed-systems">Distributed Systems</a> 
+  
+  
+  
+  
+</p>
 </div>
 
 
-<div class="content container">
-  <div class="post">
-    <h1>Notes on Paxos Made Simple</h1>
-    <span class="post-date">Feb 12, 2014 &middot; 7 minute read &middot; <a href="/post/2014-02-12-paxos/#disqus_thread">Comments</a>
-    
-    <br/>
-    
-    <a class="label" href="/categories/notes">Notes</a><a class="label" href="/categories/distributed-systems">Distributed Systems</a>
-    </span>
-    
+
+<main>
+
 
 <p><a href="http://pdos.csail.mit.edu/6.824-2013/papers/paxos-simple.pdf">Origin paper link</a></p>
 
-<h3 id="problem:6bec04965a0098d4a556c94eb1c1658c">Problem</h3>
+<h3 id="problem">Problem</h3>
 
 <p>safety requirements</p>
 
@@ -104,7 +88,7 @@ restart</li>
 and can be lost, but they are not corrupted.</li>
 </ul>
 
-<h3 id="choosing-a-value:6bec04965a0098d4a556c94eb1c1658c">Choosing a Value</h3>
+<h3 id="choosing-a-value">Choosing a Value</h3>
 
 <p>Single acceptor, simple but unsatisfacroty, suffer from failure
 of this single acceptor.</p>
@@ -241,7 +225,7 @@ proposals.
 <p><strong>Optimization</strong>: abandon a proposal if some proposers has begun trying to
 issue a higher-numbered one.</p>
 
-<h3 id="learning-a-chosen-value:6bec04965a0098d4a556c94eb1c1658c">Learning a Chosen Value</h3>
+<h3 id="learning-a-chosen-value">Learning a Chosen Value</h3>
 
 <p>Acceptors return responds to <em>accept</em> requests to all the learners,
 the number of responds that required equals to the product of the number
@@ -250,7 +234,7 @@ of acceptors and the number of learners.</p>
 <p>Acceptors could return only to a set of distinguished learners, these
 learners will inform other learners.</p>
 
-<h3 id="progress:6bec04965a0098d4a556c94eb1c1658c">Progress</h3>
+<h3 id="progress">Progress</h3>
 
 <p>It’s easy to construct a scenario in which two proposers each keep
 issuing a sequence of proposals with increasing numbers, none of which
@@ -262,7 +246,7 @@ only one to try issuing proposals.</p>
 <p>Result of <a href="http://dl.acm.org/citation.cfm?id=214121">Fischer, Lynch, and Patterson</a> shows a reliable algorithm
 to electing a proposer must use either randomness or real time.</p>
 
-<h3 id="implementation:6bec04965a0098d4a556c94eb1c1658c">Implementation</h3>
+<h3 id="implementation">Implementation</h3>
 
 <p><a href="http://dl.acm.org/citation.cfm?id=279229">The part-time parliament</a></p>
 
@@ -271,11 +255,11 @@ Different proposers choose their numbers from disjoint sets of numbers,
 each proposer remembers (in stable storage) the highest-numbered
 proposal it has tried to issue.</p>
 
-<h2 id="my-summary:6bec04965a0098d4a556c94eb1c1658c">My Summary</h2>
+<h2 id="my-summary">My Summary</h2>
 
 <p>Behavior of <em>Proposer</em>, <em>Acceptor</em> and <em>Learner</em></p>
 
-<h3 id="proposer:6bec04965a0098d4a556c94eb1c1658c">Proposer</h3>
+<h3 id="proposer">Proposer</h3>
 
 <ol>
 <li>sends prepare request <em>n</em> to all acceptors</li>
@@ -289,7 +273,7 @@ proposal it has tried to issue.</p>
 <li>repick a bigger <em>n</em> and repeat step 1 &amp; 2 until a value is chosen</li>
 </ol>
 
-<h3 id="acceptor:6bec04965a0098d4a556c94eb1c1658c">Acceptor</h3>
+<h3 id="acceptor">Acceptor</h3>
 
 <ol>
 <li>Acceptor should know the highest-numbered proposal it accepted <em>APa</em> and the highest-numbered proposal it responsed <em>APr</em></li>
@@ -307,39 +291,18 @@ proposal it has tried to issue.</p>
 </ol></li>
 </ol>
 
-<h3 id="learner:6bec04965a0098d4a556c94eb1c1658c">Learner</h3>
+<h3 id="learner">Learner</h3>
 
 <p>TODO</p>
 
-  </div>
-  <div id="disqus_thread"></div>
-</div>
+</main>
 
+    <footer>
+      
+<script async src="//yihui.name/js/center-img.js"></script>
 
-<script type="text/javascript">
-var disqus_shortname = "hanjc";
-(function () {
-    var s = document.createElement('script'); s.async = true;
-    s.type = 'text/javascript';
-    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-}());
-</script>
-
-
-
-<script type="text/javascript">
-    var disqus_shortname = "hanjc";
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-
-
-
-</body>
+      
+    </footer>
+  </body>
 </html>
+

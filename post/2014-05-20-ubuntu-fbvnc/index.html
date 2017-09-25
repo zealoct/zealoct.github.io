@@ -1,82 +1,66 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
-<head>
-  <link href="http://gmpg.org/xfn/11" rel="profile">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>如何写 Ubuntu 的 Framebuffer | Zea&#39;s</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <header>
 
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-
-  <title>如何写 Ubuntu 的 Framebuffer &middot; jc han</title>
-
-  
-  <link rel="stylesheet" href="/css/poole.css">
-  <link rel="stylesheet" href="/css/hyde.css">
-  <link rel="stylesheet" href="/css/poole-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-x.css">
-  
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-  
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
-  <link href="/favicon.png" rel="icon">
-
-  
-  
-  
-  
-
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  
-</head>
-<body>
-  <div class="sidebar">
-  <div class="container sidebar-sticky">
-    <div class="sidebar-about">
-      
-      <h1>jc han</h1>
-      
-    </div>
-
-    <ul class="sidebar-nav">
-      <li class="sidebar-nav-item"><a href="/">Blog</a></li>
-      
-      <li class="sidebar-nav-item"><a href="/post/">Archives</a></li>
-      
-      <li class="sidebar-nav-item"><a href="/notes/">Notes</a></li>
-      
-    </ul>
-
-    <ul class="sidebar-nav">
-      <li class="sidebar-nav-item">
-      <a href="http://github.com/zealoct"><i class="fa fa-github-square fa-3x"></i></a>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <nav>
+    <ul>
       
       
-      
-      
-      <a href="http://twitter.com/zealoct"><i class="fa fa-twitter-square fa-3x"></i></a>
+      <li class="pull-left ">
+        <a href="http://zealoct.github.io/">/home/zea&#39;s</a>
       </li>
-    </ul>
+      
+      
+      <li class="pull-left ">
+        <a href="/post/">~/archives</a>
+      </li>
+      
+      
+      <li class="pull-left ">
+        <a href="/notes/">~/notes</a>
+      </li>
+      
 
-    <p>Copyright &copy; 2016 <a href="/license">License</a><br/>
-       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
-  </div>
+      
+
+    </ul>
+  </nav>
+</header>
+
+  </head>
+
+  <body>
+    <br/>
+
+<div class="article-meta">
+<h1><span class="title">如何写 Ubuntu 的 Framebuffer</span></h1>
+
+<h2 class="date">2014/05/20</h2>
+<p class="terms">
+  
+  
+  Categories: <a href="/categories/ubuntu">Ubuntu</a> <a href="/categories/linux">Linux</a> <a href="/categories/android">Android</a> <a href="/categories/framebuffer">Framebuffer</a> 
+  
+  
+  
+  
+</p>
 </div>
 
 
-<div class="content container">
-  <div class="post">
-    <h1>如何写 Ubuntu 的 Framebuffer</h1>
-    <span class="post-date">May 20, 2014 &middot; 2 minute read &middot; <a href="/post/2014-05-20-ubuntu-fbvnc/#disqus_thread">Comments</a>
-    
-    <br/>
-    
-    <a class="label" href="/categories/ubuntu">Ubuntu</a><a class="label" href="/categories/linux">Linux</a><a class="label" href="/categories/android">Android</a><a class="label" href="/categories/framebuffer">Framebuffer</a>
-    </span>
-    
+
+<main>
+
 
 <p>最近有个小项目，想在 Android 上跑一个通过直接读写 framebuffer 实现的 vnc 客户端，
 所以发现了这个 <a href="https://github.com/zohead/fbvnc">fbvnc</a>， 是 github 上一个小哥儿捣鼓的，基于现有的一个同名项目开发，专为嵌入式设备使用。这个小的 vnc 客户端的不足当然有很多，比如连基本的窗口都木有，直接占用了你整个 framebuffer，不能调整分辨率，巨慢无比，卡的紧了就直接挂，但是它有一个最大的优点，就是真的非常简单，除了一些基本的 Linux 库之外没有任何第三方的依赖。</p>
@@ -87,7 +71,7 @@
 
 <!-- more -->
 
-<h2 id="ubuntu-下修改-framebuffer:821a63a0b482335aab43dab9792305ca">Ubuntu 下修改 Framebuffer</h2>
+<h2 id="ubuntu-下修改-framebuffer">Ubuntu 下修改 Framebuffer</h2>
 
 <p>其实之前我写过小程序测试直接写 ubuntu 下的 <a href="https://wiki.ubuntu.com/FrameBuffer">framebuffer</a> 的，当时也是神马效果都木有，当时只是猜测和 x11 或 unity 有关，也没深究，这次为了跑 fbvnc，特意去搜了下，后来在 <a href="http://unix.stackexchange.com/questions/58420/writes-to-framebuffer-dev-fb0-do-not-seem-to-change-graphics-screen">这里</a> 找到了<strong>解决方法</strong>：需要置上 <code>FB_ACTIVATE_NOW</code> 和 <code>FB_ACTIVATE_FORCE</code> 属性，具体代码如下：</p>
 
@@ -147,7 +131,7 @@ int main()
 
 <p>除此之外，其实还有<strong>另一个</strong>更加方便和人畜无害的方法去直接操作 framebuffer，那就是切到其他的 tty 去执行。</p>
 
-<h2 id="ubuntu-下运行-fbvnc:821a63a0b482335aab43dab9792305ca">Ubuntu 下运行 fbvnc</h2>
+<h2 id="ubuntu-下运行-fbvnc">Ubuntu 下运行 fbvnc</h2>
 
 <p>根据 fbvnc 的 Readme，在 Ubuntu 下运行需要修改 fbvnc.c 下的</p>
 
@@ -165,7 +149,7 @@ int main()
 
 <p>如果直接在 tty6 中执行 fbvnc 就正常多了，可惜性能实在太差，几乎不能用，而且还容易挂。</p>
 
-<h2 id="android-下编译运行-fbvnc:821a63a0b482335aab43dab9792305ca">Android 下编译运行 fbvnc</h2>
+<h2 id="android-下编译运行-fbvnc">Android 下编译运行 fbvnc</h2>
 
 <p>简单写个 Android 应用然后把 fbvnc 代码拷进去这种方法肯定不够，普通应用没有操作 framebuffer 的权限。我把 fbvnc 放到了 Android 源码 external 目录下，然后重新编译了 android 镜像。为了成功编译，需要做如下修改：</p>
 
@@ -185,7 +169,7 @@ LOCAL_MODULE_TAGS:= debug eng
 LOCAL_MODULE:= fbvnc
 LOCAL_SRC_FILES:= d3des.c draw.c vncauth.c fbvnc.c
 LOCAL_C_INCLUDES := $(LOCAL_PATH)
-LOCAL_SHARED_LIBRARIES := \
+LOCAL_SHARED_LIBRARIES := <br />
         libcutils
 include $(BUILD_EXECUTABLE)
 ```</p>
@@ -197,35 +181,14 @@ include $(BUILD_EXECUTABLE)
 
 <p>成功显示了远程 vnc 桌面，不过并不持久，很快就会被 Android 自己的界面刷掉。如果要解决这个问题，需要对 Android 系统进行更多的修改，以后有时间再写一篇吧。</p>
 
-  </div>
-  <div id="disqus_thread"></div>
-</div>
+</main>
 
+    <footer>
+      
+<script async src="//yihui.name/js/center-img.js"></script>
 
-<script type="text/javascript">
-var disqus_shortname = "hanjc";
-(function () {
-    var s = document.createElement('script'); s.async = true;
-    s.type = 'text/javascript';
-    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-}());
-</script>
-
-
-
-<script type="text/javascript">
-    var disqus_shortname = "hanjc";
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-
-
-
-</body>
+      
+    </footer>
+  </body>
 </html>
+

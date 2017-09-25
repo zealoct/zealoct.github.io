@@ -1,86 +1,72 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
-<head>
-  <link href="http://gmpg.org/xfn/11" rel="profile">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Notes on iOS Security Whitepaper | Zea&#39;s</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <header>
 
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-
-  <title>Notes on iOS Security Whitepaper &middot; jc han</title>
-
-  
-  <link rel="stylesheet" href="/css/poole.css">
-  <link rel="stylesheet" href="/css/hyde.css">
-  <link rel="stylesheet" href="/css/poole-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-x.css">
-  
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-  
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
-  <link href="/favicon.png" rel="icon">
-
-  
-  
-  
-  
-
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  
-</head>
-<body>
-  <div class="sidebar">
-  <div class="container sidebar-sticky">
-    <div class="sidebar-about">
-      
-      <h1>jc han</h1>
-      
-    </div>
-
-    <ul class="sidebar-nav">
-      <li class="sidebar-nav-item"><a href="/">Blog</a></li>
-      
-      <li class="sidebar-nav-item"><a href="/post/">Archives</a></li>
-      
-      <li class="sidebar-nav-item"><a href="/notes/">Notes</a></li>
-      
-    </ul>
-
-    <ul class="sidebar-nav">
-      <li class="sidebar-nav-item">
-      <a href="http://github.com/zealoct"><i class="fa fa-github-square fa-3x"></i></a>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <nav>
+    <ul>
       
       
-      
-      
-      <a href="http://twitter.com/zealoct"><i class="fa fa-twitter-square fa-3x"></i></a>
+      <li class="pull-left ">
+        <a href="http://zealoct.github.io/">/home/zea&#39;s</a>
       </li>
-    </ul>
+      
+      
+      <li class="pull-left ">
+        <a href="/post/">~/archives</a>
+      </li>
+      
+      
+      <li class="pull-left ">
+        <a href="/notes/">~/notes</a>
+      </li>
+      
 
-    <p>Copyright &copy; 2016 <a href="/license">License</a><br/>
-       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
-  </div>
+      
+
+    </ul>
+  </nav>
+</header>
+
+  </head>
+
+  <body>
+    <br/>
+
+<div class="article-meta">
+<h1><span class="title">Notes on iOS Security Whitepaper</span></h1>
+
+<h2 class="date">2014/03/03</h2>
+<p class="terms">
+  
+  
+  
+  
+  
+</p>
 </div>
 
 
-<div class="content container">
-  <div class="post">
-    <h1>Notes on iOS Security Whitepaper</h1>
-    <span class="post-date">Mar 3, 2014 &middot; 11 minute read &middot; <a href="/post/2014-03-03-ios-security/#disqus_thread">Comments</a>
-    </span>
-    
+
+<main>
+
 
 <p>This notes is based on <em>iOS Security - February 2014</em>, origin link can be found <a href="http://images.apple.com/iphone/business/docs/iOS_Security_Feb14.pdf">here</a>.</p>
 
 <p>This paper gives a brief description of iOS security, including hardware security features and how iOS leverages these features.</p>
 
-<h2 id="system-security:bf9b580f36e32014f4603d11adf690ee">System Security</h2>
+<h2 id="system-security">System Security</h2>
 
-<h3 id="secure-boot-chain:bf9b580f36e32014f4603d11adf690ee">Secure Boot Chain</h3>
+<h3 id="secure-boot-chain">Secure Boot Chain</h3>
 
 <p>ROM is sealed with public key of Apple Root CA, and will verify the Low-Level Bootloader (LLB) before load it.</p>
 
@@ -88,7 +74,7 @@
 
 <p>Verification failure will enter <strong>recovery mode</strong>, if Boot ROM is not even able to load or verify LLB, it enters <strong>DFU (Device Firmware Update) mode</strong>.</p>
 
-<h3 id="system-software-authorization:bf9b580f36e32014f4603d11adf690ee">System Software Authorization</h3>
+<h3 id="system-software-authorization">System Software Authorization</h3>
 
 <p>GOAL: prevent the devices from being downgraded.</p>
 
@@ -108,7 +94,7 @@
 
 <!-- more -->
 
-<h3 id="secure-enclave:bf9b580f36e32014f4603d11adf690ee">Secure Enclave</h3>
+<h3 id="secure-enclave">Secure Enclave</h3>
 
 <p>There are two kinds of processors, <em>application processor (A7)</em> and <em>Secure Enclave</em>.</p>
 
@@ -129,7 +115,7 @@ Communication is isolated to an interrupt-driven mailbox and shared memory data 
 
 <p>Utilizes System Software Authorization to ensure the integrity of its software and prevent downgrade.</p>
 
-<h4 id="some-questions:bf9b580f36e32014f4603d11adf690ee">Some Questions</h4>
+<h4 id="some-questions">Some Questions</h4>
 
 <ol>
 <li><p>How secure boot of Secure Enclave is achieved?</p></li>
@@ -137,13 +123,13 @@ Communication is isolated to an interrupt-driven mailbox and shared memory data 
 <li><p>Where the ephemeral key is stored? How about the key and anti-replay counter used to encrypt data written to file system by Secure Enclave?</p></li>
 </ol>
 
-<h3 id="touch-id:bf9b580f36e32014f4603d11adf690ee">Touch ID</h3>
+<h3 id="touch-id">Touch ID</h3>
 
 <p>80*80 pixel, 500 ppi <a href="http://en.wikipedia.org/wiki/Raster_scan">raster scan</a>, temporarily stored in Secure Enclave, data out from Touch ID sensor is encrypted, A7 can only forward it to Secure Enclave but never read its content.</p>
 
 <p>User&rsquo;s fingerprint map never leaves ip5s.</p>
 
-<h4 id="safe-communicate-with-secure-enclave:bf9b580f36e32014f4603d11adf690ee">Safe communicate with Secure Enclave</h4>
+<h4 id="safe-communicate-with-secure-enclave">Safe communicate with Secure Enclave</h4>
 
 <p>Touch ID can only talk to Secure Enclave through application processor.  Communication between the A7 and the
 Touch ID sensor takes place over a <a href="http://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus">serial peripheral interface bus</a>.</p>
@@ -154,13 +140,13 @@ Touch ID sensor takes place over a <a href="http://en.wikipedia.org/wiki/Serial_
 <p>The session key exchange uses AES key wrapping with both sides providing a random key that establishes the session key and uses AES-CCM transport encryption</p>
 </blockquote>
 
-<h4 id="process-of-unlocking-an-iphone:bf9b580f36e32014f4603d11adf690ee">Process of unlocking an iPhone</h4>
+<h4 id="process-of-unlocking-an-iphone">Process of unlocking an iPhone</h4>
 
 <p>On regular A7 processor, Data Protection <em>class keys</em> are discarded, and regenerated when user unlock the device with passcode.</p>
 
 <p>With Touch ID, the keys are wrapped with a key given to Touch ID subsystem, Touch ID will provide the key for unwrapping if it recognizes the user&rsquo;s fingerprint (details refer to section <em>File Data Protection</em>)</p>
 
-<h3 id="simple-conclusion:bf9b580f36e32014f4603d11adf690ee">Simple Conclusion</h3>
+<h3 id="simple-conclusion">Simple Conclusion</h3>
 
 <p>The following features are most critical for iOS system security</p>
 
@@ -170,11 +156,11 @@ Touch ID sensor takes place over a <a href="http://en.wikipedia.org/wiki/Serial_
 <li>unbreakable ROM</li>
 </ul>
 
-<h2 id="encryption-and-data-protection:bf9b580f36e32014f4603d11adf690ee">Encryption and Data Protection</h2>
+<h2 id="encryption-and-data-protection">Encryption and Data Protection</h2>
 
 <p>Focus on the protection of data stored on the device.</p>
 
-<h3 id="hardware-security-features:bf9b580f36e32014f4603d11adf690ee">Hardware Security Features</h3>
+<h3 id="hardware-security-features">Hardware Security Features</h3>
 
 <p>Apple&rsquo;s devices involves some hardware support for security, these includes:</p>
 
@@ -198,7 +184,7 @@ Touch ID sensor takes place over a <a href="http://en.wikipedia.org/wiki/Serial_
 <li><p><em>Effaceable Storage</em> for securely erasing saved keys</p></li>
 </ul>
 
-<h3 id="file-data-protection:bf9b580f36e32014f4603d11adf690ee">File Data Protection</h3>
+<h3 id="file-data-protection">File Data Protection</h3>
 
 <p>GOAL: Protect data stored in flash memory.</p>
 
@@ -224,7 +210,7 @@ Touch ID sensor takes place over a <a href="http://en.wikipedia.org/wiki/Serial_
 
 <p>The work of key management is done by Secure Enclave, as mentioned in section Secure Enclave.</p>
 
-<h3 id="passcodes:bf9b580f36e32014f4603d11adf690ee">Passcodes</h3>
+<h3 id="passcodes">Passcodes</h3>
 
 <p>Supports <em>four-digit</em> and <em>arbitrary-length alphanumeric</em> passcodes.</p>
 
@@ -239,7 +225,7 @@ Touch ID sensor takes place over a <a href="http://en.wikipedia.org/wiki/Serial_
 <p><strong>Where is this Passcodes stored?</strong>
 Passcodes should be managed by Secure Enclave, and stored in file system after being encrypted by Secure Enclave.</p>
 
-<h3 id="data-protection-classes:bf9b580f36e32014f4603d11adf690ee">Data Protection Classes</h3>
+<h3 id="data-protection-classes">Data Protection Classes</h3>
 
 <p>Basic classes:</p>
 
@@ -260,7 +246,7 @@ Passcodes should be managed by Secure Enclave, and stored in file system after b
 
 <p>So in a short <strong>conslusion</strong>, all the files in iOS devices are encrypted, as there always be a hardware AES between memory and flash, only that stronger protection involves encrypting class key with Passcode, and auto wiping the decrypted key after the device is locked.</p>
 
-<h3 id="keychain-data-protection:bf9b580f36e32014f4603d11adf690ee">Keychain Data Protection</h3>
+<h3 id="keychain-data-protection">Keychain Data Protection</h3>
 
 <p>GOAL: protect short but sensitive bits of data in apps, such as keys and login tokens.</p>
 
@@ -274,7 +260,7 @@ Passcodes should be managed by Secure Enclave, and stored in file system after b
 <p>Each keychain class has a “This device only” counterpart, which is always protected with the UID when being copied from the device during a backup, rendering it useless if restored to a different device</p>
 </blockquote>
 
-<h3 id="keybags:bf9b580f36e32014f4603d11adf690ee">Keybags</h3>
+<h3 id="keybags">Keybags</h3>
 
 <p>Manage keys for file and Keychain Data Protection classes, four keybags: <em>System</em>, <em>Backup</em>, <em>Escrow</em>, and <em>iCloud</em>.</p>
 
@@ -291,15 +277,15 @@ on the computer where the device is backed up. The backed-up data is <strong>re-
 <p>For all Data Protection classes except No Protection, the encrypted data is read from the device and sent to iCloud. The corresponding class keys are protected by iCloud keys. The keychain class keys are wrapped with a UID-derived key in the same way as an unencrypted iTunes backup.</p>
 </blockquote>
 
-<h2 id="app-security:bf9b580f36e32014f4603d11adf690ee">App Security</h2>
+<h2 id="app-security">App Security</h2>
 
 <p>iOS provides protection to ensure that apps are signed and verified, cannot execute malicious code, and are sandboxed to protect user data at all times.</p>
 
-<h3 id="app-code-signing:bf9b580f36e32014f4603d11adf690ee">App Code Signing</h3>
+<h3 id="app-code-signing">App Code Signing</h3>
 
 <p>Mandatory code signing esing Apple-issued certificate. Developers must join iOS Developer Program and provide their real-world indentity for verification.</p>
 
-<h3 id="runtime-process-security:bf9b580f36e32014f4603d11adf690ee">Runtime Process Security</h3>
+<h3 id="runtime-process-security">Runtime Process Security</h3>
 
 <p>Sandbox. Randomly assigned home directory, can only communicate with APIs.</p>
 
@@ -313,11 +299,11 @@ on the computer where the device is backed up. The backed-up data is <strong>re-
 <p>Memory pages marked as both writable and executable can be used only by apps under tightly controlled conditions: The kernel checks for the presence of the Apple-only dynamic code-signing entitlement.</p>
 </blockquote>
 
-<h3 id="data-protection-in-apps:bf9b580f36e32014f4603d11adf690ee">Data Protection in Apps</h3>
+<h3 id="data-protection-in-apps">Data Protection in Apps</h3>
 
 <p>Data Protection is available for file and database APIs, Protected Until First User Authentication by default.</p>
 
-<h3 id="accessories:bf9b580f36e32014f4603d11adf690ee">Accessories</h3>
+<h3 id="accessories">Accessories</h3>
 
 <p>The following process is entirely handled by a integrated circuit that Apple provides to approved accessory manufacturers and is transparent to the accessory.</p>
 
@@ -326,7 +312,7 @@ on the computer where the device is backed up. The backed-up data is <strong>re-
 <li>Send a challenge, which the accessory must answer with a signed response.</li>
 </ul>
 
-<h2 id="network-security:bf9b580f36e32014f4603d11adf690ee">Network Security</h2>
+<h2 id="network-security">Network Security</h2>
 
 <p>Uses standard networking protocols for authenticated, authorized, and encrypted communications. Integrates proven technologies and the latest standards for both Wi-Fi and cellular data network connections.</p>
 
@@ -340,7 +326,7 @@ on the computer where the device is backed up. The backed-up data is <strong>re-
 <li>Single Sign-on (I do not know what this SSO is&hellip;)</li>
 </ul>
 
-<h3 id="airdrop-security:bf9b580f36e32014f4603d11adf690ee">AirDrop Security</h3>
+<h3 id="airdrop-security">AirDrop Security</h3>
 
 <p>Use Bluetooth Low-Energy (BTLE) and Apple-created peer-to-peer Wi-Fi technology.</p>
 
@@ -348,11 +334,11 @@ on the computer where the device is backed up. The backed-up data is <strong>re-
 
 <p>Use TLS connection.</p>
 
-<h2 id="internet-security:bf9b580f36e32014f4603d11adf690ee">Internet Security</h2>
+<h2 id="internet-security">Internet Security</h2>
 
 <p>Explain the security control of iMessage, FaceTime, Siri, iCloud, iCloudKeychain in detail.</p>
 
-<h3 id="imessage:bf9b580f36e32014f4603d11adf690ee">iMessage</h3>
+<h3 id="imessage">iMessage</h3>
 
 <p>The contents of messages of iMessage are protected by end-to-end encryption, so no one but the sender and receiver can access them, even Apple cannot.</p>
 
@@ -364,11 +350,11 @@ on the computer where the device is backed up. The backed-up data is <strong>re-
 
 <p>For the receiver, each device receives its copy of the message from APNs, and decrypts the message with its own private key. The message can be verified using sender&rsquo;s public key.</p>
 
-<h2 id="device-control:bf9b580f36e32014f4603d11adf690ee">Device Control</h2>
+<h2 id="device-control">Device Control</h2>
 
 <p>Policies for Passcode Protection, Configuration Enforcement, Mobile Device Management, Apple Configurator, Device Restrictions, Supervised Only Restrictions and Remote Wipe.</p>
 
-<h2 id="conclusion:bf9b580f36e32014f4603d11adf690ee">Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 
 <ul>
 <li>Hardware support: UID, Secure Enclave, ROM, Hardware AES, Random Number Generator</li>
@@ -381,35 +367,14 @@ on the computer where the device is backed up. The backed-up data is <strong>re-
 
 <p>Oh! One more thing, all of these protections are useless if your device is rooted.</p>
 
-  </div>
-  <div id="disqus_thread"></div>
-</div>
+</main>
 
+    <footer>
+      
+<script async src="//yihui.name/js/center-img.js"></script>
 
-<script type="text/javascript">
-var disqus_shortname = "hanjc";
-(function () {
-    var s = document.createElement('script'); s.async = true;
-    s.type = 'text/javascript';
-    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-}());
-</script>
-
-
-
-<script type="text/javascript">
-    var disqus_shortname = "hanjc";
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-
-
-
-</body>
+      
+    </footer>
+  </body>
 </html>
+

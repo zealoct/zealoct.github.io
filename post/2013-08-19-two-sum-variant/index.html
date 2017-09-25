@@ -1,86 +1,72 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
-<head>
-  <link href="http://gmpg.org/xfn/11" rel="profile">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>变种2-SUM问题——优化O(n)算法中的常数  | Zea&#39;s</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <header>
 
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-
-  <title>变种2-SUM问题——优化O(n)算法中的常数  &middot; jc han</title>
-
-  
-  <link rel="stylesheet" href="/css/poole.css">
-  <link rel="stylesheet" href="/css/hyde.css">
-  <link rel="stylesheet" href="/css/poole-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-x.css">
-  
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-  
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
-  <link href="/favicon.png" rel="icon">
-
-  
-  
-  
-  
-
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  
-</head>
-<body>
-  <div class="sidebar">
-  <div class="container sidebar-sticky">
-    <div class="sidebar-about">
-      
-      <h1>jc han</h1>
-      
-    </div>
-
-    <ul class="sidebar-nav">
-      <li class="sidebar-nav-item"><a href="/">Blog</a></li>
-      
-      <li class="sidebar-nav-item"><a href="/post/">Archives</a></li>
-      
-      <li class="sidebar-nav-item"><a href="/notes/">Notes</a></li>
-      
-    </ul>
-
-    <ul class="sidebar-nav">
-      <li class="sidebar-nav-item">
-      <a href="http://github.com/zealoct"><i class="fa fa-github-square fa-3x"></i></a>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <nav>
+    <ul>
       
       
-      
-      
-      <a href="http://twitter.com/zealoct"><i class="fa fa-twitter-square fa-3x"></i></a>
+      <li class="pull-left ">
+        <a href="http://zealoct.github.io/">/home/zea&#39;s</a>
       </li>
-    </ul>
+      
+      
+      <li class="pull-left ">
+        <a href="/post/">~/archives</a>
+      </li>
+      
+      
+      <li class="pull-left ">
+        <a href="/notes/">~/notes</a>
+      </li>
+      
 
-    <p>Copyright &copy; 2016 <a href="/license">License</a><br/>
-       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
-  </div>
+      
+
+    </ul>
+  </nav>
+</header>
+
+  </head>
+
+  <body>
+    <br/>
+
+<div class="article-meta">
+<h1><span class="title">变种2-SUM问题——优化O(n)算法中的常数 </span></h1>
+
+<h2 class="date">2013/08/19</h2>
+<p class="terms">
+  
+  
+  
+  
+  
+</p>
 </div>
 
 
-<div class="content container">
-  <div class="post">
-    <h1>变种2-SUM问题——优化O(n)算法中的常数 </h1>
-    <span class="post-date">Aug 19, 2013 &middot; 3 minute read &middot; <a href="/post/2013-08-19-two-sum-variant/#disqus_thread">Comments</a>
-    </span>
-    
+
+<main>
+
 
 <p>Algorithms: Design and Analysis, Part 1 这门课的第六个编程作业的第一道题，之前的编程作业题都比较直观，而这一题需要用到一点简单的优化，相比其他的题目有意思多了。</p>
 
-<h3 id="题目描述:5ad0e041bfbfb4b127d96e12f79fd864">题目描述：</h3>
+<h3 id="题目描述">题目描述：</h3>
 
 <p>　　输入文件每一行有一个数字（可能有重复），在这所有的数字中，任选不想等的两个数字 x 和 y ，并令 t=x+y，求问在 [-10000, 10000] 区间中存在多少这样的 t 。</p>
 
-<h3 id="solution:5ad0e041bfbfb4b127d96e12f79fd864">Solution：</h3>
+<h3 id="solution">Solution：</h3>
 
 <p>　　这个题目的难度在于<strong>输入数据的规模</strong>，也就是文件行数（输入数字数）n，网站给出的输入文件有 100w 行，其中不重复的数字也有 99.9w 多个，如果采用最暴力的二重循环枚举的计算方法， n2 的复杂度足以让你在等待运行结果的时间里来趟港澳台自由行了。</p>
 
@@ -212,35 +198,14 @@ end
 puts &quot;Size:#{sum.size}&quot;
 </code></pre>
 
-  </div>
-  <div id="disqus_thread"></div>
-</div>
+</main>
 
+    <footer>
+      
+<script async src="//yihui.name/js/center-img.js"></script>
 
-<script type="text/javascript">
-var disqus_shortname = "hanjc";
-(function () {
-    var s = document.createElement('script'); s.async = true;
-    s.type = 'text/javascript';
-    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-}());
-</script>
-
-
-
-<script type="text/javascript">
-    var disqus_shortname = "hanjc";
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-
-
-
-</body>
+      
+    </footer>
+  </body>
 </html>
+

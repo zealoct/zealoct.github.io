@@ -1,82 +1,66 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
-<head>
-  <link href="http://gmpg.org/xfn/11" rel="profile">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Linux下VIM编码设置——解决中文乱码问题 | Zea&#39;s</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <header>
 
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-
-  <title>Linux下VIM编码设置——解决中文乱码问题 &middot; jc han</title>
-
-  
-  <link rel="stylesheet" href="/css/poole.css">
-  <link rel="stylesheet" href="/css/hyde.css">
-  <link rel="stylesheet" href="/css/poole-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-x.css">
-  
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-  
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
-  <link href="/favicon.png" rel="icon">
-
-  
-  
-  
-  
-
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  
-</head>
-<body>
-  <div class="sidebar">
-  <div class="container sidebar-sticky">
-    <div class="sidebar-about">
-      
-      <h1>jc han</h1>
-      
-    </div>
-
-    <ul class="sidebar-nav">
-      <li class="sidebar-nav-item"><a href="/">Blog</a></li>
-      
-      <li class="sidebar-nav-item"><a href="/post/">Archives</a></li>
-      
-      <li class="sidebar-nav-item"><a href="/notes/">Notes</a></li>
-      
-    </ul>
-
-    <ul class="sidebar-nav">
-      <li class="sidebar-nav-item">
-      <a href="http://github.com/zealoct"><i class="fa fa-github-square fa-3x"></i></a>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <nav>
+    <ul>
       
       
-      
-      
-      <a href="http://twitter.com/zealoct"><i class="fa fa-twitter-square fa-3x"></i></a>
+      <li class="pull-left ">
+        <a href="http://zealoct.github.io/">/home/zea&#39;s</a>
       </li>
-    </ul>
+      
+      
+      <li class="pull-left ">
+        <a href="/post/">~/archives</a>
+      </li>
+      
+      
+      <li class="pull-left ">
+        <a href="/notes/">~/notes</a>
+      </li>
+      
 
-    <p>Copyright &copy; 2016 <a href="/license">License</a><br/>
-       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
-  </div>
+      
+
+    </ul>
+  </nav>
+</header>
+
+  </head>
+
+  <body>
+    <br/>
+
+<div class="article-meta">
+<h1><span class="title">Linux下VIM编码设置——解决中文乱码问题</span></h1>
+
+<h2 class="date">2015/08/27</h2>
+<p class="terms">
+  
+  
+  Categories: <a href="/categories/linux">Linux</a> <a href="/categories/ssh">SSH</a> <a href="/categories/vim">Vim</a> <a href="/categories/windows">Windows</a> 
+  
+  
+  
+  
+</p>
 </div>
 
 
-<div class="content container">
-  <div class="post">
-    <h1>Linux下VIM编码设置——解决中文乱码问题</h1>
-    <span class="post-date">Aug 27, 2015 &middot; 1 minute read &middot; <a href="/post/2015-08-27-Xshell-VIM-encoding/#disqus_thread">Comments</a>
-    
-    <br/>
-    
-    <a class="label" href="/categories/linux">Linux</a><a class="label" href="/categories/ssh">SSH</a><a class="label" href="/categories/vim">Vim</a><a class="label" href="/categories/windows">Windows</a>
-    </span>
-    
+
+<main>
+
 
 <p>日常工作与生活中经常需要在Windows下通过Xshell、Putty等SSH客户端远程连接Linux服务器，
 在这种场景下使用Vim编辑器查看与录入中文经常会遇到乱码问题。
@@ -88,7 +72,7 @@
 终端将数据流转发给SSH客户端，SSH客户端则根据客户端内配置的<strong>SSH客户端编码</strong>来对数据流解码，并将内容呈现给用户。
 这三个编码我们最关心的是文件的存储编码，然而在配置的时候必须保证三个编码都配置正确，才能正确地显示和转换中文。</p>
 
-<h3 id="正确的配置-utf-8:6b2cc54d300b512f7a11f2054528901a">正确的配置（UTF-8）</h3>
+<h3 id="正确的配置-utf-8">正确的配置（UTF-8）</h3>
 
 <p>废话少说，先来看正确的配置是怎样的，以及如何正确地配置。</p>
 
@@ -114,7 +98,7 @@ export LC_ALL='en_US.UTF-8'
 
 <p>至此，Vim显示中文的问题应该可以完美解决了！</p>
 
-<h3 id="vim配置解析:6b2cc54d300b512f7a11f2054528901a">Vim配置解析</h3>
+<h3 id="vim配置解析">Vim配置解析</h3>
 
 <p>前边快速地描述了应当如何配置Vim，但并未详细解释这几个选项的作用，但若要做到清楚明白地使用Vim转换文件编码，
 了解这些选项的意义还是很有必要的。</p>
@@ -143,7 +127,7 @@ Vim打开文件时，会从<code>fencs</code>列表内匹配编码，并将文�
 
 <p>如果你对这些编码转来转去的感觉比较麻烦，一个简单不会出错的方法就是把这些全部都设为UTF-8，世界就清净了 (=</p>
 
-<h4 id="文件编码转换:6b2cc54d300b512f7a11f2054528901a">文件编码转换</h4>
+<h4 id="文件编码转换">文件编码转换</h4>
 
 <p>在进行文件编码转换之前，最好保证上述配置都正确无误（都是UTF-8），并且你的Vim可以正确地解读目标文件编码内容，
 简单来说就是<code>fenc</code>不是空字符串（这一点很重要，在后面会详细讲述），那么此时你的状态应当是，Vim知道源文件编码，
@@ -154,7 +138,7 @@ Vim打开文件时，会从<code>fencs</code>列表内匹配编码，并将文�
 
 <p>之后保存的时候，Vim就会自动将缓冲区内容从<code>enc</code>转到新的<code>fenc</code>编码保存了。</p>
 
-<h3 id="我能显示中文就是配置正确了么:6b2cc54d300b512f7a11f2054528901a">我能显示中文就是配置正确了么？</h3>
+<h3 id="我能显示中文就是配置正确了么">我能显示中文就是配置正确了么？</h3>
 
 <p>答案当然是<strong>否定</strong>的，而且我就在这个问题上栽过跟头。</p>
 
@@ -186,41 +170,20 @@ Xshell只要使用GBK编码解码，就依然可以正确地显示中文。</p>
 
 <p>因此，为了避免不必要的麻烦，日常工作中还是建议将终端编码、SSH客户端编码都设为UTF-8。</p>
 
-<h3 id="gbk-vs-utf-8:6b2cc54d300b512f7a11f2054528901a">GBK vs. UTF-8</h3>
+<h3 id="gbk-vs-utf-8">GBK vs. UTF-8</h3>
 
 <p>根据前文可以看出来，由于GBK本质上是ASCII编码，因此单纯读取文件内容是无法判断其具体编码的（利用latin1和GBK去解码都正确），
 而UTF-8编码的文件会有标示，编辑器可以非常清晰的分辨出这个文件确实是UTF-8编码的文件，因此UTF-8编码在实际使用过程中更不容易出问题，
 乱码也就不太会出现了。</p>
 
-  </div>
-  <div id="disqus_thread"></div>
-</div>
+</main>
 
+    <footer>
+      
+<script async src="//yihui.name/js/center-img.js"></script>
 
-<script type="text/javascript">
-var disqus_shortname = "hanjc";
-(function () {
-    var s = document.createElement('script'); s.async = true;
-    s.type = 'text/javascript';
-    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-}());
-</script>
-
-
-
-<script type="text/javascript">
-    var disqus_shortname = "hanjc";
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-
-
-
-</body>
+      
+    </footer>
+  </body>
 </html>
+

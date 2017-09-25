@@ -1,84 +1,68 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
-<head>
-  <link href="http://gmpg.org/xfn/11" rel="profile">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Exploit Exercises - Nebula Level 11 | Zea&#39;s</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <header>
 
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-
-  <title>Exploit Exercises - Nebula Level 11 &middot; jc han</title>
-
-  
-  <link rel="stylesheet" href="/css/poole.css">
-  <link rel="stylesheet" href="/css/hyde.css">
-  <link rel="stylesheet" href="/css/poole-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-overrides.css">
-  <link rel="stylesheet" href="/css/hyde-x.css">
-  
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-  
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
-  <link href="/favicon.png" rel="icon">
-
-  
-  
-  
-  
-
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  
-</head>
-<body>
-  <div class="sidebar">
-  <div class="container sidebar-sticky">
-    <div class="sidebar-about">
-      
-      <h1>jc han</h1>
-      
-    </div>
-
-    <ul class="sidebar-nav">
-      <li class="sidebar-nav-item"><a href="/">Blog</a></li>
-      
-      <li class="sidebar-nav-item"><a href="/post/">Archives</a></li>
-      
-      <li class="sidebar-nav-item"><a href="/notes/">Notes</a></li>
-      
-    </ul>
-
-    <ul class="sidebar-nav">
-      <li class="sidebar-nav-item">
-      <a href="http://github.com/zealoct"><i class="fa fa-github-square fa-3x"></i></a>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <nav>
+    <ul>
       
       
-      
-      
-      <a href="http://twitter.com/zealoct"><i class="fa fa-twitter-square fa-3x"></i></a>
+      <li class="pull-left ">
+        <a href="http://zealoct.github.io/">/home/zea&#39;s</a>
       </li>
-    </ul>
+      
+      
+      <li class="pull-left ">
+        <a href="/post/">~/archives</a>
+      </li>
+      
+      
+      <li class="pull-left ">
+        <a href="/notes/">~/notes</a>
+      </li>
+      
 
-    <p>Copyright &copy; 2016 <a href="/license">License</a><br/>
-       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
-  </div>
+      
+
+    </ul>
+  </nav>
+</header>
+
+  </head>
+
+  <body>
+    <br/>
+
+<div class="article-meta">
+<h1><span class="title">Exploit Exercises - Nebula Level 11</span></h1>
+
+<h2 class="date">2014/01/26</h2>
+<p class="terms">
+  
+  
+  Categories: <a href="/categories/security">Security</a> <a href="/categories/exercises">Exercises</a> <a href="/categories/nebula">Nebula</a> 
+  
+  
+  
+  
+</p>
 </div>
 
 
-<div class="content container">
-  <div class="post">
-    <h1>Exploit Exercises - Nebula Level 11</h1>
-    <span class="post-date">Jan 26, 2014 &middot; 5 minute read &middot; <a href="/post/2014-01-26-nebula-level11/#disqus_thread">Comments</a>
-    
-    <br/>
-    
-    <a class="label" href="/categories/security">Security</a><a class="label" href="/categories/exercises">Exercises</a><a class="label" href="/categories/nebula">Nebula</a>
-    </span>
-    
 
-<h3 id="about:c12d59b551e63f0317c82c8d90952a0f">About</h3>
+<main>
+
+
+<h3 id="about">About</h3>
 
 <p>The <em>/home/flag11/flag11</em> binary processes standard input and executes a shell command.</p>
 
@@ -88,7 +72,7 @@
 
 <!-- more -->
 
-<h3 id="source-code:c12d59b551e63f0317c82c8d90952a0f">Source code</h3>
+<h3 id="source-code">Source code</h3>
 
 <pre><code class="language-c">#include &lt;stdlib.h&gt;
 #include &lt;unistd.h&gt;
@@ -194,7 +178,7 @@ int main(int argc, char **argv)
 
 </code></pre>
 
-<h3 id="solution:c12d59b551e63f0317c82c8d90952a0f">Solution</h3>
+<h3 id="solution">Solution</h3>
 
 <p>In fact I have not passed this one yet, I have met a <strong>problem</strong> which I will talk about later,
 right now I just want to explain my <strong>idea</strong>.</p>
@@ -219,7 +203,7 @@ then pass the content of the file to <em>process</em>. I think these are the TWO
 So if we want to executes some commands like <em>/bin/getflag</em>, we need to do some reverse calculation and find out
 what the origin <em>buf</em> would be like.</p>
 
-<h4 id="way-one:c12d59b551e63f0317c82c8d90952a0f">Way One</h4>
+<h4 id="way-one">Way One</h4>
 
 <p>My first thought was that I could make <em>length</em> to be 1, and make a soft link to <em>/bin/getflag</em>, then leverage
 <em>flag11</em> to execute this soft link. I first create a file <em>f.txt</em></p>
@@ -267,7 +251,7 @@ but Bash 2 would, and my bash is version 4, so I think this meybe the reason.</p
 
 <p>I came across an interesting solution for this routine by <a href="http://v0ids3curity.blogspot.com/2012/12/exploit-exercise-level-11.html">Reno Robert</a>, who leveraged <em>LD_PRELOAD</em> to initialize the buffer.</p>
 
-<h4 id="way-two:c12d59b551e63f0317c82c8d90952a0f">Way Two</h4>
+<h4 id="way-two">Way Two</h4>
 
 <p>Anyway, before I realized this problem, I did do something through the second way,
 to get what the input should be from the output command, I wrote another program <em>gen.c</em>:</p>
@@ -321,35 +305,14 @@ uid=1012(level11) gid=1012(level11) groups=1012(level11)
 
 <p>No privilege dropped )=</p>
 
-  </div>
-  <div id="disqus_thread"></div>
-</div>
+</main>
 
+    <footer>
+      
+<script async src="//yihui.name/js/center-img.js"></script>
 
-<script type="text/javascript">
-var disqus_shortname = "hanjc";
-(function () {
-    var s = document.createElement('script'); s.async = true;
-    s.type = 'text/javascript';
-    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-}());
-</script>
-
-
-
-<script type="text/javascript">
-    var disqus_shortname = "hanjc";
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-
-
-
-</body>
+      
+    </footer>
+  </body>
 </html>
+
