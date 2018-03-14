@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LLVM Encoding Asm Label | Zea&#39;s</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <header>
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <nav>
+    <ul>
+      
+      
+      <li class="pull-left ">
+        <a href="http://zealoct.github.io/">/home/zea&#39;s</a>
+      </li>
+      
+      
+      <li class="pull-left ">
+        <a href="/post/">~/archives</a>
+      </li>
+      
+      
+      <li class="pull-left ">
+        <a href="/notes/">~/notes</a>
+      </li>
+      
+
+      
+
+    </ul>
+  </nav>
+</header>
+
+  </head>
+
+  <body>
+    <br/>
+
+<div class="article-meta">
+<h1><span class="title">LLVM Encoding Asm Label</span></h1>
+
+<h2 class="date">2018/03/14</h2>
+<p class="terms">
+  
+  
+  Categories: <a href="/categories/llvm">llvm</a> <a href="/categories/compiler">compiler</a> 
+  
+  
+  
+  
+</p>
+</div>
+
+
+
+<main>
+<p>汇编代码中的Label标记了一段汇编代码的起始地址，主要用在分支、跳转类的指令中，
+一般汇编代码中的Label以字符串的形式出现，如：</p>
+
+<pre><code>bne  r0, r1, __IF_THEN      # 如果r0!=r1,跳转到__IF_THEN标记的代码段
+jmp  __IF_ELSE              # 跳转到__IF_ELSE标记的代码段
+</code></pre>
+
+<p>其中<code>__IF_THEN</code>和<code>__IF_ELSE</code>分别标记了<code>if</code>语句的两个分支。
+但是在实际的可执行文件中，Label并不存在，分支跳转指令中实际存储的是offset：</p>
+
+<pre><code>-Op- -Rs- -Rt-      -    offset       -
+1000 0000 0001 0000 0000 0000 0000 1000 # bne  r0, r1, 8
+                                        # 目标指令与当前PC差为8个字节
+                                        # 跳过了一条jmp指令
+-Op-                -    offset       -
+1001 0000 0000 0000 0000 0000 0010 1000 # jmp  40
+                                        # 跳过了9条指令
+</code></pre>
+
+<p>Label信息在编译初始阶段无法确定，直到最终完成编译的时候才会赋予其具体的值，
+因此无法对Label进行静态的编码。
+LLVM中使用<strong>fixup</strong>来处理这些在<code>MCCodeEmitter</code>中无法确定的信息。</p>
+
+<p>以<code>jmp $target</code>指令为例，实现Label编码需要如下步骤：</p>
+
+<ol>
+<li><p>定义<code>jtarget</code>作为jmp指令的Operand:</p>
+
+<pre><code>def jtarget : Operand&lt;OtherVT&gt; {
+  let EncoderMethod = &quot;getJumpTargetOpValue&quot;;
+}
+</code></pre>
+
+<p>这里要指明使用<code>getJumpTargetOpValue()</code>方法来对该Operand进行编码</p></li>
+
+<li><p>定义<code>jmp</code>指令</p>
+
+<pre><code>def B : InstJ&lt;0b1001, (outs), (ins jtarget:$Addr),
+              &quot;jmp $Addr&quot;, [(br bb:$Addr)]&gt;;
+</code></pre>
+
+<p>指定<code>jmp</code>指令输入类型为<code>jtarget</code>，这里jmp指令的基本编码是在<code>InstJ</code>类中定义的，
+但是实际上在<code>MCCodeEmitter::encodeInstruction()</code>完成的时候，
+<code>$Addr</code>域的编码还是全0。</p></li>
+
+<li><p>定义新的fixup类型：</p>
+
+<pre><code>// in file: lib/Target/XXX/MCTargetDesc/XXXFixup.h
+namespace llvm {
+namespace XXX {
+enum Fixups {
+    fixup_xxx_br16 = FirstTargetFixupKind,
+    LastTargetFixupKind,
+    NumTargetFixupKinds = LastTargetFixupKind - FirstTargetFixupKind
+};
+}
+}
+</code></pre></li>
+
+<li><p>实现<code>getJumpTargetOpValue()</code>：</p>
+
+<pre><code>unsigned XXXMCCodeEmitter::
+getJumpTargetOpValue(const MCInst &amp;MI, unsigned OpIdx,
+                     SmallVectorImpl&lt;MCFixup&gt; &amp;Fixups,
+                     const MCSubtargetInfo &amp;STI) const {
+  const MCOperand &amp;MO = MI.getOperand(OpIdx);
+  if (MO.isReg() || MO.isImm())
+    return getMachineOpValue(MI, MO, Fixups, STI);
+  Fixups.push_back(MCFixup::create(0, MO.getExpr(),
+                                   (MCFixupKind)XXX::fixup_xxx_br16));
+  return 0;
+}
+</code></pre>
+
+<p>当<code>MCCodeEmitter</code>对指令进行编码的时候，会调用该函数来计算<code>jtarget</code>的编码，
+这里为该Label生成一个fixup，留待后续处理，并直接返回0作为临时编码。</p></li>
+
+<li><p>在<code>AsmBackend</code>中调整fixup：</p>
+
+<pre><code>// in file: lib/Target/XXX/MCTargetDesc/XXXAsmBackend.h
+const MCFixupKindInfo &amp;getFixupKindInfo(MCFixupKind Kind) const override {
+  const static MCFixupKindInfo Infos[XXX::NumTargetFixupKinds] = {
+  // This table *must* be in the order that the fixup_* kinds are defined in
+  // XXXFixupKinds.h.
+  //
+  // Name                       Offset   Size  Flags
+    { &quot;fixup_xxx_br16&quot;,           0,       16,   MCFixupKindInfo::FKF_IsPCRel },
+  };
+  ...
+
+static unsigned adjustFixupValue(const MCFixup &amp;Fixup, uint64_t Value,
+                                 MCContext *Ctx = NULL) {
+  ...
+  case XXX::fixup_xxx_br16: {
+    return Value &amp; 0xffff;
+  }
+  ...
+</code></pre>
+
+<p><code>AsmBackend</code>执行的时候已经有Label的信息了，由于指定了<code>FKF_IsPCRel</code>属性，
+这里的<code>Value</code>就是与当前PC的offset。
+某些定长指令集会使用<code>jmp #instr</code>而不是<code>jmp #bytes</code>的语义，
+这种情况可以<code>return (Value &gt;&gt; 2)</code>（假设4byte）。</p></li>
+</ol>
+
+<p>全部实现后，通过<code>clang -c --target=xxx test.cpp</code>编译出来的二进制就可以正常编码Label的offset了。</p>
+
+</main>
+
+    <footer>
+      
+<script async src="//yihui.name/js/center-img.js"></script>
+
+      
+    </footer>
+  </body>
+</html>
+

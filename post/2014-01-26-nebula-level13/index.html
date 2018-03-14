@@ -110,7 +110,8 @@ int main(int argc, char **argv, char **envp)
 
 <p>Go to the instruction corresponding to the last <em>printf()</em> in the c code, I thought I could read the password out directly from the memory location where <em>token</em> is stored. Turned out that <em>token</em> is calculated with mass of code. Well, as I cannot read the password directly, I could always change the execution flow and let the program print that out.</p>
 
-<pre><code class="language-text">080484c4 &lt;main&gt;:
+<p>```text flag13.asm
+080484c4 <main>:
  80484c4:       55                      push   %ebp
  80484c5:       89 e5                   mov    %esp,%ebp
  80484c7:       57                      push   %edi
@@ -124,29 +125,28 @@ int main(int argc, char **argv, char **envp)
  80484e0:       65 a1 14 00 00 00       mov    %gs:0x14,%eax
  80484e6:       89 84 24 2c 01 00 00    mov    %eax,0x12c(%esp)
  80484ed:       31 c0                   xor    %eax,%eax
- 80484ef:       e8 cc fe ff ff          call   80483c0 &lt;getuid@plt&gt;
+ 80484ef:       e8 cc fe ff ff          call   80483c0 <a href="mailto:getuid@plt">getuid@plt</a>
  80484f4:       3d e8 03 00 00          cmp    $0x3e8,%eax
- 80484f9:       74 36                   je     8048531 &lt;main+0x6d&gt;
- 80484fb:       e8 c0 fe ff ff          call   80483c0 &lt;getuid@plt&gt;
+ 80484f9:       74 36                   je     8048531 <main+0x6d>
+ 80484fb:       e8 c0 fe ff ff          call   80483c0 <a href="mailto:getuid@plt">getuid@plt</a>
  8048500:       ba d0 86 04 08          mov    $0x80486d0,%edx
  8048505:       c7 44 24 08 e8 03 00    movl   $0x3e8,0x8(%esp)
-...
-</code></pre>
+&hellip;</p>
 
-<p>This is the snippet of function <em>main()</em>, note that line 16 compare <em>%eax</em> (which is the return value of function call <em>getuid()</em>) with <em>0x3e8</em>, and line 17 will jump to memory location 0x8048531 if they are equal.</p>
+<pre><code>
+This is the snippet of function *main()*, note that line 16 compare *%eax* (which is the return value of function call *getuid()*) with *0x3e8*, and line 17 will jump to memory location 0x8048531 if they are equal.
 
-<p>In a normal execution, these are apparantly not equal, but we could make it equal with <em>gdb</em>.</p>
+In a normal execution, these are apparantly not equal, but we could make it equal with *gdb*.
 
-<ol>
-<li>copy <em>flag13</em> into /home/level13</li>
-<li>start it with <em>gdb</em></li>
-<li>set a break point at 0x80484f4, which is the instruction to compare</li>
-<li>run the program</li>
-<li>modify %eax to 1000 at the break point</li>
-<li>continue run the program</li>
-</ol>
+1. copy *flag13* into /home/level13
+1. start it with *gdb*
+1. set a break point at 0x80484f4, which is the instruction to compare
+1. run the program
+1. modify %eax to 1000 at the break point
+1. continue run the program
 
-<pre><code class="language-bash"># start flag13 with gdb
+``` bash
+# start flag13 with gdb
 level13@nebula:~$ gdb flag13
 # set break point and run
 (gdb) b *0x80484f4 

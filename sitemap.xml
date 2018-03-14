@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://zealoct.github.io/post/llvm-encoding-asm-label/</loc>
+    <lastmod>2018-03-14T14:40:01+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://zealoct.github.io/post/2016-06-30-zsh-git-prompt/</loc>
     <lastmod>2016-06-30T17:46:35+08:00</lastmod>
   </url>
@@ -194,6 +199,12 @@
   </url>
   
   <url>
+    <loc>http://zealoct.github.io/categories/compiler/</loc>
+    <lastmod>2018-03-14T14:40:01+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://zealoct.github.io/categories/distributed-systems/</loc>
     <lastmod>2014-02-12T16:21:02+08:00</lastmod>
     <priority>0</priority>
@@ -236,6 +247,12 @@
   </url>
   
   <url>
+    <loc>http://zealoct.github.io/categories/llvm/</loc>
+    <lastmod>2018-03-14T14:40:01+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://zealoct.github.io/categories/lua/</loc>
     <lastmod>2014-07-06T10:59:17-07:00</lastmod>
     <priority>0</priority>
@@ -261,7 +278,7 @@
   
   <url>
     <loc>http://zealoct.github.io/post/</loc>
-    <lastmod>2016-06-30T17:46:35+08:00</lastmod>
+    <lastmod>2018-03-14T14:40:01+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -302,7 +319,7 @@
   
   <url>
     <loc>http://zealoct.github.io/</loc>
-    <lastmod>2016-06-30T17:46:35+08:00</lastmod>
+    <lastmod>2018-03-14T14:40:01+08:00</lastmod>
     <priority>0</priority>
   </url>
   

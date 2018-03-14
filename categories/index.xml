@@ -57,6 +57,15 @@
     </item>
     
     <item>
+      <title>Compiler</title>
+      <link>http://zealoct.github.io/categories/compiler/</link>
+      <pubDate>Wed, 14 Mar 2018 14:40:01 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/compiler/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Distributed Systems</title>
       <link>http://zealoct.github.io/categories/distributed-systems/</link>
       <pubDate>Wed, 12 Feb 2014 16:21:02 +0800</pubDate>
@@ -116,6 +125,15 @@
       <pubDate>Thu, 27 Aug 2015 18:31:48 +0800</pubDate>
       
       <guid>http://zealoct.github.io/categories/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Llvm</title>
+      <link>http://zealoct.github.io/categories/llvm/</link>
+      <pubDate>Wed, 14 Mar 2018 14:40:01 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/categories/llvm/</guid>
       <description></description>
     </item>
     
