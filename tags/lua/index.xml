@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lua on Zea&#39;s</title>
+    <link>http://zealoct.github.io/tags/lua/</link>
+    <description>Recent content in Lua on Zea&#39;s</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 06 Jul 2014 10:59:17 -0700</lastBuildDate>
+    
+	<atom:link href="http://zealoct.github.io/tags/lua/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Windows 下使用 Cocos2d-x 3.x &#43; Lua 开发基础</title>
+      <link>http://zealoct.github.io/post/2014-07-06-cocos2d-lua-basic/</link>
+      <pubDate>Sun, 06 Jul 2014 10:59:17 -0700</pubDate>
+      
+      <guid>http://zealoct.github.io/post/2014-07-06-cocos2d-lua-basic/</guid>
+      <description>Cocos2d-x 是国内非常成熟的 2d 游戏开发引擎了，拥有非常广大的开发者群体和活跃的社区，支持 Windows、Linux、Mac OS、iOS、Android 和 Window Phone 等各个平台，其本身是用 C++ 语言实现的，主要提供了面向 C++ 的接口，也提供了对 Lua、object-c 和 JavaScript 的支持。我们的 minigame 要基于 Cocos（为简单起见，我就把 Cocos2d-x 称为 Cocos 了） 和 Lua 实现，这有好处也有弊端，Lua 作为一门脚本语言，开发起来确实非常快捷，不过 Cocos 社区 Lua 相关的文档和资料并不如 C++ 那么完备，使得上手的难度增加，而且 Lua 本质并不是面向对象的编程语言，我们编码时的一些 OO 的思想也要需要转变。
+出于对自己记忆力的极端不信任，决定把实习期遇到的关于 Cocos + Lua 的种种问题都记录下来，希望也能成为实习的成果之一吧！
+开发系统和工具 首先是环境的搭建，Cocos 的使用方法挺多的，取决于你的开发系统和开发工具，刚开始看的时候我自己也有些被搞乱了，说来搞笑，我基本上按照 Cocos 的安装说明文档去配置的，到最后用的最多的却是 Cocos-console。官方网站上各种开发工具环境搭建相关的文档还是很详细的，我在这里就不再重复了，主要是简单介绍一下用到的各种工具是干嘛的，还有就是不同的 Cocos 开发环境如何抉择的问题。
+我自己的系统是 Windows 7，目标平台是 Android，因此本文主要讨论的问题是 Windows 平台下开发 Android 游戏的环境选择。官方网站上有比较详细的搭建 Cocos + Android 开发环境的文档，可以参考 How to run cpp-tests on Android (Terminal) 和 How to run cpp-tests on Android (Eclipse) 这两份文档，分别是在命令行下和 Eclipse 下开发 Android 游戏的环境配置步骤。总的来说，要在 Windows 上开发 Cocos + Lua 的 Android 游戏，我们需要准备如下东西，有点多，附上对每个工具的简单解释：</description>
+    </item>
+    
+  </channel>
+</rss>

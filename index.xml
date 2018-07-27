@@ -6,10 +6,23 @@
     <description>Recent content on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 14 Mar 2018 14:40:01 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 26 Mar 2018 22:09:39 +0800</lastBuildDate>
     
 	<atom:link href="http://zealoct.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>LLVM Sparc Load Mem Operand</title>
+      <link>http://zealoct.github.io/notes/llvm-sparc-load-mem-operand/</link>
+      <pubDate>Mon, 26 Mar 2018 22:09:39 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/notes/llvm-sparc-load-mem-operand/</guid>
+      <description>Sparc Load指令基本格式是
+ld [address], regrd  其中address域解释为
+ The effective address for a load instruction is “r[rs1] + r[rs2]” if the i field is zero, or “r[rs1] + sign_ext(simm13)” if the i field is one.
+ 打印成ASM会是reg+reg或reg+imm两种形式之一。
+SparcInstrInfo.td // Addressing modes. def ADDRrr : ComplexPattern&amp;lt;iPTR, 2, &amp;quot;SelectADDRrr&amp;quot;, [], []&amp;gt;; def ADDRri : ComplexPattern&amp;lt;iPTR, 2, &amp;quot;SelectADDRri&amp;quot;, [frameindex], []&amp;gt;; // Address operands def SparcMEMrrAsmOperand : AsmOperandClass { let Name = &amp;quot;MEMrr&amp;quot;; let ParserMethod = &amp;quot;parseMEMOperand&amp;quot;; } def SparcMEMriAsmOperand : AsmOperandClass { let Name = &amp;quot;MEMri&amp;quot;; let ParserMethod = &amp;quot;parseMEMOperand&amp;quot;; } def MEMrr : Operand&amp;lt;iPTR&amp;gt; { let PrintMethod = &amp;quot;printMemOperand&amp;quot;; let MIOperandInfo = (ops ptr_rc, ptr_rc); let ParserMatchClass = SparcMEMrrAsmOperand; } def MEMri : Operand&amp;lt;iPTR&amp;gt; { let PrintMethod = &amp;quot;printMemOperand&amp;quot;; let MIOperandInfo = (ops ptr_rc, i32imm); let ParserMatchClass = SparcMEMriAsmOperand; } .</description>
+    </item>
     
     <item>
       <title>LLVM Encoding Asm Label</title>

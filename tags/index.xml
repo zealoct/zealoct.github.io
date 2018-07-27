@@ -6,9 +6,208 @@
     <description>Recent content in Tags on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
+    <lastBuildDate>Sat, 05 Apr 2014 13:31:50 +0800</lastBuildDate>
     
 	<atom:link href="http://zealoct.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Algorithm</title>
+      <link>http://zealoct.github.io/tags/algorithm/</link>
+      <pubDate>Sat, 05 Apr 2014 13:31:50 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/algorithm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Android</title>
+      <link>http://zealoct.github.io/tags/android/</link>
+      <pubDate>Tue, 20 May 2014 20:26:25 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Assemble</title>
+      <link>http://zealoct.github.io/tags/assemble/</link>
+      <pubDate>Wed, 05 Mar 2014 19:54:09 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/assemble/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>C</title>
+      <link>http://zealoct.github.io/tags/c/</link>
+      <pubDate>Wed, 05 Mar 2014 19:54:09 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/c/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cocos2d X</title>
+      <link>http://zealoct.github.io/tags/cocos2d-x/</link>
+      <pubDate>Sun, 06 Jul 2014 10:59:17 -0700</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/cocos2d-x/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Compiler</title>
+      <link>http://zealoct.github.io/tags/compiler/</link>
+      <pubDate>Mon, 26 Mar 2018 22:09:39 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/compiler/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Distributed Systems</title>
+      <link>http://zealoct.github.io/tags/distributed-systems/</link>
+      <pubDate>Wed, 12 Feb 2014 16:21:02 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/distributed-systems/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Efficiency</title>
+      <link>http://zealoct.github.io/tags/efficiency/</link>
+      <pubDate>Mon, 14 Sep 2015 16:51:18 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/efficiency/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Exercises</title>
+      <link>http://zealoct.github.io/tags/exercises/</link>
+      <pubDate>Sun, 26 Jan 2014 21:54:12 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/exercises/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Framebuffer</title>
+      <link>http://zealoct.github.io/tags/framebuffer/</link>
+      <pubDate>Tue, 20 May 2014 20:26:25 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/framebuffer/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Git</title>
+      <link>http://zealoct.github.io/tags/git/</link>
+      <pubDate>Thu, 30 Jun 2016 17:46:35 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/git/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Life</title>
+      <link>http://zealoct.github.io/tags/life/</link>
+      <pubDate>Sat, 05 Jul 2014 21:44:53 -0700</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/life/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>http://zealoct.github.io/tags/linux/</link>
+      <pubDate>Thu, 27 Aug 2015 18:31:48 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Llvm</title>
+      <link>http://zealoct.github.io/tags/llvm/</link>
+      <pubDate>Mon, 26 Mar 2018 22:09:39 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/llvm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Lua</title>
+      <link>http://zealoct.github.io/tags/lua/</link>
+      <pubDate>Sun, 06 Jul 2014 10:59:17 -0700</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/lua/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Nebula</title>
+      <link>http://zealoct.github.io/tags/nebula/</link>
+      <pubDate>Sun, 26 Jan 2014 21:54:12 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/nebula/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Security</title>
+      <link>http://zealoct.github.io/tags/security/</link>
+      <pubDate>Sun, 26 Jan 2014 21:54:12 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/security/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ssh</title>
+      <link>http://zealoct.github.io/tags/ssh/</link>
+      <pubDate>Thu, 27 Aug 2015 18:31:48 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/ssh/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ubuntu</title>
+      <link>http://zealoct.github.io/tags/ubuntu/</link>
+      <pubDate>Tue, 20 May 2014 20:26:25 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/ubuntu/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vim</title>
+      <link>http://zealoct.github.io/tags/vim/</link>
+      <pubDate>Thu, 27 Aug 2015 18:31:48 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/vim/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Windows</title>
+      <link>http://zealoct.github.io/tags/windows/</link>
+      <pubDate>Mon, 14 Sep 2015 16:51:18 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/windows/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Zsh</title>
+      <link>http://zealoct.github.io/tags/zsh/</link>
+      <pubDate>Thu, 30 Jun 2016 17:46:35 +0800</pubDate>
+      
+      <guid>http://zealoct.github.io/tags/zsh/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

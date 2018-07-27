@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://zealoct.github.io/notes/llvm-sparc-load-mem-operand/</loc>
+    <lastmod>2018-03-26T22:09:39+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://zealoct.github.io/post/llvm-encoding-asm-label/</loc>
     <lastmod>2018-03-14T14:40:01+08:00</lastmod>
   </url>
@@ -163,110 +168,109 @@
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/algorithm/</loc>
+    <loc>http://zealoct.github.io/tags/algorithm/</loc>
     <lastmod>2014-04-05T13:31:50+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/android/</loc>
+    <loc>http://zealoct.github.io/tags/android/</loc>
     <lastmod>2014-05-20T20:26:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/assemble/</loc>
+    <loc>http://zealoct.github.io/tags/assemble/</loc>
     <lastmod>2014-03-05T19:54:09+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/c/</loc>
+    <loc>http://zealoct.github.io/tags/c/</loc>
     <lastmod>2014-03-05T19:54:09+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://zealoct.github.io/categories/</loc>
-    <lastmod>2014-04-05T13:31:50+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/cocos2d-x/</loc>
+    <loc>http://zealoct.github.io/tags/cocos2d-x/</loc>
     <lastmod>2014-07-06T10:59:17-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/compiler/</loc>
-    <lastmod>2018-03-14T14:40:01+08:00</lastmod>
+    <loc>http://zealoct.github.io/tags/compiler/</loc>
+    <lastmod>2018-03-26T22:09:39+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/distributed-systems/</loc>
+    <loc>http://zealoct.github.io/tags/distributed-systems/</loc>
     <lastmod>2014-02-12T16:21:02+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/efficiency/</loc>
+    <loc>http://zealoct.github.io/tags/efficiency/</loc>
     <lastmod>2015-09-14T16:51:18+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/exercises/</loc>
+    <loc>http://zealoct.github.io/tags/exercises/</loc>
     <lastmod>2014-01-26T21:54:12+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/framebuffer/</loc>
+    <loc>http://zealoct.github.io/tags/framebuffer/</loc>
     <lastmod>2014-05-20T20:26:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/git/</loc>
+    <loc>http://zealoct.github.io/tags/git/</loc>
     <lastmod>2016-06-30T17:46:35+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/life/</loc>
+    <loc>http://zealoct.github.io/tags/life/</loc>
     <lastmod>2014-07-05T21:44:53-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/linux/</loc>
+    <loc>http://zealoct.github.io/tags/linux/</loc>
     <lastmod>2015-08-27T18:31:48+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/llvm/</loc>
-    <lastmod>2018-03-14T14:40:01+08:00</lastmod>
+    <loc>http://zealoct.github.io/tags/llvm/</loc>
+    <lastmod>2018-03-26T22:09:39+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/lua/</loc>
+    <loc>http://zealoct.github.io/tags/lua/</loc>
     <lastmod>2014-07-06T10:59:17-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/nebula/</loc>
+    <loc>http://zealoct.github.io/tags/nebula/</loc>
     <lastmod>2014-01-26T21:54:12+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://zealoct.github.io/notes/</loc>
-    <lastmod>2015-08-20T17:46:35+08:00</lastmod>
+    <lastmod>2018-03-26T22:09:39+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -283,48 +287,49 @@
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/security/</loc>
+    <loc>http://zealoct.github.io/tags/security/</loc>
     <lastmod>2014-01-26T21:54:12+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/ssh/</loc>
+    <loc>http://zealoct.github.io/tags/ssh/</loc>
     <lastmod>2015-08-27T18:31:48+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://zealoct.github.io/tags/</loc>
+    <lastmod>2014-04-05T13:31:50+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/ubuntu/</loc>
+    <loc>http://zealoct.github.io/tags/ubuntu/</loc>
     <lastmod>2014-05-20T20:26:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/vim/</loc>
+    <loc>http://zealoct.github.io/tags/vim/</loc>
     <lastmod>2015-08-27T18:31:48+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/windows/</loc>
+    <loc>http://zealoct.github.io/tags/windows/</loc>
     <lastmod>2015-09-14T16:51:18+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://zealoct.github.io/</loc>
-    <lastmod>2018-03-14T14:40:01+08:00</lastmod>
+    <lastmod>2018-03-26T22:09:39+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://zealoct.github.io/categories/zsh/</loc>
+    <loc>http://zealoct.github.io/tags/zsh/</loc>
     <lastmod>2016-06-30T17:46:35+08:00</lastmod>
     <priority>0</priority>
   </url>
