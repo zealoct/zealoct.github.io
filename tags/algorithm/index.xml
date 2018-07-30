@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Algorithm on Zea&#39;s</title>
-    <link>http://zealoct.github.io/tags/algorithm/</link>
+    <link>http://jhan.xyz/tags/algorithm/</link>
     <description>Recent content in Algorithm on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sat, 05 Apr 2014 13:31:50 +0800</lastBuildDate>
     
-	<atom:link href="http://zealoct.github.io/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://jhan.xyz/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>简单的递归和动态规划</title>
-      <link>http://zealoct.github.io/post/2014-04-05-recursion-and-dp/</link>
+      <link>http://jhan.xyz/post/2014-04-05-recursion-and-dp/</link>
       <pubDate>Sat, 05 Apr 2014 13:31:50 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-04-05-recursion-and-dp/</guid>
+      <guid>http://jhan.xyz/post/2014-04-05-recursion-and-dp/</guid>
       <description>题目：WordBreak 首先定义如下表示
 str[n:m]为字符串 str 从下标 n 开始到下标 m-1 的字串
 例如 str = &amp;ldquo;abcdef&amp;rdquo; str[4:6] = &amp;ldquo;ef&amp;rdquo;，str[1:3] = &amp;ldquo;bc&amp;rdquo;，str[3:4] = &amp;ldquo;d&amp;rdquo;

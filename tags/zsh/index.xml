@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Zsh on Zea&#39;s</title>
-    <link>http://zealoct.github.io/tags/zsh/</link>
+    <link>http://jhan.xyz/tags/zsh/</link>
     <description>Recent content in Zsh on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Thu, 30 Jun 2016 17:46:35 +0800</lastBuildDate>
     
-	<atom:link href="http://zealoct.github.io/tags/zsh/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://jhan.xyz/tags/zsh/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Zsh git prompt</title>
-      <link>http://zealoct.github.io/post/2016-06-30-zsh-git-prompt/</link>
+      <link>http://jhan.xyz/post/2016-06-30-zsh-git-prompt/</link>
       <pubDate>Thu, 30 Jun 2016 17:46:35 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2016-06-30-zsh-git-prompt/</guid>
+      <guid>http://jhan.xyz/post/2016-06-30-zsh-git-prompt/</guid>
       <description>之前在Zsh中手动添加了zsh-git-prompt插件， 不过一直存在一个问题，就是更换文件夹后$PROMPT中的$(git_super_status)变量不会自动更新， 必须重新执行source ~/.zshrc才行。
 当时没有时间折腾，今天有时间仔细看了一下问题所在，原来是$PROMPT变量的设置有问题，原本的设置是：
 PROMPT=&amp;quot;$(git_super_status) %# &amp;quot;  在这里，错误地使用了双引号，导致$(git_super_status)函数在赋值阶段就被字符串替换成了当时该函数的值， 因此之后即使更换文件夹，这个部分的显示内容也不会发生变化。双引号情况下$PROMPT变量实际的值：

@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Notes on Zea&#39;s</title>
-    <link>http://zealoct.github.io/notes/</link>
+    <link>http://jhan.xyz/notes/</link>
     <description>Recent content in Notes on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Mon, 26 Mar 2018 22:09:39 +0800</lastBuildDate>
     
-	<atom:link href="http://zealoct.github.io/notes/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://jhan.xyz/notes/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>LLVM Sparc Load Mem Operand</title>
-      <link>http://zealoct.github.io/notes/llvm-sparc-load-mem-operand/</link>
+      <link>http://jhan.xyz/notes/llvm-sparc-load-mem-operand/</link>
       <pubDate>Mon, 26 Mar 2018 22:09:39 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/notes/llvm-sparc-load-mem-operand/</guid>
+      <guid>http://jhan.xyz/notes/llvm-sparc-load-mem-operand/</guid>
       <description>Sparc Load指令基本格式是
 ld [address], regrd  其中address域解释为
  The effective address for a load instruction is “r[rs1] + r[rs2]” if the i field is zero, or “r[rs1] + sign_ext(simm13)” if the i field is one.
@@ -26,10 +26,10 @@ SparcInstrInfo.td // Addressing modes. def ADDRrr : ComplexPattern&amp;lt;iPTR, 
     
     <item>
       <title>Placeholder for Notes</title>
-      <link>http://zealoct.github.io/notes/placeholder/</link>
+      <link>http://jhan.xyz/notes/placeholder/</link>
       <pubDate>Thu, 20 Aug 2015 17:46:35 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/notes/placeholder/</guid>
+      <guid>http://jhan.xyz/notes/placeholder/</guid>
       <description> Hello World </description>
     </item>
     

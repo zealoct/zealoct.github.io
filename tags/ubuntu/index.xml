@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Ubuntu on Zea&#39;s</title>
-    <link>http://zealoct.github.io/tags/ubuntu/</link>
+    <link>http://jhan.xyz/tags/ubuntu/</link>
     <description>Recent content in Ubuntu on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Tue, 20 May 2014 20:26:25 +0800</lastBuildDate>
     
-	<atom:link href="http://zealoct.github.io/tags/ubuntu/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://jhan.xyz/tags/ubuntu/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>如何写 Ubuntu 的 Framebuffer</title>
-      <link>http://zealoct.github.io/post/2014-05-20-ubuntu-fbvnc/</link>
+      <link>http://jhan.xyz/post/2014-05-20-ubuntu-fbvnc/</link>
       <pubDate>Tue, 20 May 2014 20:26:25 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-05-20-ubuntu-fbvnc/</guid>
+      <guid>http://jhan.xyz/post/2014-05-20-ubuntu-fbvnc/</guid>
       <description>最近有个小项目，想在 Android 上跑一个通过直接读写 framebuffer 实现的 vnc 客户端， 所以发现了这个 fbvnc， 是 github 上一个小哥儿捣鼓的，基于现有的一个同名项目开发，专为嵌入式设备使用。这个小的 vnc 客户端的不足当然有很多，比如连基本的窗口都木有，直接占用了你整个 framebuffer，不能调整分辨率，巨慢无比，卡的紧了就直接挂，但是它有一个最大的优点，就是真的非常简单，除了一些基本的 Linux 库之外没有任何第三方的依赖。
 以上算是个小广告吧 (=
 但是一个很大的问题是，这货在 ubuntu 上不 work……什么原因呢，做个小测试看一看。

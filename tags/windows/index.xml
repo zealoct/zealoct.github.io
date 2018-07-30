@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Windows on Zea&#39;s</title>
-    <link>http://zealoct.github.io/tags/windows/</link>
+    <link>http://jhan.xyz/tags/windows/</link>
     <description>Recent content in Windows on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Mon, 14 Sep 2015 16:51:18 +0800</lastBuildDate>
     
-	<atom:link href="http://zealoct.github.io/tags/windows/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://jhan.xyz/tags/windows/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>[转]windows下交换CapsLock和Ctrl键</title>
-      <link>http://zealoct.github.io/post/2015-09-14-win7-exchange-capslock-and-ctrl/</link>
+      <link>http://jhan.xyz/post/2015-09-14-win7-exchange-capslock-and-ctrl/</link>
       <pubDate>Mon, 14 Sep 2015 16:51:18 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2015-09-14-win7-exchange-capslock-and-ctrl/</guid>
+      <guid>http://jhan.xyz/post/2015-09-14-win7-exchange-capslock-and-ctrl/</guid>
       <description>更新：原文中交换的是Capslock键与左Ctrl键，实际中发现这样交换也不是很好用， 习惯性很容易按到L_CTRL从而打开了大写锁，因此更新为交换Capslock与R_CTRL， 更新后的Scancode Map文件为：
 0000 00 00 00 00 00 00 00 00 0008 03 00 00 00 1d e0 3a 00 0010 3a 00 1d e0 00 00 00 00 0018  关于此Scancode Map的意义， 可以参考这篇文章， 详细的Scancode列表可以查看官方文档
 原文地址：http://www.kodiva.com/post/swapping-caps-lock-and-control-keys
@@ -26,10 +26,10 @@ In our opinion this is the best way to swap the control and caps lock keys in Wi
     
     <item>
       <title>Linux下VIM编码设置——解决中文乱码问题</title>
-      <link>http://zealoct.github.io/post/2015-08-27-xshell-vim-encoding/</link>
+      <link>http://jhan.xyz/post/2015-08-27-xshell-vim-encoding/</link>
       <pubDate>Thu, 27 Aug 2015 18:31:48 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2015-08-27-xshell-vim-encoding/</guid>
+      <guid>http://jhan.xyz/post/2015-08-27-xshell-vim-encoding/</guid>
       <description>日常工作与生活中经常需要在Windows下通过Xshell、Putty等SSH客户端远程连接Linux服务器， 在这种场景下使用Vim编辑器查看与录入中文经常会遇到乱码问题。 此外，网上也有很多文章提到过使用Vim将GBK编码的文件转换为UTF-8编码的方法， 这种文件编码的转换在远程Vim的情况下尤其应当小心操作，并提前备份，否则一旦转换失败可能再也难以恢复。 本文记录了一些远程Vim配置方面的心得，希望对大家有所帮助。
 远程Vim的工作原理可以简单地理解为从文件读取数据，将数据从文件的存储编码转换到终端可识别的终端编码， 终端将数据流转发给SSH客户端，SSH客户端则根据客户端内配置的SSH客户端编码来对数据流解码，并将内容呈现给用户。 这三个编码我们最关心的是文件的存储编码，然而在配置的时候必须保证三个编码都配置正确，才能正确地显示和转换中文。
 正确的配置（UTF-8） 废话少说，先来看正确的配置是怎样的，以及如何正确地配置。

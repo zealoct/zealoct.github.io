@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Zea&#39;s</title>
-    <link>http://zealoct.github.io/</link>
+    <link>http://jhan.xyz/</link>
     <description>Recent content on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Mon, 26 Mar 2018 22:09:39 +0800</lastBuildDate>
     
-	<atom:link href="http://zealoct.github.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://jhan.xyz/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>LLVM Sparc Load Mem Operand</title>
-      <link>http://zealoct.github.io/notes/llvm-sparc-load-mem-operand/</link>
+      <link>http://jhan.xyz/notes/llvm-sparc-load-mem-operand/</link>
       <pubDate>Mon, 26 Mar 2018 22:09:39 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/notes/llvm-sparc-load-mem-operand/</guid>
+      <guid>http://jhan.xyz/notes/llvm-sparc-load-mem-operand/</guid>
       <description>Sparc Load指令基本格式是
 ld [address], regrd  其中address域解释为
  The effective address for a load instruction is “r[rs1] + r[rs2]” if the i field is zero, or “r[rs1] + sign_ext(simm13)” if the i field is one.
@@ -26,10 +26,10 @@ SparcInstrInfo.td // Addressing modes. def ADDRrr : ComplexPattern&amp;lt;iPTR, 
     
     <item>
       <title>LLVM Encoding Asm Label</title>
-      <link>http://zealoct.github.io/post/llvm-encoding-asm-label/</link>
+      <link>http://jhan.xyz/post/llvm-encoding-asm-label/</link>
       <pubDate>Wed, 14 Mar 2018 14:40:01 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/llvm-encoding-asm-label/</guid>
+      <guid>http://jhan.xyz/post/llvm-encoding-asm-label/</guid>
       <description>汇编代码中的Label标记了一段汇编代码的起始地址，主要用在分支、跳转类的指令中， 一般汇编代码中的Label以字符串的形式出现，如：
 bne r0, r1, __IF_THEN # 如果r0!=r1,跳转到__IF_THEN标记的代码段 jmp __IF_ELSE # 跳转到__IF_ELSE标记的代码段  其中__IF_THEN和__IF_ELSE分别标记了if语句的两个分支。 但是在实际的可执行文件中，Label并不存在，分支跳转指令中实际存储的是offset：
 -Op- -Rs- -Rt- - offset - 1000 0000 0001 0000 0000 0000 0000 1000 # bne r0, r1, 8 # 目标指令与当前PC差为8个字节 # 跳过了一条jmp指令 -Op- - offset - 1001 0000 0000 0000 0000 0000 0010 1000 # jmp 40 # 跳过了9条指令  Label信息在编译初始阶段无法确定，直到最终完成编译的时候才会赋予其具体的值， 因此无法对Label进行静态的编码。 LLVM中使用fixup来处理这些在MCCodeEmitter中无法确定的信息。
@@ -40,10 +40,10 @@ def jtarget : Operand&amp;lt;OtherVT&amp;gt; { let EncoderMethod = &amp;quot;get
     
     <item>
       <title>Zsh git prompt</title>
-      <link>http://zealoct.github.io/post/2016-06-30-zsh-git-prompt/</link>
+      <link>http://jhan.xyz/post/2016-06-30-zsh-git-prompt/</link>
       <pubDate>Thu, 30 Jun 2016 17:46:35 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2016-06-30-zsh-git-prompt/</guid>
+      <guid>http://jhan.xyz/post/2016-06-30-zsh-git-prompt/</guid>
       <description>之前在Zsh中手动添加了zsh-git-prompt插件， 不过一直存在一个问题，就是更换文件夹后$PROMPT中的$(git_super_status)变量不会自动更新， 必须重新执行source ~/.zshrc才行。
 当时没有时间折腾，今天有时间仔细看了一下问题所在，原来是$PROMPT变量的设置有问题，原本的设置是：
 PROMPT=&amp;quot;$(git_super_status) %# &amp;quot;  在这里，错误地使用了双引号，导致$(git_super_status)函数在赋值阶段就被字符串替换成了当时该函数的值， 因此之后即使更换文件夹，这个部分的显示内容也不会发生变化。双引号情况下$PROMPT变量实际的值：
@@ -53,10 +53,10 @@ PROMPT=&#39;$(git_super_status) %# &#39;  (master|✚1) % echo $PROMPT $(git_sup
     
     <item>
       <title>[转]windows下交换CapsLock和Ctrl键</title>
-      <link>http://zealoct.github.io/post/2015-09-14-win7-exchange-capslock-and-ctrl/</link>
+      <link>http://jhan.xyz/post/2015-09-14-win7-exchange-capslock-and-ctrl/</link>
       <pubDate>Mon, 14 Sep 2015 16:51:18 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2015-09-14-win7-exchange-capslock-and-ctrl/</guid>
+      <guid>http://jhan.xyz/post/2015-09-14-win7-exchange-capslock-and-ctrl/</guid>
       <description>更新：原文中交换的是Capslock键与左Ctrl键，实际中发现这样交换也不是很好用， 习惯性很容易按到L_CTRL从而打开了大写锁，因此更新为交换Capslock与R_CTRL， 更新后的Scancode Map文件为：
 0000 00 00 00 00 00 00 00 00 0008 03 00 00 00 1d e0 3a 00 0010 3a 00 1d e0 00 00 00 00 0018  关于此Scancode Map的意义， 可以参考这篇文章， 详细的Scancode列表可以查看官方文档
 原文地址：http://www.kodiva.com/post/swapping-caps-lock-and-control-keys
@@ -66,10 +66,10 @@ In our opinion this is the best way to swap the control and caps lock keys in Wi
     
     <item>
       <title>Linux下VIM编码设置——解决中文乱码问题</title>
-      <link>http://zealoct.github.io/post/2015-08-27-xshell-vim-encoding/</link>
+      <link>http://jhan.xyz/post/2015-08-27-xshell-vim-encoding/</link>
       <pubDate>Thu, 27 Aug 2015 18:31:48 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2015-08-27-xshell-vim-encoding/</guid>
+      <guid>http://jhan.xyz/post/2015-08-27-xshell-vim-encoding/</guid>
       <description>日常工作与生活中经常需要在Windows下通过Xshell、Putty等SSH客户端远程连接Linux服务器， 在这种场景下使用Vim编辑器查看与录入中文经常会遇到乱码问题。 此外，网上也有很多文章提到过使用Vim将GBK编码的文件转换为UTF-8编码的方法， 这种文件编码的转换在远程Vim的情况下尤其应当小心操作，并提前备份，否则一旦转换失败可能再也难以恢复。 本文记录了一些远程Vim配置方面的心得，希望对大家有所帮助。
 远程Vim的工作原理可以简单地理解为从文件读取数据，将数据从文件的存储编码转换到终端可识别的终端编码， 终端将数据流转发给SSH客户端，SSH客户端则根据客户端内配置的SSH客户端编码来对数据流解码，并将内容呈现给用户。 这三个编码我们最关心的是文件的存储编码，然而在配置的时候必须保证三个编码都配置正确，才能正确地显示和转换中文。
 正确的配置（UTF-8） 废话少说，先来看正确的配置是怎样的，以及如何正确地配置。
@@ -96,19 +96,19 @@ LANG=&#39;en_US&#39; LC_ALL=&#39;en_US&#39; fencs=utf-8,gbk Xshell encoding=&#39
     
     <item>
       <title>Placeholder for Notes</title>
-      <link>http://zealoct.github.io/notes/placeholder/</link>
+      <link>http://jhan.xyz/notes/placeholder/</link>
       <pubDate>Thu, 20 Aug 2015 17:46:35 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/notes/placeholder/</guid>
+      <guid>http://jhan.xyz/notes/placeholder/</guid>
       <description> Hello World </description>
     </item>
     
     <item>
       <title>Windows 下使用 Cocos2d-x 3.x &#43; Lua 开发基础</title>
-      <link>http://zealoct.github.io/post/2014-07-06-cocos2d-lua-basic/</link>
+      <link>http://jhan.xyz/post/2014-07-06-cocos2d-lua-basic/</link>
       <pubDate>Sun, 06 Jul 2014 10:59:17 -0700</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-07-06-cocos2d-lua-basic/</guid>
+      <guid>http://jhan.xyz/post/2014-07-06-cocos2d-lua-basic/</guid>
       <description>Cocos2d-x 是国内非常成熟的 2d 游戏开发引擎了，拥有非常广大的开发者群体和活跃的社区，支持 Windows、Linux、Mac OS、iOS、Android 和 Window Phone 等各个平台，其本身是用 C++ 语言实现的，主要提供了面向 C++ 的接口，也提供了对 Lua、object-c 和 JavaScript 的支持。我们的 minigame 要基于 Cocos（为简单起见，我就把 Cocos2d-x 称为 Cocos 了） 和 Lua 实现，这有好处也有弊端，Lua 作为一门脚本语言，开发起来确实非常快捷，不过 Cocos 社区 Lua 相关的文档和资料并不如 C++ 那么完备，使得上手的难度增加，而且 Lua 本质并不是面向对象的编程语言，我们编码时的一些 OO 的思想也要需要转变。
 出于对自己记忆力的极端不信任，决定把实习期遇到的关于 Cocos + Lua 的种种问题都记录下来，希望也能成为实习的成果之一吧！
 开发系统和工具 首先是环境的搭建，Cocos 的使用方法挺多的，取决于你的开发系统和开发工具，刚开始看的时候我自己也有些被搞乱了，说来搞笑，我基本上按照 Cocos 的安装说明文档去配置的，到最后用的最多的却是 Cocos-console。官方网站上各种开发工具环境搭建相关的文档还是很详细的，我在这里就不再重复了，主要是简单介绍一下用到的各种工具是干嘛的，还有就是不同的 Cocos 开发环境如何抉择的问题。
@@ -117,10 +117,10 @@ LANG=&#39;en_US&#39; LC_ALL=&#39;en_US&#39; fencs=utf-8,gbk Xshell encoding=&#39
     
     <item>
       <title>暑期实习开始</title>
-      <link>http://zealoct.github.io/post/2014-07-05-summer-intern/</link>
+      <link>http://jhan.xyz/post/2014-07-05-summer-intern/</link>
       <pubDate>Sat, 05 Jul 2014 21:44:53 -0700</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-07-05-summer-intern/</guid>
+      <guid>http://jhan.xyz/post/2014-07-05-summer-intern/</guid>
       <description>记得很清楚，拿到网易暑期实习 offer 是 4 月 30 号，正好是劳动节放假前一天，当时真的是很开心，感觉实习终于有着落了，而且还是我的首选网易游戏，所以那个劳动节过的格外开心。实习从 7 月开始，6 月末收到公司邮件通知，从 6 月 29 号开始就可以去杭州报道了，这点不得不称赞网易，对实习生的待遇非常不错，公司食堂免费吃，还提供住宿，不过因为实习生较多，公司的宿舍不够用了，所以我被分在了公司附近的乐通酒店。去之前特意查了下地图，发现公司提供住宿的几家酒店里乐通是离得最近的，跟公司只隔了一个街区，走路 10 分钟妥妥儿的，这一点还是非常方便的。
 我跟几个朋友一起，乘坐 29 号的火车来杭州，出了火车站几个人做的第一件事就是去办了张杭州一卡通，可以租自行车的那种，后来证明这个举动真是太明智了，因为我跟老缪出了地铁站之后就是租量小车慢慢悠悠骑到乐通的。我们就这样，骑着租来的橘黄色的小破车，拖着的拉杆箱，慢慢悠悠的开始了暑期杭州的日子。
 初到乐通，一种大张江的即视感瞬间就让我泪流满面了，这环境，这布局，这没一个人影的大马路，还真是熟悉的场景，熟悉的味道。我们一行人中，只有我跟老缪住乐通，另外几个住另外一个酒店，虽然离公司较远，但是居然毗邻商圈，简直不能更惬意，于是当晚大家就约定去那个名叫“星光大道”的地方转一转。我跟老缪再次利用了杭州的自行车，一边拍大腿感慨真他妈方便一边来到了目的地，也就十几分钟，算不得很远。星光大道吃饭的地方还是不少的，还有之前跟蔚蔚一起吃过的非常好吃的老头儿油爆虾，感觉住在这边的孩子的生活质量真比我们高了好多，有点像张江和世纪大道的差别了。
@@ -132,10 +132,10 @@ LANG=&#39;en_US&#39; LC_ALL=&#39;en_US&#39; fencs=utf-8,gbk Xshell encoding=&#39
     
     <item>
       <title>如何写 Ubuntu 的 Framebuffer</title>
-      <link>http://zealoct.github.io/post/2014-05-20-ubuntu-fbvnc/</link>
+      <link>http://jhan.xyz/post/2014-05-20-ubuntu-fbvnc/</link>
       <pubDate>Tue, 20 May 2014 20:26:25 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-05-20-ubuntu-fbvnc/</guid>
+      <guid>http://jhan.xyz/post/2014-05-20-ubuntu-fbvnc/</guid>
       <description>最近有个小项目，想在 Android 上跑一个通过直接读写 framebuffer 实现的 vnc 客户端， 所以发现了这个 fbvnc， 是 github 上一个小哥儿捣鼓的，基于现有的一个同名项目开发，专为嵌入式设备使用。这个小的 vnc 客户端的不足当然有很多，比如连基本的窗口都木有，直接占用了你整个 framebuffer，不能调整分辨率，巨慢无比，卡的紧了就直接挂，但是它有一个最大的优点，就是真的非常简单，除了一些基本的 Linux 库之外没有任何第三方的依赖。
 以上算是个小广告吧 (=
 但是一个很大的问题是，这货在 ubuntu 上不 work……什么原因呢，做个小测试看一看。
@@ -146,10 +146,10 @@ vinfo.activate |= FB_ACTIVATE_NOW | FB_ACTIVATE_FORCE; ioctl(fbfd, FBIOPUT_VSCRE
     
     <item>
       <title>简单的递归和动态规划</title>
-      <link>http://zealoct.github.io/post/2014-04-05-recursion-and-dp/</link>
+      <link>http://jhan.xyz/post/2014-04-05-recursion-and-dp/</link>
       <pubDate>Sat, 05 Apr 2014 13:31:50 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-04-05-recursion-and-dp/</guid>
+      <guid>http://jhan.xyz/post/2014-04-05-recursion-and-dp/</guid>
       <description>题目：WordBreak 首先定义如下表示
 str[n:m]为字符串 str 从下标 n 开始到下标 m-1 的字串
 例如 str = &amp;ldquo;abcdef&amp;rdquo; str[4:6] = &amp;ldquo;ef&amp;rdquo;，str[1:3] = &amp;ldquo;bc&amp;rdquo;，str[3:4] = &amp;ldquo;d&amp;rdquo;
@@ -165,10 +165,10 @@ stat[n] = { dict.contains( str[n:n+1] ) &amp;amp;&amp;amp; stat[n+1] } || { dict
     
     <item>
       <title>Linux 下 c 的扩展内联汇编</title>
-      <link>http://zealoct.github.io/post/2014-03-05-c-asm/</link>
+      <link>http://jhan.xyz/post/2014-03-05-c-asm/</link>
       <pubDate>Wed, 05 Mar 2014 19:54:09 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-03-05-c-asm/</guid>
+      <guid>http://jhan.xyz/post/2014-03-05-c-asm/</guid>
       <description>简单总结了一下自己看到用到的一些内联汇编的知识点，并不是一个完整的总结，以后对内联汇编有了新的了解会慢慢扩充。
 详细细节可以参考 gcc 关与扩展内联汇编的 文档
 格式说明 __asm__　__volatile__(&amp;quot;Instruction List&amp;quot; : Output : Input : Clobber/Modify)  冒号的使用原则（*O, I, C 分别指代 Output, Input, Clobber/Modify*）：
@@ -178,10 +178,10 @@ __asm__(&amp;quot; &amp;quot; : : : &amp;quot;memory&amp;quot;); __asm__(&amp;qu
     
     <item>
       <title>Notes on iOS Security Whitepaper</title>
-      <link>http://zealoct.github.io/post/2014-03-03-ios-security/</link>
+      <link>http://jhan.xyz/post/2014-03-03-ios-security/</link>
       <pubDate>Mon, 03 Mar 2014 19:56:09 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-03-03-ios-security/</guid>
+      <guid>http://jhan.xyz/post/2014-03-03-ios-security/</guid>
       <description>This notes is based on iOS Security - February 2014, origin link can be found here.
 This paper gives a brief description of iOS security, including hardware security features and how iOS leverages these features.
 System Security Secure Boot Chain ROM is sealed with public key of Apple Root CA, and will verify the Low-Level Bootloader (LLB) before load it.
@@ -190,20 +190,20 @@ For devices with an A7 processor, the Secure Enclave coprocessor also utilizes a
     
     <item>
       <title>Using theme Greyshade</title>
-      <link>http://zealoct.github.io/post/2014-02-27-using-theme-greyshade/</link>
+      <link>http://jhan.xyz/post/2014-02-27-using-theme-greyshade/</link>
       <pubDate>Thu, 27 Feb 2014 14:11:32 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-02-27-using-theme-greyshade/</guid>
+      <guid>http://jhan.xyz/post/2014-02-27-using-theme-greyshade/</guid>
       <description>Sometimes ago I came across a blog samwize, who uses a slightly modified theme called Greyshade, which I think is very beautiful, so I applied that theme immediately. Saddly this theme does not support chinese very well, so I made some customization myself.
 Font and Size  add new font &amp;ldquo;Microsoft Yahei&amp;rdquo; for Chinese, add font &amp;ldquo;Consolas&amp;rdquo; for monospace enlarge the font size of an article enlarge the line height to make it comfortable to read Chinese  may be it is not large enough for Chinese, but I think it is too large for English enlarge the font size of meta info of an article decrease the font size for archieve view  Layout  abandon fixed width layout change the way meta info is displayed display meta info in the article view add Next and Prev link in the article view change a sharing provider remove the shadow below the sharing  Profile  use a local image instead of that of Gravatar.</description>
     </item>
     
     <item>
       <title>Vim Efficiency Notes</title>
-      <link>http://zealoct.github.io/post/2014-02-24-vim-notes/</link>
+      <link>http://jhan.xyz/post/2014-02-24-vim-notes/</link>
       <pubDate>Mon, 24 Feb 2014 15:00:00 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-02-24-vim-notes/</guid>
+      <guid>http://jhan.xyz/post/2014-02-24-vim-notes/</guid>
       <description>关于Vim的一些容易被忽视、却又能提升使用体验和操作效率的操作细节。同时记录Vim中一些（我见到过的）比较实用的配置，分享的同时也给自己留个备忘吧。 一下子总结不完整，慢慢更新。
 基本操作 基本按照幸福感排序，排在前边的是我觉得用了之后一口气儿上五楼都不累的，稍微靠后一点排的就比较随意了。每一项第一行的*斜体字*是我认为该组合比较有用的场景。
 使用Ctrl+[ 替代Esc，任何时候 Ctrl+[ 功能与Esc键完全相同，用这一快捷键的好处就不用解释了，大家都知道按Esc是件多么令人伤神的事情
@@ -224,10 +224,10 @@ Ctrl+a和Ctrl+x 将当前光标所在位置处的数字加1/减1，比较好玩�
     
     <item>
       <title>Notes on Paxos Made Simple</title>
-      <link>http://zealoct.github.io/post/2014-02-12-paxos/</link>
+      <link>http://jhan.xyz/post/2014-02-12-paxos/</link>
       <pubDate>Wed, 12 Feb 2014 16:21:02 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-02-12-paxos/</guid>
+      <guid>http://jhan.xyz/post/2014-02-12-paxos/</guid>
       <description>Origin paper link
 Problem safety requirements
  Only a value that has been proposed may be chosen Only a single value is chosen, and A process never learns that a value has been chosen unless it acutally has been  three agents: proposers(P), acceptors(A), and learners(L).
@@ -237,10 +237,10 @@ use customary asynchronous, non-Byzantine model, in which:
     
     <item>
       <title>Exploit Exercises - Nebula Level 13</title>
-      <link>http://zealoct.github.io/post/2014-01-26-nebula-level13/</link>
+      <link>http://jhan.xyz/post/2014-01-26-nebula-level13/</link>
       <pubDate>Sun, 26 Jan 2014 21:54:12 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-26-nebula-level13/</guid>
+      <guid>http://jhan.xyz/post/2014-01-26-nebula-level13/</guid>
       <description>About There is a security check that prevents the program from continuing execution if the user invoking it does not match a specific user id.
 To do this level, log in as the level13 account with the password level13 . Files for this level can be found in /home/flag13.
 Source code #include &amp;lt;stdlib.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; #include &amp;lt;stdio.h&amp;gt; #include &amp;lt;sys/types.h&amp;gt; #include &amp;lt;string.h&amp;gt; #define FAKEUID 1000 int main(int argc, char **argv, char **envp) { int c; char token[256]; if(getuid() !</description>
@@ -248,10 +248,10 @@ Source code #include &amp;lt;stdlib.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; 
     
     <item>
       <title>Exploit Exercises - Nebula Level 12</title>
-      <link>http://zealoct.github.io/post/2014-01-26-nebula-level12/</link>
+      <link>http://jhan.xyz/post/2014-01-26-nebula-level12/</link>
       <pubDate>Sun, 26 Jan 2014 20:12:53 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-26-nebula-level12/</guid>
+      <guid>http://jhan.xyz/post/2014-01-26-nebula-level12/</guid>
       <description>About There is a backdoor process listening on port 50001.
 To do this level, log in as the level12 account with the password level12. Files for this level can be found in /home/flag12.
 Source code -- /home/flag12/flag12.lua local socketlocal socket = require(&amp;quot;socket&amp;quot;) local server = assert(socket.bind(&amp;quot;127.0.0.1&amp;quot;, 50001)) function hash(password) prog = io.popen(&amp;quot;echo &amp;quot;..password..&amp;quot; | sha1sum&amp;quot;, &amp;quot;r&amp;quot;) data = prog:read(&amp;quot;*all&amp;quot;) prog:close() data = string.sub(data, 1, 40) return data end while 1 do local client = server:accept() client:send(&amp;quot;Password: &amp;quot;) client:settimeout(60) local line, err = client:receive() if not err then print(&amp;quot;trying &amp;quot; .</description>
@@ -259,10 +259,10 @@ Source code -- /home/flag12/flag12.lua local socketlocal socket = require(&amp;q
     
     <item>
       <title>Exploit Exercises - Nebula Level 11</title>
-      <link>http://zealoct.github.io/post/2014-01-26-nebula-level11/</link>
+      <link>http://jhan.xyz/post/2014-01-26-nebula-level11/</link>
       <pubDate>Sun, 26 Jan 2014 16:44:20 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-26-nebula-level11/</guid>
+      <guid>http://jhan.xyz/post/2014-01-26-nebula-level11/</guid>
       <description>About The /home/flag11/flag11 binary processes standard input and executes a shell command.
 There are two ways of completing this level, you may wish to do both :-)
 To do this level, log in as the level11 account with the password level11 . Files for this level can be found in /home/flag11.
@@ -271,10 +271,10 @@ Source code #include &amp;lt;stdlib.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; 
     
     <item>
       <title>Exploit Exercises - Nebula Level 10</title>
-      <link>http://zealoct.github.io/post/2014-01-25-nebula-level10/</link>
+      <link>http://jhan.xyz/post/2014-01-25-nebula-level10/</link>
       <pubDate>Sat, 25 Jan 2014 12:40:53 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-25-nebula-level10/</guid>
+      <guid>http://jhan.xyz/post/2014-01-25-nebula-level10/</guid>
       <description>About The setuid binary at /home/flag10/flag10 binary will upload any file given, as long as it meets the requirements of the access() system call.
 To do this level, log in as the level10 account with the password level10. Files for this level can be found in /home/flag10.
 Source Code #include &amp;lt;stdlib.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; #include &amp;lt;sys/types.h&amp;gt; #include &amp;lt;stdio.h&amp;gt; #include &amp;lt;fcntl.h&amp;gt; #include &amp;lt;errno.h&amp;gt; #include &amp;lt;sys/socket.h&amp;gt; #include &amp;lt;netinet/in.h&amp;gt; #include &amp;lt;string.h&amp;gt; int main(int argc, char **argv) { char *file; char *host; if(argc &amp;lt; 3) { printf(&amp;quot;%s file host\n\tsends file to host if you have access to it\n&amp;quot;, argv[0]); exit(1); } file = argv[1]; host = argv[2]; if(access(argv[1], R_OK) == 0) { int fd; int ffd; int rc; struct sockaddr_in sin; char buffer[4096]; printf(&amp;quot;Connecting to %s:18211 .</description>
@@ -282,10 +282,10 @@ Source Code #include &amp;lt;stdlib.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; 
     
     <item>
       <title>Exploit Exercises - Nebula Level 09</title>
-      <link>http://zealoct.github.io/post/2014-01-24-nebula-level09/</link>
+      <link>http://jhan.xyz/post/2014-01-24-nebula-level09/</link>
       <pubDate>Fri, 24 Jan 2014 11:43:40 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-24-nebula-level09/</guid>
+      <guid>http://jhan.xyz/post/2014-01-24-nebula-level09/</guid>
       <description>About There&amp;rsquo;s a C setuid wrapper for some vulnerable PHP code&amp;hellip;
 To do this level, log in as the level09 account with the password level09. Files for this level can be found in /home/flag09.
 Source code &amp;lt;?php function spam($email) { $email = preg_replace(&amp;quot;/\./&amp;quot;, &amp;quot; dot &amp;quot;, $email); $email = preg_replace(&amp;quot;/@/&amp;quot;, &amp;quot; AT &amp;quot;, $email); return $email; } function markup($filename, $use_me) { $contents = file_get_contents($filename); $contents = preg_replace(&amp;quot;/(\[email (.*)\])/e&amp;quot;, &amp;quot;spam(\&amp;quot;\\2\&amp;quot;)&amp;quot;, $contents); $contents = preg_replace(&amp;quot;/\[/&amp;quot;, &amp;quot;&amp;lt;&amp;quot;, $contents); $contents = preg_replace(&amp;quot;/\]/&amp;quot;, &amp;quot;&amp;gt;&amp;quot;, $contents); return $contents; } $output = markup($argv[1], $argv[2]); print $output; ?</description>
@@ -293,10 +293,10 @@ Source code &amp;lt;?php function spam($email) { $email = preg_replace(&amp;quot
     
     <item>
       <title>Exploit Exercises - Nebula Level 08</title>
-      <link>http://zealoct.github.io/post/2014-01-24-nebula-level08/</link>
+      <link>http://jhan.xyz/post/2014-01-24-nebula-level08/</link>
       <pubDate>Fri, 24 Jan 2014 11:43:31 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-24-nebula-level08/</guid>
+      <guid>http://jhan.xyz/post/2014-01-24-nebula-level08/</guid>
       <description>About World readable files strike again. Check what that user was up to, and use it to log into flag08 account.
 To do this level, log in as the level08 account with the password level08. Files for this level can be found in /home/flag08.
 Solution 用*level08*登录之后回看到一个名为*capture.pcap*的文件，记录了一次抓包的结果。把这个文件scp出来之后分析，中间有一处显示：
@@ -306,10 +306,10 @@ Password: backdoor...00Rm8.ate  看样子是*flag08*用户的密码，不过用�
     
     <item>
       <title>Exploit Exercises - Nebula Level 07</title>
-      <link>http://zealoct.github.io/post/2014-01-13-nebula-level07/</link>
+      <link>http://jhan.xyz/post/2014-01-13-nebula-level07/</link>
       <pubDate>Mon, 13 Jan 2014 15:49:10 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-13-nebula-level07/</guid>
+      <guid>http://jhan.xyz/post/2014-01-13-nebula-level07/</guid>
       <description>About The flag07 user was writing their very first perl program that allowed them to ping hosts to see if they were reachable from the web server.
 To do this level, log in as the level07 account with the password level07. Files for this level can be found in /home/flag07.
 Source Code #!/usr/bin/perl use CGI qw{param}; print &amp;quot;Content-type: text/html\n\n&amp;quot;; sub ping { $host = $_[0]; print(&amp;quot;&amp;lt;html&amp;gt;&amp;lt;head&amp;gt;&amp;lt;title&amp;gt;Ping results&amp;lt;/title&amp;gt;&amp;lt;/head&amp;gt;&amp;lt;body&amp;gt;&amp;lt;pre&amp;gt;&amp;quot;); @output = `ping -c 3 $host 2&amp;gt;&amp;amp;1`; foreach $line (@output) { print &amp;quot;$line&amp;quot;; } print(&amp;quot;&amp;lt;/pre&amp;gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;&amp;quot;); } # check if Host set.</description>
@@ -317,10 +317,10 @@ Source Code #!/usr/bin/perl use CGI qw{param}; print &amp;quot;Content-type: tex
     
     <item>
       <title>Exploit Exercises - Nebula Level 06</title>
-      <link>http://zealoct.github.io/post/2014-01-13-nebula-level06/</link>
+      <link>http://jhan.xyz/post/2014-01-13-nebula-level06/</link>
       <pubDate>Mon, 13 Jan 2014 15:48:33 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-13-nebula-level06/</guid>
+      <guid>http://jhan.xyz/post/2014-01-13-nebula-level06/</guid>
       <description>About The flag06 account credentials came from a legacy unix system.
 To do this level, log in as the level06 account with the password level06 . Files for this level can be found in /home/flag06.
 Check out /etc/passwd
@@ -330,10 +330,10 @@ reference</description>
     
     <item>
       <title>Exploit Exercises - Nebula Level 05</title>
-      <link>http://zealoct.github.io/post/2014-01-13-nebula-level05/</link>
+      <link>http://jhan.xyz/post/2014-01-13-nebula-level05/</link>
       <pubDate>Mon, 13 Jan 2014 14:16:44 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-13-nebula-level05/</guid>
+      <guid>http://jhan.xyz/post/2014-01-13-nebula-level05/</guid>
       <description>About Check the flag05 home directory. You are looking for weak directory permissions
 To do this level, log in as the level05 account with the password level05 . Files for this level can be found in /home/flag05.
 Solution Copy the file /home/flag05/.backup/backup-19072011.tgz in to home directory of level05.
@@ -343,10 +343,10 @@ level05@nebula:~$ tar -xvf backup-19072011.tgz .ssh/ .ssh/id_rsa.pub .ssh/id_rsa
     
     <item>
       <title>Exploit Exercises - Nebula Level 04</title>
-      <link>http://zealoct.github.io/post/2014-01-10-nebula-level04/</link>
+      <link>http://jhan.xyz/post/2014-01-10-nebula-level04/</link>
       <pubDate>Fri, 10 Jan 2014 20:43:48 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-10-nebula-level04/</guid>
+      <guid>http://jhan.xyz/post/2014-01-10-nebula-level04/</guid>
       <description>About This level requires you to read the token file, but the code restricts the files that can be read. Find a way to bypass it :)
 To do this level, log in as the level04 account with the password level04 . Files for this level can be found in /home/flag04.
 Solution Source code for /home/flag04/flag04 is
@@ -355,10 +355,10 @@ Solution Source code for /home/flag04/flag04 is
     
     <item>
       <title>Exploit Exercises - Nebula Level 03</title>
-      <link>http://zealoct.github.io/post/2014-01-09-nebula-level03/</link>
+      <link>http://jhan.xyz/post/2014-01-09-nebula-level03/</link>
       <pubDate>Thu, 09 Jan 2014 17:03:25 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-09-nebula-level03/</guid>
+      <guid>http://jhan.xyz/post/2014-01-09-nebula-level03/</guid>
       <description>About Check the home directory of flag03 and take note of the files there.
 There is a crontab that is called every couple of minutes.
 To do this level, log in as the level03 account with the password level03 . Files for this level can be found in /home/flag03.
@@ -367,10 +367,10 @@ Solution No source code is available for this level, but there is a shell script
     
     <item>
       <title>Exploit Exercises - Nebula Level02</title>
-      <link>http://zealoct.github.io/post/2014-01-09-nebula-level02/</link>
+      <link>http://jhan.xyz/post/2014-01-09-nebula-level02/</link>
       <pubDate>Thu, 09 Jan 2014 15:13:38 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-09-nebula-level02/</guid>
+      <guid>http://jhan.xyz/post/2014-01-09-nebula-level02/</guid>
       <description>基本过程与level01一样，先看/home/flag02/flag02的源代码：
 #include &amp;lt;stdlib.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; #include &amp;lt;string.h&amp;gt; #include &amp;lt;sys/types.h&amp;gt; #include &amp;lt;stdio.h&amp;gt; int main(int argc, char **argv, char **envp) { char *buffer; gid_t gid; uid_t uid; gid = getegid(); uid = geteuid(); setresgid(gid, gid, gid); setresuid(uid, uid, uid); buffer = NULL; asprintf(&amp;amp;buffer, &amp;quot;/bin/echo %s is cool&amp;quot;, getenv(&amp;quot;USER&amp;quot;)); printf(&amp;quot;about to call system(\&amp;quot;%s\&amp;quot;)\n&amp;quot;, buffer); system(buffer); }  先通过$USER构建了一个字符串，然后执行该字符串。比如正常情况下
 buffer=&amp;quot;/bin/echo level02 is cool&amp;quot;  在这里echo程序用了绝对路径，不过那个$USER明显是让我们加以利用的……在本例中echo程序是动不了的了，那怎么能执行其他的命令呢？也很简单，Linux本来就可以在一行中执行多条语句，这里选择用“;”来分割。如下修改$USER
@@ -380,10 +380,10 @@ USER=&amp;quot;haha; /bin/bash&amp;quot;  其实这里完全可以使用/bin/get
     
     <item>
       <title>Exploit Exercises - Nebula Level01</title>
-      <link>http://zealoct.github.io/post/2014-01-09-nebula-level01/</link>
+      <link>http://jhan.xyz/post/2014-01-09-nebula-level01/</link>
       <pubDate>Thu, 09 Jan 2014 14:54:40 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-09-nebula-level01/</guid>
+      <guid>http://jhan.xyz/post/2014-01-09-nebula-level01/</guid>
       <description>有了level00的铺垫，level01就非常简单直接了。感觉上Nebula系列的基本要求是用levelXX用户登录，通过放在/home/flagXX目录下的可执行程序来获得flagXX的用户权限，对于level01而言，可执行程序为/home/flag01/flag01，其源代码在网站上给出了：
 #include &amp;lt;stdlib.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; #include &amp;lt;string.h&amp;gt; #include &amp;lt;sys/types.h&amp;gt; #include &amp;lt;stdio.h&amp;gt; int main(int argc, char **argv, char **envp) { gid_t gid; uid_t uid; gid = getegid(); uid = geteuid(); setresgid(gid, gid, gid); setresuid(uid, uid, uid); system(&amp;quot;/usr/bin/env echo and now what?&amp;quot;); }  前边代码的作用在上一篇博客中提到了，为了使当前的effective uid为flag01，所以system这一句是以flag01这个user的权限执行的。通过/usr/bin/env程序执行了echo程序，在屏幕上打印“and now what？”，不过在执行echo这个命令的时候没有使用绝对路径，使得通过修改$PATH来执行任意程序成为了可能。在本例中，通过修改$PATH和重定向来直接以flag01用户执行/bin/getflag程序：
 ~ $ export PATH=/home/level01:$PATH ~ $ ln -s /bin/getflag /home/level01/echo ~ $ /home/flag01/flag01 You have successfully executed getflag on a target account  这样就可以了。通过重定向其他程序为/home/level01/echo，可以用flag01用户执行任意程序。</description>
@@ -391,20 +391,20 @@ USER=&amp;quot;haha; /bin/bash&amp;quot;  其实这里完全可以使用/bin/get
     
     <item>
       <title>Exploit Exercises - Nebula Level00</title>
-      <link>http://zealoct.github.io/post/2014-01-08-nebula-level00/</link>
+      <link>http://jhan.xyz/post/2014-01-08-nebula-level00/</link>
       <pubDate>Wed, 08 Jan 2014 19:19:58 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-08-nebula-level00/</guid>
+      <guid>http://jhan.xyz/post/2014-01-08-nebula-level00/</guid>
       <description>之前斌哥推荐了一个Exploit Exercise，上面有一些小练习，最近决定去做一做玩玩。网站上练习的话分为以下几个子项目：
  Nebula，simple and intermediate challenges that cover Linux privilege escalation, common scripting language issues, and file system race conditions Protostar，basic memory corruption issues such as buffer overflows, format strings and heap exploitation under &amp;ldquo;old-style&amp;rdquo; Linux system that does not have any form of modern exploit mitigiation systems enabled Fusion, continues the memory corruption, format strings and heap exploitation but this time focusing on more advanced scenarios and modern protection systems  安装 去网站上下载Nebula的镜像，看很多人的评论之前提供的是OVA镜像，直接加载就行，现在提供的bin是liveCD格式的，有各种问题。我在安装的时候也出现了问题，在vmware中启动图形界面会报“piix4 smbus not enabled”的错误，看了看网上的各种解决方案基本上是在modprobe中禁用掉i2c_piix4这个module，不过对于安装过程中出问题没有找到更好地解决方法，反正这些练习也不需要在本地些什么代码，所以就选择直接从liveCD启动，然后terminal里去做了。</description>
     </item>
     
     <item>
       <title>Kosaraju算法——关于图的后序遍历的特征</title>
-      <link>http://zealoct.github.io/post/2014-01-04-postordering-dfs/</link>
+      <link>http://jhan.xyz/post/2014-01-04-postordering-dfs/</link>
       <pubDate>Sat, 04 Jan 2014 19:27:50 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-04-postordering-dfs/</guid>
+      <guid>http://jhan.xyz/post/2014-01-04-postordering-dfs/</guid>
       <description>Kosaraju算法是一种常见的求图的强联通分量的算法，该算法先从任意结点开始对原图G进行一次DFS后序遍历，之后依据第一次DFS的结果的反向序列（即根据reverse postordering），对原图的反向图G&amp;rsquo;进行前序的DFS。在第二次DFS中，每个联通分量即为一个强联通分量。
 算法是很简单，不过之前并没有完全搞明白，昨天晚上仔细想了下，总算弄明白了。事实上后序遍历一个图得到的序列包含了原图重要的结构信息，正是这些结构信息保证了第二次DFS能得到正确的结果。
 先简单阐述结论，第一次后序遍历是为了保证，在第二次对反向图的前序遍历中，先访问到的强联通分量不指向任何未被访问到的强联通分量。
@@ -420,10 +420,10 @@ USER=&amp;quot;haha; /bin/bash&amp;quot;  其实这里完全可以使用/bin/get
     
     <item>
       <title>Markdown Notes</title>
-      <link>http://zealoct.github.io/post/2014-01-03-markdown-notes/</link>
+      <link>http://jhan.xyz/post/2014-01-03-markdown-notes/</link>
       <pubDate>Fri, 03 Jan 2014 14:16:17 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-01-03-markdown-notes/</guid>
+      <guid>http://jhan.xyz/post/2014-01-03-markdown-notes/</guid>
       <description>&lt;h2 id=&#34;header&#34;&gt;Header&lt;/h2&gt;
 
 &lt;h1 id=&#34;header-1&#34;&gt;Header 1&lt;/h1&gt;
@@ -462,10 +462,10 @@ Header 2
     
     <item>
       <title>变种2-SUM问题——优化O(n)算法中的常数 </title>
-      <link>http://zealoct.github.io/post/2013-08-19-two-sum-variant/</link>
+      <link>http://jhan.xyz/post/2013-08-19-two-sum-variant/</link>
       <pubDate>Mon, 19 Aug 2013 16:46:00 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2013-08-19-two-sum-variant/</guid>
+      <guid>http://jhan.xyz/post/2013-08-19-two-sum-variant/</guid>
       <description>Algorithms: Design and Analysis, Part 1 这门课的第六个编程作业的第一道题，之前的编程作业题都比较直观，而这一题需要用到一点简单的优化，相比其他的题目有意思多了。
 题目描述： 　输入文件每一行有一个数字（可能有重复），在这所有的数字中，任选不想等的两个数字 x 和 y ，并令 t=x+y，求问在 [-10000, 10000] 区间中存在多少这样的 t 。
 Solution： 　这个题目的难度在于输入数据的规模，也就是文件行数（输入数字数）n，网站给出的输入文件有 100w 行，其中不重复的数字也有 99.9w 多个，如果采用最暴力的二重循环枚举的计算方法， n2 的复杂度足以让你在等待运行结果的时间里来趟港澳台自由行了。
@@ -475,10 +475,10 @@ for each input x { for t in -10000..10000 { y = t - x if y exists in the input {
     
     <item>
       <title>Install SimpleScalar on Ubuntu 10.10 with Gcc-4.4</title>
-      <link>http://zealoct.github.io/post/2011-04-19-install-simplescalar/</link>
+      <link>http://jhan.xyz/post/2011-04-19-install-simplescalar/</link>
       <pubDate>Tue, 19 Apr 2011 18:36:02 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2011-04-19-install-simplescalar/</guid>
+      <guid>http://jhan.xyz/post/2011-04-19-install-simplescalar/</guid>
       <description>The project 1 of computer architecture is based on SimplesSalar3.0, and it is recommended to finished this project on Redhat 9, otherwise there would be some version problems. But I am used to writing code in my ubuntu and do not wanna reset up my whole development environment on Redhat. BTW, installing a new system is rather troublesome even on vm, I decided to install SimplesSalar on my ubuntu(it turns out to be much more troublesome than installing a new one…)</description>
     </item>
     

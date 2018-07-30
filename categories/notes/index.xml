@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Notes on Zea&#39;s</title>
-    <link>http://zealoct.github.io/categories/notes/</link>
+    <link>http://jhan.xyz/categories/notes/</link>
     <description>Recent content in Notes on Zea&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Mon, 24 Feb 2014 15:00:00 +0800</lastBuildDate>
     
-	<atom:link href="http://zealoct.github.io/categories/notes/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://jhan.xyz/categories/notes/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Vim Efficiency Notes</title>
-      <link>http://zealoct.github.io/post/2014-02-24-vim-notes/</link>
+      <link>http://jhan.xyz/post/2014-02-24-vim-notes/</link>
       <pubDate>Mon, 24 Feb 2014 15:00:00 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-02-24-vim-notes/</guid>
+      <guid>http://jhan.xyz/post/2014-02-24-vim-notes/</guid>
       <description>关于Vim的一些容易被忽视、却又能提升使用体验和操作效率的操作细节。同时记录Vim中一些（我见到过的）比较实用的配置，分享的同时也给自己留个备忘吧。 一下子总结不完整，慢慢更新。
 基本操作 基本按照幸福感排序，排在前边的是我觉得用了之后一口气儿上五楼都不累的，稍微靠后一点排的就比较随意了。每一项第一行的*斜体字*是我认为该组合比较有用的场景。
 使用Ctrl+[ 替代Esc，任何时候 Ctrl+[ 功能与Esc键完全相同，用这一快捷键的好处就不用解释了，大家都知道按Esc是件多么令人伤神的事情
@@ -37,10 +37,10 @@ Ctrl+a和Ctrl+x 将当前光标所在位置处的数字加1/减1，比较好玩�
     
     <item>
       <title>Notes on Paxos Made Simple</title>
-      <link>http://zealoct.github.io/post/2014-02-12-paxos/</link>
+      <link>http://jhan.xyz/post/2014-02-12-paxos/</link>
       <pubDate>Wed, 12 Feb 2014 16:21:02 +0800</pubDate>
       
-      <guid>http://zealoct.github.io/post/2014-02-12-paxos/</guid>
+      <guid>http://jhan.xyz/post/2014-02-12-paxos/</guid>
       <description>Origin paper link
 Problem safety requirements
  Only a value that has been proposed may be chosen Only a single value is chosen, and A process never learns that a value has been chosen unless it acutally has been  three agents: proposers(P), acceptors(A), and learners(L).
