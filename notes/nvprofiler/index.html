@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NVidia Profiler | Zea&#39;s</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <header>
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <nav>
+    <ul>
+      
+      
+      <li class="pull-left ">
+        <a href="http://jhan.xyz/">/home/zea&#39;s</a>
+      </li>
+      
+      
+      <li class="pull-left current">
+        <a href="/notes/">~/notes</a>
+      </li>
+      
+      
+      <li class="pull-left ">
+        <a href="/tags/">~/tags</a>
+      </li>
+      
+
+      
+
+    </ul>
+  </nav>
+</header>
+
+  </head>
+
+  <body>
+    <br/>
+
+<div class="article-meta">
+<h1><span class="title">NVidia Profiler</span></h1>
+
+<h2 class="date">2018/08/09</h2>
+<p class="terms">
+  
+  
+  
+  
+  
+</p>
+</div>
+
+
+<nav id="TableOfContents">
+<ul>
+<li><a href="#profiler">Profiler</a>
+<ul>
+<li><a href="#metrics-分类">Metrics 分类</a>
+<ul>
+<li><a href="#整体的利用率">整体的利用率</a></li>
+<li><a href="#指令相关">指令相关</a>
+<ul>
+<li><a href="#指令执行数量统计">指令执行数量统计</a></li>
+<li><a href="#指令发射数量统计">指令发射数量统计</a></li>
+<li><a href="#指令执行统计数据">指令执行统计数据</a></li>
+<li><a href="#执行效率">执行效率</a></li>
+<li><a href="#指令执行单元利用等级">指令执行单元利用等级</a></li>
+<li><a href="#overhead">Overhead</a></li>
+<li><a href="#stalls-统计">Stalls 统计</a></li>
+</ul></li>
+<li><a href="#内存相关">内存相关</a>
+<ul>
+<li><a href="#各种读-写-请求吞吐">各种读、写、请求吞吐</a></li>
+<li><a href="#各种读-写-请求数量">各种读、写、请求数量</a></li>
+<li><a href="#每个-request-内的平均数量计数">每个 request 内的平均数量计数</a></li>
+<li><a href="#一些利用等级统计">一些利用等级统计</a></li>
+<li><a href="#overhead-1">Overhead</a></li>
+<li><a href="#cache-命中率">Cache 命中率</a></li>
+<li><a href="#数据大小统计">数据大小统计</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#metric-采集范围">Metric 采集范围</a></li>
+</ul></li>
+</ul>
+</nav>
+
+
+<main>
+
+
+<h1 id="profiler">Profiler</h1>
+
+<ul>
+<li>nvprof
+
+<ul>
+<li>nvvp</li>
+<li>nsight</li>
+</ul></li>
+</ul>
+
+<h2 id="metrics-分类">Metrics 分类</h2>
+
+<p><strong>说明</strong>：以下多级列表中所涉及到的各种分类的统计项均为举例说明所用，并非完整列表，查看所有性能数据统计的完整列表请查看<a href="https://docs.nvidia.com/cuda/profiler-users-guide/index.html#metrics-reference">此链接</a>。</p>
+
+<p>整体分类：数量统计类、效率统计类、利用率统计类、overhead 统计类</p>
+
+<h3 id="整体的利用率">整体的利用率</h3>
+
+<ul>
+<li><code>achieved_occupancy</code>
+
+<ul>
+<li><em>Ratio of the average active warps per active cycle to the maximum number of warps supported on a multiprocessor</em></li>
+</ul></li>
+</ul>
+
+<h3 id="指令相关">指令相关</h3>
+
+<h4 id="指令执行数量统计">指令执行数量统计</h4>
+
+<ul>
+<li><code>cf_executed</code>
+
+<ul>
+<li><em>Number of executed control-flow instructions</em></li>
+</ul></li>
+<li><code>flop_count_dp</code></li>
+<li><code>flop_count_dp_add</code></li>
+<li><code>inst_executed</code></li>
+</ul>
+
+<h4 id="指令发射数量统计">指令发射数量统计</h4>
+
+<ul>
+<li><code>cf_issued</code>
+
+<ul>
+<li><em>Number of issued control-flow instructions</em></li>
+</ul></li>
+<li><code>inst_issued</code></li>
+</ul>
+
+<h4 id="指令执行统计数据">指令执行统计数据</h4>
+
+<ul>
+<li><code>ipc</code></li>
+<li><code>ipc_instance</code>
+
+<ul>
+<li><em>Instructions executed per cycle for a single multiprocessor</em></li>
+</ul></li>
+<li><code>issued_ipc</code></li>
+<li><code>inst_per_warp</code>
+
+<ul>
+<li><em>Average number of instructions executed by each warp</em></li>
+</ul></li>
+</ul>
+
+<h4 id="执行效率">执行效率</h4>
+
+<ul>
+<li><code>branch_efficiency</code>
+
+<ul>
+<li><em>Ratio of non-divergent branches to total branches expressed as percentage</em></li>
+</ul></li>
+<li><code>flop_dp_efficiency</code></li>
+<li><code>gld_efficiency</code></li>
+</ul>
+
+<h4 id="指令执行单元利用等级">指令执行单元利用等级</h4>
+
+<ul>
+<li><code>alu_fu_utilization</code></li>
+<li><code>cf_fu_utilization</code>
+
+<ul>
+<li><em>The utilization level of the multiprocessor function units that execute control-flow instructions on a scale of 0 to 10</em></li>
+</ul></li>
+</ul>
+
+<h4 id="overhead">Overhead</h4>
+
+<ul>
+<li><code>inst_replay_overhead</code>
+
+<ul>
+<li><em>Average number of replays for each instruction executed</em></li>
+</ul></li>
+</ul>
+
+<h4 id="stalls-统计">Stalls 统计</h4>
+
+<ul>
+<li><code>stall_exec_dependency</code>
+
+<ul>
+<li><em>Percentage of stalls occurring because an input required by the instruction is not yet available</em></li>
+</ul></li>
+<li><code>stall_inst_fetch</code></li>
+<li><code>stall_memory_dependency</code></li>
+<li><code>stall_sync</code></li>
+</ul>
+
+<h3 id="内存相关">内存相关</h3>
+
+<h4 id="各种读-写-请求吞吐">各种读、写、请求吞吐</h4>
+
+<ul>
+<li><code>atomic_throughput</code>
+
+<ul>
+<li><em>Global memory atomic and reduction throughput</em></li>
+</ul></li>
+<li><code>dram_read_throughput</code></li>
+<li><code>ecc_throughput</code></li>
+<li><code>gld_requested_throughput</code></li>
+<li><code>gld_throughput</code></li>
+<li><code>l2_l1_read_throughput</code></li>
+</ul>
+
+<h4 id="各种读-写-请求数量">各种读、写、请求数量</h4>
+
+<ul>
+<li><code>atomic_transactions</code>
+
+<ul>
+<li><em>Global memory atomic and reduction transactions</em></li>
+</ul></li>
+<li><code>dram_read_transactions</code></li>
+<li><code>ecc_transactions</code></li>
+<li><code>gld_transactions</code></li>
+</ul>
+
+<h4 id="每个-request-内的平均数量计数">每个 request 内的平均数量计数</h4>
+
+<ul>
+<li><code>atomic_transactions_per_request</code>
+
+<ul>
+<li><em>Average number of global memory atomic and reduction transactions performed for each atomic and reduction instruction</em></li>
+</ul></li>
+<li><code>gld_transactions_per_request</code></li>
+</ul>
+
+<h4 id="一些利用等级统计">一些利用等级统计</h4>
+
+<ul>
+<li><code>dram_utilization</code>
+
+<ul>
+<li><em>The utilization level of the device memory relative to the peak utilization on a scale of 0 to 10</em></li>
+</ul></li>
+<li><code>l2_utilization</code></li>
+</ul>
+
+<h4 id="overhead-1">Overhead</h4>
+
+<ul>
+<li><code>atomic_replay_overhead</code>
+
+<ul>
+<li><em>Average number of replays due to atomic and reduction bank conflicts for each instruction executed</em></li>
+</ul></li>
+<li><code>global_cache_replay_overhead</code></li>
+</ul>
+
+<h4 id="cache-命中率">Cache 命中率</h4>
+
+<ul>
+<li><code>l2_l1_read_hit_rate</code>
+
+<ul>
+<li><em>Hit rate at L2 cache for all read requests from L1 cache</em></li>
+</ul></li>
+<li><code>l2_tex_read_hit_rate</code></li>
+</ul>
+
+<h4 id="数据大小统计">数据大小统计</h4>
+
+<ul>
+<li><code>dram_write_bytes</code>
+
+<ul>
+<li><em>Total bytes written from L2 cache to DRAM</em></li>
+</ul></li>
+<li><code>pcie_total_data_received</code>
+
+<ul>
+<li><em>Total data bytes received through PCIe</em></li>
+</ul></li>
+<li><code>pcie_total_data_transmitted</code></li>
+<li><code>nvlink_user_data_received</code></li>
+<li><code>nvlink_user_data_transmitted</code></li>
+</ul>
+
+<h2 id="metric-采集范围">Metric 采集范围</h2>
+
+<p>每个 Metric 数据均有一个<strong>采集范围</strong>的概念，也就是说该性能数据在什么范围下是准确的，根据文档描述，共有三中范围：</p>
+
+<ol>
+<li><strong>Single-context</strong>：当GPU 上只有一个 Context 执行的时候，该数据才可准确采集；</li>
+<li><strong>Multi-context</strong>：当GPU 上有多个 Context 在同时执行的时候，该数据可精确到每个 Context 的粒度；</li>
+<li><strong>Device</strong>：表明该数据是在设备级别进行采集的；</li>
+</ol>
+
+<p>绝大部分的数据都是 Multi-context 级别的，个别数据如 <code>pcie_total_data_received</code> 为 Device 级别的，在当前版本的文档中没有看到 Single-context 级别的数据，猜测应该是被 Device 级别替换掉了，从语义上来看 Device 是一种对 Single-context 更准确的描述。</p>
+
+</main>
+
+    <footer>
+      
+<script async src="//yihui.name/js/center-img.js"></script>
+
+      
+    </footer>
+  </body>
+</html>
+

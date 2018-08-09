@@ -3,6 +3,16 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://jhan.xyz/notes/gpu-nvml-api/</loc>
+    <lastmod>2018-08-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://jhan.xyz/notes/nvprofiler/</loc>
+    <lastmod>2018-08-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://jhan.xyz/notes/llvm-sparc-load-mem-operand/</loc>
     <lastmod>2018-03-26T22:09:39+08:00</lastmod>
   </url>
@@ -270,7 +280,7 @@
   
   <url>
     <loc>http://jhan.xyz/notes/</loc>
-    <lastmod>2018-03-26T22:09:39+08:00</lastmod>
+    <lastmod>2018-08-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -324,7 +334,7 @@
   
   <url>
     <loc>http://jhan.xyz/</loc>
-    <lastmod>2018-03-26T22:09:39+08:00</lastmod>
+    <lastmod>2018-08-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
